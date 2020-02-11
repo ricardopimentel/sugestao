@@ -1,0 +1,78 @@
+<meta charset="UTF-8"/>
+{% extends "base.html" %}
+{% load staticfiles %}
+{% load sugestao_extras %}
+{% load pagination_tags %}
+{%block titulo%}{{title}}{%endblock%}
+
+{%block top%}
+	{% if request.session.nome %}
+		<h1>{{request.session.nome}}</h1>
+		<a href="{% url 'Logout' %}"><h2>Sair</h2></a>
+	{%else%}
+		<h1>Faça Login</h1>
+	{%endif%}
+{%endblock%}
+
+{%block menu%}
+	{% if request.session.menu%}
+		{%for item in request.session.menu%}
+			{% if item == itemselec %}
+				<li>
+					<a href="/{{ request.session.url|get_at_index:forloop.counter0 }}">
+						<div class="item-menu-selec">
+							<img src="{% static 'images/'%}{{request.session.img|get_at_index:forloop.counter0}}"  alt="" />
+							<p>{{item}}</p>
+						</div>
+					</a>
+				</li>
+			{%else%}
+				<li>
+                    {% if item == 'logo' %}
+                        <div id="hidemenu">
+                            <img src="{% static 'images/'%}{{request.session.img|get_at_index:forloop.counter0}}"  alt="" />
+                        </div>
+                    {% elif item == 'sair' %}
+                        <div id="hidemenusair">
+                            <div class="background-nome">
+                                {% if request.session.nome %}
+                                    <h1>{{request.session.nome}}</h1>
+                                    <a href="{% url 'Logout' %}"><h2>Sair</h2></a>
+                                {%else%}
+                                    <h1>Faça Login</h1>
+                                {%endif%}
+                            </div>
+                        </div>
+                    {% else %}
+                        <a href="/{{ request.session.url|get_at_index:forloop.counter0 }}">
+                            <div class="item-menu">
+                                <img src="{% static 'images/'%}{{request.session.img|get_at_index:forloop.counter0}}"  alt="" />
+                                <p>{{item}}</p>
+                            </div>
+                        </a>
+                    {% endif %}
+				</li>
+			{%endif%}
+		{%endfor%}
+	{%endif%}
+{%endblock%}
+	
+{%block conteudo%}
+    <div class="cartao">
+        <div class="card-background-titulo">
+            <img src="{% static 'images/404.png' %}" alt="" >
+            <h1 style="margin-top: -130px">Erro 404</h1>
+            <div class="sistemas-container">
+                <a href="https://paraiso.ifto.edu.br/" target="_blank" title="Abrir o Portal do IFTO"><div class="sistemas"><img src="{% static 'images/if24b.png' %}"/></div></a>
+                <a href="https://paraiso.ifto.edu.br/suporte/" target="_blank" title="Abrir a página de suporte"><div class="sistemas"><img src="{% static 'images/suporte.png' %}"/></div></a>
+            </div>
+        </div>
+        <div class="card-progressao-container" style="text-align: justify">
+            <h2>A página solicitada não existe!</h2>
+            <h3>Verifique o endereço especificado e tente novamente, caso o problema persista contate a CGTI</h3>
+            <p><b>E-mail: </b>cpd.paraiso@ifto.edu.br</p>
+            <p><b>Telefone: </b>63 3361-0314</p>
+            <p><b>Suporte: </b><a href="https://paraiso.ifto.edu.br/suporte/">paraiso.ifto.edu.br/suporte</a></p>
+        </div>
+    </div>
+{%endblock%}

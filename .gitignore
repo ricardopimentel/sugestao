@@ -1,0 +1,14 @@
+# Byte-compiled / optimized / DLL files
+*.py[cod]
+__pycache__/
+
+.Sugestao
+.idea
+.env
+*.sqlite3
+*pyc
+staticfiles
+.ipynb_checkpoints/
+
+
+
