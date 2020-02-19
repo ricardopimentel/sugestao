@@ -1,8 +1,7 @@
-from django.shortcuts import render
+from django.contrib import messages
 from django.shortcuts import render, redirect, resolve_url as r, render_to_response
-
-# Create your views here.
 from Sugestao.core.models import sugestao
+from Sugestao.sugerir.forms import SugestaoForm
 
 
 def FazerSugestao(request):
@@ -11,5 +10,12 @@ def FazerSugestao(request):
             pass
     except KeyError:
         return redirect(r('Login'))
-    sugestoes = sugestao.objects.all()
-    return render(request, 'sugerir/cadastro_sugestao.html', {'err': '','sugestoes': sugestoes, 'itemselec': 'HOME'})
+
+    form = SugestaoForm()
+    if request.method == 'POST':
+        form = SugestaoForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Configurações salvas com sucesso!')
+            return redirect(r('FazerSugestao'))
+    return render(request, 'sugerir/cadastro_sugestao.html', {'err': '','form': form, 'itemselec': 'HOME'})

@@ -5,6 +5,31 @@
 {% load pagination_tags %}
 {%block titulo%}{{title}}{%endblock%}
 
+{%block head%}
+	<script src="{% static 'js/tinymce/tinymce.min.js' %}"></script>
+	<script>
+		tinymce.init({
+			selector: 'textarea',
+			theme: 'modern',
+			language: 'pt_BR',
+			plugins: [
+				'advlist autolink lists link image charmap print preview hr anchor pagebreak spellchecker',
+				'searchreplace wordcount visualblocks visualchars code fullscreen',
+				'insertdatetime media nonbreaking save table contextmenu directionality',
+				'emoticons template paste textcolor colorpicker textpattern imagetools codesample toc'
+			],
+			toolbar1: 'spellchecker | undo redo | insert | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image',
+			toolbar2: 'print preview media | forecolor backcolor emoticons | codesample',
+			image_advtab: true,
+			templates: [
+				{ title: 'Test template 1', content: 'Test 1' },
+				{ title: 'Test template 2', content: 'Test 2' }
+			],
+			browser_spellcheck : true,
+		});
+	</script>
+{%endblock%}
+
 {%block top%}
 	{% if request.session.nome%}
 			<h1>{{request.session.nome}}</h1>
@@ -56,85 +81,24 @@
 {%endblock%}
 
 {%block conteudo%}
-    <div class="limit" style="max-width: none; margin: 0px">
-        <div class="card">
-            <img src="{% static 'images/comida.png' %}" alt="" width="70"/>
-            <h1>Cadastrar Pratos</h1>
-            <br>
-            <div class="navegation_bar">
-                <a href="{% url 'Administracao' %}">Administração</a>
-                <a href="{% url 'CadastroPrato' %}">Cadastro de Prato</a>
-            </div>
-            <br>
-            <div class="formulario">
-                <form method="post" action="{% url 'CadastroPrato' %}"> {%csrf_token%}
-                    {{form.as_p}}
-                    <p><input type="submit" name="commit" value="Salvar" id="botao" ></p>
-                </form>
-            </div>
+    <div class="cartao">
+        <img src="{% static 'images/shared-folder.png' %}" alt="" width="70"/>
+        <h1>Deixe sua Sugestão</h1>
+        <br>
+        <div class="navegation_bar">
+            <a href="{% url 'Home' %}">Home</a>
+            <a href="{% url 'FazerSugestao' %}">Fazer Sugestão</a>
+        </div>
+        <br>
+        <div class="formulario">
+            <form enctype="multipart/form-data" method="post" action="{% url 'FazerSugestao' %}"> {%csrf_token%}
+                {% for i in form %}
+                    <p>{{i}}<p>
+                {% endfor %}
+                <p><input type="submit" name="commit" value="Salvar" id="botao" ></p>
+            </form>
         </div>
     </div>
-
-    <form id="frm" method="post" action="{% url 'ExcluirPratos' %}"> {%csrf_token%}
-    <div class="card">
-        <img src="{% static 'images/lupa.png' %}" alt="" width="70"/>
-        <h1>Pratos Cadastrados</h1>
-        <br>
-        <div class="action_bar_tuto" style="height: 18px">
-            <input type="image" name="commit" value="" title="Excluir Prato" style="width: 24px; margin-top: -3px;" src="{% static 'images/delete24b.png' %}" onmouseover="this.src='{% static 'images/delete24.png' %}'" onmouseout="this.src='{% static 'images/delete24b.png' %}'">
-        </div>
-
-        <div class="card-progressao-container">
-            <table id="minhaTabela">
-                <thead>
-                    <tr id="tr-no-shadow">
-                        <th>Descrição</th>
-                        <th>Preço</th>
-                        <th>Marcar</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {%for prato in pratos%}
-                        <tr>
-                            <td id="td-vermelho"><a href="{% url 'EditarPrato' id_prato=prato.id %}">{{ prato.descricao }}</a></td>
-                            <td><a href="{% url 'EditarPrato' id_prato=prato.id %}">{{ prato.preco }}</a></td>
-                            <td><input type="checkbox" name="{{ prato.id }}" ></td>
-                        </tr>
-                    {%endfor%}
-                </tbody>
-            </table>
-        </div>
-     </div>
-
-    <script>
-        $(document).ready(function () {
-            $('#minhaTabela').DataTable({
-                "bPaginate": true,
-                "bLengthChange": false,
-                "bFilter": true,
-                "bInfo": true,
-                "bAutoWidth": true,
-                "language": {
-                    "sEmptyTable": "Nenhum registro encontrado",
-                    "sInfo": "Mostrando de _START_ até _END_ de _TOTAL_ registros",
-                    "sInfoEmpty": "Mostrando 0 até 0 de 0 registros",
-                    "sInfoFiltered": "(Filtrados de _MAX_ registros)",
-                    "sInfoThousands": ".",
-                    "sLengthMenu": "_MENU_ resultados por página",
-                    "sLoadingRecords": "Carregando...",
-                    "sProcessing": "Processando...",
-                    "sZeroRecords": "Nenhum registro encontrado",
-                    "sSearch": "Pesquisar",
-                    "oPaginate": {
-                    "sNext": "»",
-                    "sPrevious": "«",
-                    "sFirst": "Primeiro",
-                    "sLast": "Último"
-                    }
-                },
-            });
-        });
-    </script>
 
      <script>
         function mostrarocultar(mostrar, ocultar){

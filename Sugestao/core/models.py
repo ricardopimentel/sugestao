@@ -1,6 +1,7 @@
 from __future__ import unicode_literals
 
 from django.db import models
+from tinymce import models as tinymce_models
 
 # Create your models here.
 class pessoa (models.Model):
@@ -48,7 +49,7 @@ class setor(models.Model):
 
 
 class sugestao(models.Model):
-    descricao = models.CharField(max_length=1000)
+    descricao = tinymce_models.HTMLField(max_length=10000)
     imagem = models.ImageField('Imagem', upload_to='uploads/', default='uploads/default.png')
     datahora = models.DateTimeField('Data')
     setor = models.ForeignKey(setor)

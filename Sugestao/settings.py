@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'Sugestao.acesso',
     'Sugestao.core',
     'Sugestao.config',
+    'Sugestao.sugerir',
 ]
 
 MIDDLEWARE_CLASSES = [
@@ -134,3 +135,6 @@ DATE_INPUT_FORMATS = (
 
 STATIC_URL = '/sugestao/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+MEDIA_URL = '/sugestao/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'mediafiles')
