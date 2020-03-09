@@ -83,7 +83,11 @@
 {%block conteudo%}
     <div class="cartao">
         <img src="{% static 'images/shared-folder.png' %}" alt="" width="70"/>
-        <h1>Sugestão número {{sugestao.id}}</h1>
+        <h1>Sugestão número {{sugestao.id}}
+        {% if sugestao.status == False %}
+            ## Finalizada
+        {% endif %}
+        </h1>
         <br>
         <div class="navegation_bar">
             <a href="{% url 'Home' %}">Home</a>
@@ -91,6 +95,33 @@
             <a href="{% url 'DetalharSugestao' sugestao.id %}">Sugestão {{sugestao.id}}</a>
         </div>
         <br>
+
+        {% for finalizacao in finalizacoes %}
+            <div class="detalhamento-secao">
+                <div class="detalhamento-secao-barra-info">
+                    <div class="detalhamento-secao-edit-barra-imagem">
+                        <img src="{% static 'images/editar.png' %}" alt=""/>
+                    </div>
+                    <p>Finalizado às: {{finalizacao.datahora|convert_datetime}}</p>
+                    <p>Por: {{finalizacao.pessoa}}</p>
+                </div>
+                <p>{{finalizacao.descricao|safe}}</p>
+            </div>
+        {% endfor %}
+
+        {% for resposta in respostas %}
+            <div class="detalhamento-secao">
+                <div class="detalhamento-secao-barra-info">
+                    <div class="detalhamento-secao-edit-barra-imagem">
+                        <img src="{% static 'images/editar.png' %}" alt=""/>
+                    </div>
+                    <p>Respondido às: {{resposta.datahora|convert_datetime}}</p>
+                    <p>Por: {{resposta.pessoa}}</p>
+                </div>
+                <p>{{resposta.descricao|safe}}</p>
+            </div>
+        {% endfor %}
+
         {% for edicao in edicoes %}
             <div class="detalhamento-secao">
                 <div class="detalhamento-secao-barra-info">
@@ -113,13 +144,14 @@
                 <p>Por: {{sugestao.pessoa}}</p>
             </div>
             <div class="detalhamento-secao-barra-actions">
-                {% if tipopessoa == 'responder' %}
-                    <a href="{% url 'EditarSugestao' sugestao.id%}">Responder</a>
-                {% elif tipopessoa == 'editar' %}
-                    <a href="{% url 'EditarSugestao' sugestao.id%}">Editar</a>
-                {% elif tipopessoa == 'ambos' %}
-                    <a href="{% url 'EditarSugestao' sugestao.id%}">Editar</a>
-                    <a href="{% url 'EditarSugestao' sugestao.id%}">Responder</a>
+                {% if sugestao.status %}
+                    {% if responder == 'responder' %}
+                        <a href="{% url 'ResponderSugestao' sugestao.id%}">Responder</a>
+                    {% endif %}
+                    {% if editar == 'editar' %}
+                        <a href="{% url 'EditarSugestao' sugestao.id%}">Editar</a>
+                    {% endif %}
+                    <a href="{% url 'FinalizarSugestao' sugestao.id%}">Finalizar</a>
                 {% endif %}
             </div>
             <p style="text-align: center;"><b>{{sugestao.titulo}}</b></p>

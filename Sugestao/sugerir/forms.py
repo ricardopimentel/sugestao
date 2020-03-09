@@ -40,3 +40,4 @@ class SugestaoEdicaoForm(forms.Form):
         descricao = cleaned_data.get("descricao")
 
         return cleaned_data
+

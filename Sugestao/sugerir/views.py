@@ -3,7 +3,7 @@ from django.shortcuts import render, redirect, resolve_url as r, render_to_respo
 from django.utils.datetime_safe import datetime
 
 import Sugestao
-from Sugestao.core.models import setor, pessoa, sugestao, edicao
+from Sugestao.core.models import setor, pessoa, sugestao, edicao, resposta, finalizacao
 from Sugestao.sugerir.forms import SugestaoForm, SugestaoEdicaoForm
 
 
@@ -40,19 +40,22 @@ def FazerSugestao(request):
 
 
 def DetalharSugestao(request, id):
+    # Verificar se foi aberto por mim ou para mim
     sugestaoobj = sugestao.objects.get(id=id)
-    tipopessoa = ''
-    if sugestaoobj.pessoa.usuario == request.session['userl']:
-        tipopessoa = 'editar'
-    if sugestaoobj.setor.responsavel == pessoa.objects.get(usuario=request.session['userl']):
-        if tipopessoa == 'editar':
-            tipopessoa = 'ambos'
-        else:
-            tipopessoa = 'responder'
+    editar = ''
+    responder = ''
+    if sugestaoobj.pessoa.usuario == request.session['userl']: #O usuário pode editar a sugestão
+        editar = 'editar'
+    if sugestaoobj.setor.responsavel == pessoa.objects.get(usuario=request.session['userl']): #O usuário pode responder a sugestão
+        responder = 'responder'
 
-
+    if editar == '' and responder == '': #Apessoa não tem direito a visializar essa sugestão, redireciona para a home
+        return redirect(r('Home'))
     edicaoobj = edicao.objects.filter(sugestao=id).order_by('-datahora')
-    return render(request, 'sugerir/detalhar_sugestao.html', {'err': '', 'tipopessoa': tipopessoa, 'itemselec': 'HOME', 'sugestao': sugestaoobj, 'edicoes': edicaoobj})
+    respostaobj = resposta.objects.filter(sugestao=id)
+    finalizacaoaobj = finalizacao.objects.filter(sugestao=id)
+
+    return render(request, 'sugerir/detalhar_sugestao.html', {'err': '', 'editar': editar, 'responder': responder, 'itemselec': 'HOME', 'sugestao': sugestaoobj, 'edicoes': edicaoobj, 'respostas': respostaobj, 'finalizacoes': finalizacaoaobj})
 
 
 def EditarSugestao(request, id):
@@ -74,3 +77,47 @@ def EditarSugestao(request, id):
             messages.success(request, 'Erro ao salvar sua edição')
             return redirect(r('EditarSugestao'))
     return render(request, 'sugerir/cadastro_sugestao.html', {'URL': 'EditarSugestao', 'err': '','id': id, 'form': form, 'itemselec': 'HOME'})
+
+
+def ResponderSugestao(request, id):
+    #Preencher Formulário
+
+    sugestaoobj = sugestao.objects.get(id=id)#Buscar dados da sugestão a ser alterada
+
+    #criar instancia do formulário preencido
+    form = SugestaoEdicaoForm(initial={'descricao': sugestaoobj.descricao})
+    #Verifica se vieram dados pelo post
+    if request.method == 'POST':
+        form = SugestaoEdicaoForm(request.POST)
+        if form.is_valid():# se dados do formulário são válidos, salva os dados na linha abaixo
+            respostaobj = resposta(descricao=request.POST['descricao'], datahora=datetime.now(), sugestao=Sugestao.core.models.sugestao.objects.get(id=id), pessoa=pessoa.objects.get(usuario=request.session['userl']))
+            respostaobj.save()
+            messages.success(request, 'Resposta salva com sucesso!')
+            return redirect(r('DetalharSugestao', str(sugestaoobj.id)))
+        else:
+            messages.success(request, 'Erro ao salvar sua resposta')
+            return redirect(r('ResponderSugestao'))
+    return render(request, 'sugerir/cadastro_sugestao.html', {'URL': 'ResponderSugestao', 'err': '','id': id, 'form': form, 'itemselec': 'HOME'})
+
+
+def FinalizarSugestao(request, id):
+    #Preencher Formulário
+
+    sugestaoobj = sugestao.objects.get(id=id)#Buscar dados da sugestão a ser alterada
+
+    #criar instancia do formulário preencido
+    form = SugestaoEdicaoForm(initial={'descricao': sugestaoobj.descricao})
+    #Verifica se vieram dados pelo post
+    if request.method == 'POST':
+        form = SugestaoEdicaoForm(request.POST)
+        if form.is_valid():# se dados do formulário são válidos, salva os dados na linha abaixo
+            finalizacaoobj = finalizacao(descricao=request.POST['descricao'], datahora=datetime.now(), sugestao=Sugestao.core.models.sugestao.objects.get(id=id), pessoa=pessoa.objects.get(usuario=request.session['userl']))
+            finalizacaoobj.save()
+            sugestaoobj.status=False
+            sugestaoobj.save()
+            messages.success(request, 'Sugestão finalizada com sucesso!')
+            return redirect(r('DetalharSugestao', str(sugestaoobj.id)))
+        else:
+            messages.success(request, 'Erro ao salvar')
+            return redirect(r('FinalizarSugestao'))
+    return render(request, 'sugerir/cadastro_sugestao.html', {'URL': 'FinalizarSugestao', 'err': '','id': id, 'form': form, 'itemselec': 'HOME'})
