@@ -6,6 +6,7 @@ from Sugestao.core.models import sugestao
 
 
 class SugestaoForm(forms.Form):
+    titulo = forms.CharField(label='Título')
     setor = forms.ChoiceField(label="Setor")
     pessoa = forms.ChoiceField(label="Pessoa")
     descricao = forms.CharField(label="Sugestão", widget=forms.Textarea())
@@ -21,13 +22,21 @@ class SugestaoForm(forms.Form):
 
     def clean(self):
         cleaned_data = self.cleaned_data
+        titulo = cleaned_data.get('titulo')
         setor = cleaned_data.get("setor")
         pessoa = cleaned_data.get("pessoa")
         descricao = cleaned_data.get("descricao")
         imagem = cleaned_data.get("imagem")
 
-        sugestaoobj = sugestao(setor=Sugestao.core.models.setor.objects.get(id=setor), pessoa=Sugestao.core.models.pessoa.objects.get(id=pessoa), descricao=descricao, imagem=imagem, datahora=datetime.now())
-        sugestaoobj.save()
-        print(sugestaoobj.id)
+        return cleaned_data
+
+
+class SugestaoEdicaoForm(forms.Form):
+    descricao = forms.CharField(label="Sugestão", widget=forms.Textarea())
+
+
+    def clean(self):
+        cleaned_data = self.cleaned_data
+        descricao = cleaned_data.get("descricao")
 
         return cleaned_data

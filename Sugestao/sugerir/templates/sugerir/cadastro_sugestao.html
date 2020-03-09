@@ -91,7 +91,7 @@
         </div>
         <br>
         <div class="formulario">
-            <form enctype="multipart/form-data" method="post" action="{% url 'FazerSugestao' %}"> {%csrf_token%}
+            <form enctype="multipart/form-data" method="post" {%if id %}action="{% url URL id %}" {%else%}action="{% url URL %}"{%endif%}> {%csrf_token%}
                 {{form.as_p}}
                 <p><input type="submit" name="commit" value="Salvar" id="botao" ></p>
             </form>

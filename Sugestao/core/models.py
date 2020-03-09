@@ -49,14 +49,37 @@ class setor(models.Model):
 
 
 class sugestao(models.Model):
+    titulo = models.CharField(max_length=200)
     descricao = tinymce_models.HTMLField(max_length=10000)
     imagem = models.ImageField('Imagem', upload_to='uploads/', default='uploads/default.png')
     datahora = models.DateTimeField('Data')
     setor = models.ForeignKey(setor)
     pessoa = models.ForeignKey(pessoa)
+    status = models.BooleanField()
 
 
 class obs(models.Model):
     descricao = models.CharField(max_length=1000)
     datahora = models.DateTimeField('Data')
-    setor = models.ForeignKey(sugestao)
+    sugestao = models.ForeignKey(sugestao)
+
+
+class resposta(models.Model):
+    descricao = models.CharField(max_length=1000)
+    datahora = models.DateTimeField('Data')
+    sugestao = models.ForeignKey(sugestao)
+    imagem = models.ImageField('Imagem', upload_to='uploads/', default='uploads/default.png')
+    pessoa = models.ForeignKey(pessoa)
+
+
+class edicao(models.Model):
+    descricao = models.CharField(max_length=1000)
+    datahora = models.DateTimeField('Data')
+    sugestao = models.ForeignKey(sugestao)
+
+
+class finalizacao(models.Model):
+    descricao = models.CharField(max_length=1000)
+    datahora = models.DateTimeField('Data')
+    sugestao = models.ForeignKey(sugestao)
+    pessoa = models.ForeignKey(pessoa)

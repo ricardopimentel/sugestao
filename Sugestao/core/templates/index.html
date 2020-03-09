@@ -74,27 +74,57 @@
         <br><br>
     </div>
 
-    <div class="card">
-        <img src="{% static 'images/listmenu.png' %}" alt="">
+    <div class="cartao">
+        <img src="{% static 'images/listmenu.png' %}" alt="" height="70">
         <h1>Minhas Sugestões</h1>
         <br>
 
-        {%if sugestoes %}
-            <div class="box-file">
-                <div class="box_folder">
-                    <a href="{% url 'Home' %}" title="Abrir Página de Vendas">
-                        <div class="folder">
-                            <br><img src="{% static 'images/money.png' %}" alt="" />
-                        </div>
-                        <p>Página de Vendas</p>
-                    </a>
-                </div>
-            </div>
-            <a href="{% url 'FazerSugestao' %}">Fazer uma sugestão</a>
-        {%else%}
-            <p>Você ainda não fez uma sugestão 😥</p>
-            <a href="{% url 'FazerSugestao' %}">Fazer uma sugestão</a>
-        {%endif%}
+        <div class="container-conteudo-cartao">
+            {%if sugestoes %}
+                <div class="box-file">
+                    {% autopaginate sugestoes 3 %}
+                        {% for sugestao in sugestoes %}
+                            <a href="{% url 'DetalharSugestao' sugestao.id %}" title="Abrir {{sugestao.titulo}}">
+                                <div class="sugestao-box">
+                                    <div class="sugestao-box_bar_top">
+                                        <img src="{% static sugestao.imagem.url %}" alt="" />
+                                    </div>
+                                    <p><b>{{sugestao.titulo}}</b></p>
+                                    <div class="descricao-sugestao-box">{{sugestao.descricao|safe}}</div>
+                                    <hr>
+                                    <p>{{sugestao.datahora|convert_datetime}}</p>
+                                </div>
+                            </a>
+                        {% endfor %}
+                    {% paginate %}
+                    <br><hr>
+                    {% if sugestoesparamim %}
+                        <br><br><br><br>
+                        <h1>Sugestões Para Mim</h1>
+                        <br>
+                        {% autopaginate sugestoesparamim 3 %}
+                            {% for sugestao in sugestoesparamim %}
+                                <a href="{% url 'DetalharSugestao' sugestao.id %}" title="Abrir {{sugestao.titulo}}">
+                                    <div class="sugestao-box">
+                                        <div class="sugestao-box_bar_top">
+                                            <img src="{% static sugestao.imagem.url %}" alt="" />
+                                        </div>
+                                        <p><b>{{sugestao.titulo}}</b></p>
+                                        <div class="descricao-sugestao-box">{{sugestao.descricao|safe}}</div>
+                                        <hr>
+                                        <p>{{sugestao.datahora|convert_datetime}}</p>
+                                    </div>
+                                </a>
+                            {% endfor %}
+                        {% paginate %}
+                        <br><hr>
+                    {% endif %}
+                <a href="{% url 'FazerSugestao' %}">Fazer uma sugestão</a>
+            {%else%}
+                <p>Você ainda não fez uma sugestão 😥</p>
+                <a href="{% url 'FazerSugestao' %}">Fazer uma sugestão</a>
+            {%endif%}
+        </div>
     </div>
 
     <script>
