@@ -26,6 +26,13 @@ def cut_string(texto, tamanho_max):
     return texto
 
 @register.filter
+def compare_string(texto1, texto2):
+    if(str(texto1) == str(texto2)):
+        return True
+    else:
+        return False
+
+@register.filter
 def vtiquet(indice, ltiquets):
     for ticket in ltiquets:
         if str(ticket.rotulo) == str(indice):
