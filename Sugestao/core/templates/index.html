@@ -100,11 +100,12 @@
                     <br><hr>
                 {%else%}
                     <p>Você não fez nenhuma sugestão 😥</p>
+                    <hr>
                 {%endif%}
+                <br><br><br><br>
+                <h1>Sugestões Para Mim</h1>
+                <br>
                 {% if sugestoesparamim %}
-                    <br><br><br><br>
-                    <h1>Sugestões Para Mim</h1>
-                    <br>
                     {% autopaginate sugestoesparamim 3 %}
                         {% for sugestao in sugestoesparamim %}
                             <a href="{% url 'DetalharSugestao' sugestao.id %}" title="Abrir {{sugestao.titulo}}">
@@ -122,7 +123,8 @@
                     {% paginate %}
                     <br><hr>
                 {%else%}
-                    <p>Não temos sugestões para você 😥</p>
+                    <p>Não temos sugestões para você 😅</p>
+                    <hr>
                 {%endif%}
                 <a href="{% url 'FazerSugestao' %}">Fazer uma sugestão</a>
             </div>

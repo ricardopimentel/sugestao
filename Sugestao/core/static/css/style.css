@@ -2351,7 +2351,6 @@ a.icon:hover:before {
 	border-top: 0;
 	border-left: 0;
 	margin-left: -10px;
-	margin-top: -20px;
 }
 
 .detalhamento-secao-dir p{
@@ -2409,6 +2408,11 @@ a.icon:hover:before {
     margin: 5px;
     text-align: right;
     display: inline-block;
+}
+
+.detalhamento-secao-barra-actions a:hover{
+    border: 0px;
+    background: transparent;
 }
 
 .detalhamento-secao-barra-imagem{

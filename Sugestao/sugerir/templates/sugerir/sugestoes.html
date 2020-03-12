@@ -61,7 +61,10 @@
     <div class="cartao">
         <img src="{% static 'images/listmenu.png' %}" alt="" height="70">
         <h1>Minhas Sugestões</h1>
-        <br>
+        <div class="navegation_bar">
+            <a href="{% url 'Home' %}">Home</a>
+            <a href="{% url 'Sugestoes' %}">Sugestões</a>
+        </div>
 
         <div class="container-conteudo-cartao">
             <div class="box-file">

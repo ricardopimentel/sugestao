@@ -29,7 +29,10 @@ def FazerSugestao(request):
     if request.method == 'POST':
         form = SugestaoForm(request, SETORES, PESSOAS, request.POST, request.FILES)
         if form.is_valid():# se dados do formulário são válidos, salva os dados na linha abaixo
-            sugestaoobj = sugestao(status='1', titulo=request.POST['titulo'], setor=Sugestao.core.models.setor.objects.get(id=request.POST['setor']), pessoa=Sugestao.core.models.pessoa.objects.get(id=request.POST['pessoa']), descricao=request.POST['descricao'], imagem=request.FILES['imagem'], datahora=datetime.now())
+            if request.FILES:
+                sugestaoobj = sugestao(status='1', titulo=request.POST['titulo'], setor=Sugestao.core.models.setor.objects.get(id=request.POST['setor']), pessoa=Sugestao.core.models.pessoa.objects.get(id=request.POST['pessoa']), descricao=request.POST['descricao'], imagem=request.FILES['imagem'], datahora=datetime.now())
+            else:
+                sugestaoobj = sugestao(status='1', titulo=request.POST['titulo'], setor=Sugestao.core.models.setor.objects.get(id=request.POST['setor']), pessoa=Sugestao.core.models.pessoa.objects.get(id=request.POST['pessoa']), descricao=request.POST['descricao'], datahora=datetime.now())
             sugestaoobj.save()
             messages.success(request, 'Sugestão número '+ str(sugestaoobj.id)+ ' salva com sucesso!')
             return redirect(r('DetalharSugestao', str(sugestaoobj.id)))
@@ -44,13 +47,17 @@ def DetalharSugestao(request, id):
     sugestaoobj = sugestao.objects.get(id=id)
     editar = ''
     responder = ''
+    visualizar = ''
     if sugestaoobj.pessoa.usuario == request.session['userl']: #O usuário pode editar a sugestão
         editar = 'editar'
     if sugestaoobj.setor.responsavel == pessoa.objects.get(usuario=request.session['userl']): #O usuário pode responder a sugestão
         responder = 'responder'
+    if sugestaoobj.pessoa.usuario == '000000':
+        visualizar = 'visualizar'
 
-    if editar == '' and responder == '': #Apessoa não tem direito a visializar essa sugestão, redireciona para a home
-        return redirect(r('Home'))
+    if editar == '' and responder == '' and visualizar == '': #Apessoa não tem direito a visializar essa sugestão, redireciona para a home
+        messages.success(request, 'Você não pode acessar essa página')
+        return redirect(r('Sugestoes'))
     edicaoobj = edicao.objects.filter(sugestao=id).order_by('-datahora')
     respostaobj = resposta.objects.filter(sugestao=id)
     finalizacaoaobj = finalizacao.objects.filter(sugestao=id)

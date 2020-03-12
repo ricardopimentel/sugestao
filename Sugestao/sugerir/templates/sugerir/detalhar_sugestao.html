@@ -85,7 +85,7 @@
         <img src="{% static 'images/icone-lampada.png' %}" alt="" width="70"/>
         <h1>Sugestão N°: {{sugestao.id}}
         {% if sugestao.status == False %}
-            ## Finalizada ##
+            #Finalizada
         {% endif %}
         </h1>
         <br>
@@ -152,16 +152,31 @@
 
         <!-- Edições -->
         {% for edicao in edicoes %}
-            <div class="detalhamento-secao-dir">
-                <div class="detalhamento-secao-barra-info">
-                    <div class="detalhamento-secao-edit-barra-imagem">
-                        <img src="{% static 'images/editar.png' %}" alt=""/>
+            {% if request.session.nome|compare_string:sugestao.pessoa %}
+
+                <div class="detalhamento-secao-dir" style="margin-left: 20px">
+                    <div class="detalhamento-secao-barra-info" style="text-align: right;">
+                        <p>Alterado às: {{edicao.datahora|convert_datetime}}</p>
+                        <div class="detalhamento-secao-edit-barra-imagem" style="margin: -10px -15px 5px 5px">
+                            <img src="{% static 'images/editar.png' %}" alt=""/>
+                        </div>
                     </div>
-                    <p>Alterado às: {{edicao.datahora|convert_datetime}}</p>
+                    <p>{{edicao.descricao|safe}}</p>
                     <p>Por: {{sugestao.pessoa}}</p>
                 </div>
-                <p>{{edicao.descricao|safe}}</p>
-            </div>
+
+            {% else %}
+                <div class="detalhamento-secao-esq" style="margin-right: 20px">
+                    <div class="detalhamento-secao-barra-info" style="text-align: left;">
+                        <div class="detalhamento-secao-edit-barra-imagem" style="margin: -10px 5px 5px -15px">
+                            <img src="{% static 'images/editar.png' %}" alt=""/>
+                        </div>
+                        <p>Alterado às: {{edicao.datahora|convert_datetime}}</p>
+                    </div>
+                    <p>{{edicao.descricao|safe}}</p>
+                    <p>Por: {{sugestao.pessoa}}</p>
+                </div>
+            {% endif %}
         {% endfor %}
         <!-- Sugestão -->
         {% if request.session.nome|compare_string:sugestao.pessoa %}
@@ -174,13 +189,25 @@
                 </div>
                 <div class="detalhamento-secao-barra-actions">
                     {% if sugestao.status %}
-                        {% if responder == 'responder' %}
-                            <a href="{% url 'ResponderSugestao' sugestao.id%}">Responder</a>
-                        {% endif %}
                         {% if editar == 'editar' %}
-                            <a href="{% url 'EditarSugestao' sugestao.id%}">Editar</a>
+                            <a href="{% url 'EditarSugestao' sugestao.id%}" title="Editar">
+                                <div class="sistemas">
+                                    <img src="{% static 'images/edit24b.png' %}" />
+                                </div>
+                            </a>
                         {% endif %}
-                        <a href="{% url 'FinalizarSugestao' sugestao.id%}">Finalizar</a>
+                        {% if responder == 'responder' %}
+                            <a href="{% url 'ResponderSugestao' sugestao.id%}" title="Responder">
+                                <div class="sistemas">
+                                    <img src="{% static 'images/reply24b.png' %}" />
+                                </div>
+                            </a>
+                            <a href="{% url 'FinalizarSugestao' sugestao.id%}" title="Finalizar">
+                                <div class="sistemas">
+                                    <img src="{% static 'images/checkbutton24b.png' %}" />
+                                </div>
+                            </a>
+                        {% endif %}
                     {% endif %}
                 </div>
                 <p style="text-align: center;"><b>{{sugestao.titulo}}</b></p>
@@ -199,13 +226,25 @@
                 </div>
                 <div class="detalhamento-secao-barra-actions">
                     {% if sugestao.status %}
-                        {% if responder == 'responder' %}
-                            <a href="{% url 'ResponderSugestao' sugestao.id%}">Responder</a>
-                        {% endif %}
                         {% if editar == 'editar' %}
-                            <a href="{% url 'EditarSugestao' sugestao.id%}">Editar</a>
+                            <a href="{% url 'EditarSugestao' sugestao.id%}" title="Editar">
+                                <div class="sistemas">
+                                    <img src="{% static 'images/edit24b.png' %}" />
+                                </div>
+                            </a>
                         {% endif %}
-                        <a href="{% url 'FinalizarSugestao' sugestao.id%}">Finalizar</a>
+                        {% if responder == 'responder' %}
+                            <a href="{% url 'ResponderSugestao' sugestao.id%}" title="Responder">
+                                <div class="sistemas">
+                                    <img src="{% static 'images/reply24b.png' %}" />
+                                </div>
+                            </a>
+                            <a href="{% url 'FinalizarSugestao' sugestao.id%}" title="Finalizar">
+                                <div class="sistemas">
+                                    <img src="{% static 'images/checkbutton24b.png' %}" />
+                                </div>
+                            </a>
+                        {% endif %}
                     {% endif %}
                 </div>
                 <p style="text-align: center;"><b>{{sugestao.titulo}}</b></p>

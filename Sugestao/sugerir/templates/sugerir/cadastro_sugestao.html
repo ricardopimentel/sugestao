@@ -82,7 +82,7 @@
 
 {%block conteudo%}
     <div class="cartao">
-        <img src="{% static 'images/shared-folder.png' %}" alt="" width="70"/>
+        <img src="{% static 'images/urna.svg' %}" alt="" width="70"/>
         <h1>Deixe sua Sugestão</h1>
         <br>
         <div class="navegation_bar">
@@ -93,7 +93,6 @@
         <div class="formulario">
             <form enctype="multipart/form-data" method="post" {%if id %}action="{% url URL id %}" {%else%}action="{% url URL %}"{%endif%}> {%csrf_token%}
                 {{form.as_p}}
-                {{URL}}
                 <p><input type="submit" name="commit" value="Salvar" id="botao" ></p>
             </form>
         </div>
