@@ -3,6 +3,7 @@ from Sugestao.sugerir import views
 
 urlpatterns = [
     url(r'^fazersugestao/$', views.FazerSugestao, name='FazerSugestao'),
+    url(r'^sugestoes/$', views.Sugestoes, name='Sugestoes'),
     url(r'^minhassugestoes/(?P<view>.+)$', views.MinhasSugestoes, name='MinhasSugestoes'),
     url(r'^sugestoespmim/(?P<view>.+)$', views.SugestoesPraMim, name='SugestoesPraMim'),
     url(r'^detalharsugestao/(?P<id>.+)$', views.DetalharSugestao, name='DetalharSugestao'),

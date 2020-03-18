@@ -48,7 +48,7 @@ def DetalharSugestao(request, id):
         sugestaoobj = sugestao.objects.get(id=id)
     except:
         messages.success(request, 'Não encontrada')
-        return redirect(r('MinhasSugestoes', 1))
+        return redirect(r('Sugestoes'))
     editar = ''
     responder = ''
     visualizar = ''
@@ -142,7 +142,7 @@ def SugestoesPraMim(request, view):
                 sugestoesparamim = sugestao.objects.filter(setor__responsavel=idpessoa, status='1') #filtra as sugestões atribuidas ao setor que eu sou responsável
             else:
                 sugestoesparamim = sugestao.objects.filter(setor__responsavel=idpessoa) #filtra as sugestões atribuidas ao setor que eu sou responsável
-            return render(request, 'sugerir/sugestoes.html', {'err': '', 'itemselec': 'HOME', 'sugestoesparamim': sugestoesparamim, 'titulo': 'Sugestões Para Mim', 'URL': 'SugestoesPraMim', 'view': view})
+            return render(request, 'sugerir/list_sugestoes.html', {'err': '', 'itemselec': 'HOME', 'sugestoesparamim': sugestoesparamim, 'titulo': 'Sugestões Para Mim', 'URL': 'SugestoesPraMim', 'view': view})
 
     except KeyError:
         return redirect(r('Login'))
@@ -155,7 +155,16 @@ def MinhasSugestoes(request, view):
                 sugestoes = sugestao.objects.filter(pessoa__usuario=request.session['userl'], status='1') #filtra as sugestões para mostrar somente as realizadas por esse usuário, e estejam ativas
             else:
                 sugestoes = sugestao.objects.filter(pessoa__usuario=request.session['userl']) #filtra as sugestões para mostrar somente as realizadas por esse usuário
-            return render(request, 'sugerir/sugestoes.html', {'err': '','sugestoes': sugestoes, 'itemselec': 'HOME', 'titulo': 'Minhas Sugestões', 'URL': 'MinhasSugestoes', 'view': view})
+            return render(request, 'sugerir/list_sugestoes.html', {'err': '','sugestoes': sugestoes, 'itemselec': 'HOME', 'titulo': 'Minhas Sugestões', 'URL': 'MinhasSugestoes', 'view': view})
+
+    except KeyError:
+        return redirect(r('Login'))
+
+
+def Sugestoes(request):
+    try:# Verificar se usuario esta logado
+        if request.session['nome']:
+            return render(request, 'sugerir/sugestoes.html', {'err': '', 'itemselec': 'HOME', 'titulo': 'Sugestões',})
 
     except KeyError:
         return redirect(r('Login'))
