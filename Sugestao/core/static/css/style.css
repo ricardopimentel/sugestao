@@ -760,6 +760,13 @@ input#control-nav {
 	margin-top: -70px;
 }
 
+.cartao h2{
+    font-family: 'Roboto', sans-serif;
+	font-size: 1.5em;
+	text-align: center;
+	font-weight: lighter;
+}
+
 .cartao p{
 	margin: 15px;
 	font-family: segoe ui;
@@ -1289,6 +1296,57 @@ input#control-nav {
 
 /* Fim Barra de Navegação*/
 
+.action_bar{
+	background: #f3f3f3;
+	width: 100%;
+	margin-bottom: 20px;
+	border-radius: 10px 10px 10px 10px;
+	text-align: right;
+}
+
+.action_bar form{
+    padding: 0px;
+    text-align: right;
+}
+
+.action_bar p{
+    margin: 5px;
+    display: inline-block;
+}
+
+.action_bar a{
+	border-radius: 10px 10px 10px 10px;
+	vertical-align: top;
+}
+
+.action_bar a:HOVER{
+	text-decoration: none;
+	border-bottom: none;
+	color: white;
+	border-radius: 10px 10px 10px 10px;
+}
+
+
+.action_bar img{
+	display: inline-block;
+	margin: 0px;
+
+}
+
+#actionbarbuttom{
+    width: 19px;
+    height: 19px;
+    background: url('../images/lupa24b.png') no-repeat scroll 0 0 transparent;
+    padding: 12px;
+    margin: 0px 0px 0px 5px;
+    border: 0px;
+}
+
+.action_bar input{
+    vertical-align: middle;
+    background: white;
+}
+
 .action_bar_tuto{
 	background: #f3f3f3;
 	width: 100%;
@@ -1296,6 +1354,7 @@ input#control-nav {
 	border-radius: 10px 10px 10px 10px;
 	text-align: right;
 }
+
 .action_bar_tuto a{
 	padding: 5px;
 	background: var(--accent);
@@ -1303,7 +1362,7 @@ input#control-nav {
 }
 
 .action_bar_tuto a:HOVER{
-	text-decoration:none;
+	text-decoration: none;
 	border-bottom: none;
 	color: white;
 	padding: 5px;

@@ -60,10 +60,22 @@
 {%block conteudo%}
     <div class="cartao">
         <img src="{% static 'images/listmenu.png' %}" alt="" height="70">
-        <h1>Minhas Sugestões</h1>
+        <h1>{{titulo}}</h1>
         <div class="navegation_bar">
             <a href="{% url 'Home' %}">Home</a>
-            <a href="{% url 'Sugestoes' %}">Sugestões</a>
+            <a href="{% url 'MinhasSugestoes' 1 %}">Minhas Sugestões</a>
+            <a href="{% url 'SugestoesPraMim' 1 %}">Sugestões Para Mim</a>
+        </div>
+
+        <div class="action_bar">
+            <form method="post" action="{% url 'VaParaSugestao' %}"> {%csrf_token%}
+                {% if view|compare_string:1 %}
+                    <p><a href="{% url URL 'all' %}" title="Mostrar Todas"><img src="{% static 'images/olho24b.png' %}"> </a><input required type="text" id="id" name="id" placeholder="Número da Sugestão"><input type="submit" name="commit" value="" id="actionbarbuttom"></p>
+                {% else %}
+                    <p><a href="{% url URL '1' %}" title="Ocultar Finalizadas"><img src="{% static 'images/olhoCortado24b.png' %}"> </a><input required type="text" id="id" name="id" placeholder="Número da Sugestão"><input type="submit" name="commit" value="" id="actionbarbuttom"></p>
+                {% endif %}
+
+            </form>
         </div>
 
         <div class="container-conteudo-cartao">
@@ -85,13 +97,7 @@
                         {% endfor %}
                     {% paginate %}
                     <br><hr>
-                {%else%}
-                    <p>Você não fez nenhuma sugestão 😥</p>
-                {%endif%}
-                {% if sugestoesparamim %}
-                    <br><br><br><br>
-                    <h1>Sugestões Para Mim</h1>
-                    <br>
+                {%elif sugestoesparamim %}
                     {% autopaginate sugestoesparamim 3 %}
                         {% for sugestao in sugestoesparamim %}
                             <a href="{% url 'DetalharSugestao' sugestao.id %}" title="Abrir {{sugestao.titulo}}">
@@ -109,7 +115,7 @@
                     {% paginate %}
                     <br><hr>
                 {%else%}
-                    <p>Não temos sugestões para você 😥</p>
+                    <p>Não temos sugestões 😥</p>
                 {%endif%}
                 <a href="{% url 'FazerSugestao' %}">Fazer uma sugestão</a>
             </div>
