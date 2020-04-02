@@ -212,9 +212,17 @@
                 </div>
                 <p style="text-align: center;"><b>{{sugestao.titulo}}</b></p>
                 <p>{{sugestao.descricao|safe}}</p>
-                <img src="{% static sugestao.imagem.url %}" alt="" width="200"/>
-                <p>Para o setor: {{sugestao.setor}}</p>
-                <p>Por: {{sugestao.pessoa}}</p>
+                <br><hr>
+                <div class="bottom-balao" title="Ver imagem">
+                    <label for="control-imagem">
+                        <input type="checkbox" id="control-imagem" />
+                        <div class="visualizador-imagem">
+                            <img src="{% static sugestao.imagem.url %}" alt="" width="200"/>
+                        </div>
+                    </label>
+                    <p>Para o setor: {{sugestao.setor}}</p>
+                    <p>Por: {{sugestao.pessoa}}</p>
+                </div>
             </div>
         {% else %}
             <div class="detalhamento-secao-esq" style="margin-right: 20px">
@@ -249,9 +257,17 @@
                 </div>
                 <p style="text-align: center;"><b>{{sugestao.titulo}}</b></p>
                 <p>{{sugestao.descricao|safe}}</p>
-                <img src="{% static sugestao.imagem.url %}" alt="" width="200"/>
-                <p>Para o setor: {{sugestao.setor}}</p>
-                <p>Por: {{sugestao.pessoa}}</p>
+                <br><hr>
+                <div class="bottom-balao" title="Ver imagem">
+                    <label for="control-imagem">
+                        <input type="checkbox" id="control-imagem" />
+                        <div class="visualizador-imagem">
+                            <img src="{% static sugestao.imagem.url %}" alt="" width="200"/>
+                        </div>
+                    </label>
+                    <p>Para o setor: {{sugestao.setor}}</p>
+                    <p>Por: {{sugestao.pessoa}}</p>
+                </div>
             </div>
         {% endif %}
     </div>

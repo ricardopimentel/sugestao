@@ -67,8 +67,24 @@
         </div>
 
         <div class="container-conteudo-cartao">
-            <a href="{% url 'MinhasSugestoes' 1 %}">Minhas Sugestões</a>
-            <a href="{% url 'SugestoesPraMim' 1 %}">Sugestões Para Mim</a>
+            <div class="box-file">
+                <div class="box_folder">
+                    <a href="{% url 'MinhasSugestoes' 1 %}" title="Sugestões abertas por mim">
+                        <div class="folder">
+                            <br><img src="{% static 'images/shared-folder.png' %}" alt="" />
+                        </div>
+                        <p>Minhas Sugestões</p>
+                    </a>
+                </div>
+                <div class="box_folder">
+                    <a href="{% url 'SugestoesPraMim' 1 %}" title="Sugestões atribuídas a mim">
+                        <div class="folder">
+                            <br><img src="{% static 'images/shared-folder.png' %}" alt="" />
+                        </div>
+                        <p>Sugestões Para Mim</p>
+                    </a>
+                </div>
+            </div>
         </div>
     </div>
 
