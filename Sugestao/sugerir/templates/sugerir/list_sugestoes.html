@@ -64,13 +64,11 @@
         <div class="navegation_bar">
             <a href="{% url 'Home' %}">Home</a>
             <a href="{% url 'Sugestoes' %}">Sugestões</a>
-            {% if url|compare_string:1 %}
-
+            {% if URL|compare_string:'MinhasSugestoes' %}
+                <a href="{% url 'MinhasSugestoes' 1 %}">Minhas Sugestões</a>
             {% else %}
-
+                <a href="{% url 'SugestoesPraMim' 1 %}">Sugestões Para Mim</a>
             {% endif %}
-            <a href="{% url 'MinhasSugestoes' 1 %}">Minhas Sugestões</a>
-            <a href="{% url 'SugestoesPraMim' 1 %}">Sugestões Para Mim</a>
         </div>
 
         <div class="action_bar">
