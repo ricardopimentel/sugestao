@@ -6,4 +6,6 @@ urlpatterns = [
     url(r'^$', views.Administracao, name='Administracao'),
     url(r'^activedirectory/$', views.Dados_ad, name='ConfigAD'),
     url(r'^configuracaoinicial/$', views.ConfigInicial, name='ConfigInicial'),
+    url(r'^gerenciarsetores/$', views.GerenciarSetores, name='GerenciarSetores'),
+    url(r'^cadastrosetor/(?P<id>.+)$', views.CadastroSetor, name='CadastroSetor'),
 ]

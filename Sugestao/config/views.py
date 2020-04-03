@@ -5,8 +5,8 @@ from django.shortcuts import render, redirect, resolve_url as r
 
 
 # Create your views here.
-from Sugestao.config.forms import AdForm
-from Sugestao.core.models import config
+from Sugestao.config.forms import AdForm, SetorForm
+from Sugestao.core.models import config, setor
 
 
 def Administracao(request):
@@ -65,3 +65,36 @@ def ConfigInicial(request):
         'itemselec': 'ADMINISTRAÇÃO',
         'form': form,
     })
+
+
+def GerenciarSetores(request):
+    setores = setor.objects.all()
+    if dict(request.session).get('nome'):
+        return render(request, 'config/gerenciar_setor.html', {
+            'title': 'Administração',
+            'itemselec': 'ADMINISTRAÇÃO',
+            'setores': setores,
+        })
+    return redirect(r('Login'))
+
+
+def CadastroSetor(request, id):
+    if dict(request.session).get('nome'):
+        if id == 'cadastro':
+            form = SetorForm(request)
+        else:
+            obj = setor.objects.get(id=id)
+            form = SetorForm(request, initial={'nome': obj.nome, 'responsavel': obj.responsavel, 'email': obj.email})
+        if request.method == 'POST':
+            form = SetorForm(request, data=request.POST)
+            # Checa se os dados são válidos:
+            if form.is_valid():
+                return redirect(r('GerenciarSetores'))
+        return render(request, 'config/admin_cadastro.html', {
+            'title': 'Administração',
+            'itemselec': 'ADMINISTRAÇÃO',
+            'id': id,
+            'titulo': 'Cadastro de Setor',
+            'form': form,
+        })
+    return redirect(r('Login'))

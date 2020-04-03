@@ -1,7 +1,7 @@
 <meta charset="UTF-8"/>
 {% extends "base.html" %}
-{% load sugestao_extras %}
 {% load staticfiles %}
+{% load sugestao_extras %}
 {% load pagination_tags %}
 {%block titulo%}{{title}}{%endblock%}
 
@@ -56,40 +56,26 @@
 {%endblock%}
 
 {%block conteudo%}
-	{% if not request.session.userl %}
-		<meta http-equiv="refresh" content="0; url=/login/">
-	{%else%}
-		<div class="cartao">
-			<img src="{% static 'images/relatorio.png' %}" alt="" width="70"/>
-			<h1>Painel Administrativo</h1>
-			<br>
-			<div class="navegation_bar">
-				<a href="{% url 'Home' %}">Home</a>
-				<a href="{% url 'Administracao' %}">Administração</a>
-			</div>
+    <div class="cartao">
+        <img src="{% static 'images/shared-folder.png' %}" alt="" width="70"/>
+        <h1>{{titulo}}</h1>
+        <br>
+        <div class="navegation_bar">
+            <a href="{% url 'Home' %}">Home</a>
+            <a href="{% url 'Administracao' %}">Administração</a>
+            <a href="{% url 'GerenciarSetores' %}">Gerenciar Setores</a>
+            <a href="{% url 'CadastroSetor' id %}">Cadastro Setor</a>
+        </div>
+        <br>
+        <div class="formulario">
+            <form method="post" action="{% url 'CadastroSetor' id %}"> {%csrf_token%}
+                {{form.as_p}}
+                <p><input type="submit" name="commit" value="Salvar" id="botao" ></p>
+            </form>
+        </div>
+    </div>
 
-			<div class="box-file">
-				<div class="box_folder">
-					<a href="{% url 'ConfigAD' %}" title="Abrir Configuração do Active Directory">
-						<div class="folder">
-							<br><img src="{% static 'images/shared-folder.png' %}" alt="" />
-						</div>
-						<p>Conf. Active Directory</p>
-					</a>
-				</div>
-                <div class="box_folder">
-					<a href="{% url 'GerenciarSetores' %}" title="Abrir Cadastro de Pratos">
-						<div class="folder">
-							<br><img src="{% static 'images/empresa.png' %}" alt="" />
-						</div>
-						<p>Gerenciar Setores</p>
-					</a>
-				</div>
-			</div>
-		</div>
-	{%endif%}
-
-    <script>
+     <script>
         function mostrarocultar(mostrar, ocultar){
             $("#"+mostrar).show(500);
             document.getElementById(ocultar).style.display = "none";

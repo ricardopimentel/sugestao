@@ -1,7 +1,7 @@
 from django import forms
 from django.core.exceptions import ObjectDoesNotExist
 
-from Sugestao.core.models import config
+from Sugestao.core.models import config, setor
 from Sugestao.core.libs.conexaoAD3 import conexaoAD
 
 
@@ -71,3 +71,17 @@ class AdForm(forms.ModelForm):
                     conf.save()
         # Sempre retorne a coleção completa de dados válidos.
         return cleaned_data
+
+
+class SetorForm(forms.ModelForm):
+
+    class Meta:  # Define os campos vindos do Model
+        model = setor
+        fields = ('nome', 'responsavel', 'email')
+
+    def __init__(self, request, *args, **kwargs):  # INIT define caracteristicas para os campos de formulário vindos do Model (banco de dados)
+        super(SetorForm, self).__init__(*args, **kwargs)
+        self.fields['nome'].widget = forms.TextInput(attrs={'placeholder': 'Nome do Setor', 'title': 'Nome do Setor'})
+        self.fields['nome'].label = ""
+        self.fields['email'].widget = forms.TextInput(attrs={'placeholder': 'E-mail', 'title': 'e-mail do setor'})
+        self.fields['email'].label = ""

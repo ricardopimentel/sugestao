@@ -1,22 +1,24 @@
 <meta charset="UTF-8"/>
 {% extends "base.html" %}
-{% load sugestao_extras %}
 {% load staticfiles %}
+{% load sugestao_extras %}
 {% load pagination_tags %}
 {%block titulo%}{{title}}{%endblock%}
 
 {%block top%}
-	{% if request.session.nome%}
-			<h1>{{request.session.nome}}</h1>
-			<a href="{% url 'Logout' %}"><h2>Sair</h2></a>
-		{%endif%}
+	{% if request.session.nome %}
+		<h1>{{request.session.nome}}</h1>
+		<a href="{% url 'Logout' %}"><h2>Sair</h2></a>
+	{%else%}
+		<h1>Faça Login</h1>
+	{%endif%}
 {%endblock%}
 
 {%block menu%}
 	{% if request.session.menu%}
 		{%for item in request.session.menu%}
 			{% if item == itemselec %}
-				<li>
+				<li> 
 					<a href="/{{ request.session.url|get_at_index:forloop.counter0 }}">
 						<div class="item-menu-selec">
 							<img src="{% static 'images/'%}{{request.session.img|get_at_index:forloop.counter0}}"  alt="" />
@@ -54,40 +56,71 @@
 		{%endfor%}
 	{%endif%}
 {%endblock%}
-
+	
 {%block conteudo%}
-	{% if not request.session.userl %}
-		<meta http-equiv="refresh" content="0; url=/login/">
-	{%else%}
-		<div class="cartao">
-			<img src="{% static 'images/relatorio.png' %}" alt="" width="70"/>
-			<h1>Painel Administrativo</h1>
-			<br>
-			<div class="navegation_bar">
-				<a href="{% url 'Home' %}">Home</a>
-				<a href="{% url 'Administracao' %}">Administração</a>
-			</div>
-
-			<div class="box-file">
-				<div class="box_folder">
-					<a href="{% url 'ConfigAD' %}" title="Abrir Configuração do Active Directory">
-						<div class="folder">
-							<br><img src="{% static 'images/shared-folder.png' %}" alt="" />
-						</div>
-						<p>Conf. Active Directory</p>
-					</a>
-				</div>
-                <div class="box_folder">
-					<a href="{% url 'GerenciarSetores' %}" title="Abrir Cadastro de Pratos">
-						<div class="folder">
-							<br><img src="{% static 'images/empresa.png' %}" alt="" />
-						</div>
-						<p>Gerenciar Setores</p>
-					</a>
-				</div>
-			</div>
-		</div>
-	{%endif%}
+    <div class="card-progressao">
+        <div class="progressao">
+            <img src="{% static 'images/aluno.png' %}" alt="" width="70">
+            <img src="{% static 'images/ticket.png' %}" alt="" width="70">
+            <img src="{% static 'images/comida.png' %}" alt="" width="70">
+            <!--- <h1>Alunos</h1> --->
+        </div>
+        <div class="progressao-rotulo">
+            <h1>Gerenciar Setores</h1>
+        </div>
+        <div class="card-progressao-container">
+            <div class="navegation_bar">
+                <a href="{% url 'Home' %}">Home</a>
+                <a href="{% url 'Administracao' %}">Administração</a>
+                <a href="{% url 'GerenciarSetores' %}">GerenciarSetores</a>
+            </div>
+            <table id="minhaTabela">
+                <thead>
+                    <tr id="tr-no-shadow">
+                        <th>Nome</th>
+                        <th>Responsável</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {%for setor in setores%}
+                        <tr>
+                            <td id="td-vermelho"><a href="{% url 'CadastroSetor' setor.id %}">{{ setor.nome }}</a></td>
+                            <td><a href="{% url 'CadastroSetor' setor.id %}">{{ setor.responsavel.nome }}</a></td>
+                        </tr>
+                    {%endfor%}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <script>
+        $(document).ready(function () {
+            $('#minhaTabela').DataTable({
+                "bPaginate": true,
+                "bLengthChange": false,
+                "bFilter": true,
+                "bInfo": true,
+                "bAutoWidth": true,
+                "language": {
+                    "sEmptyTable": "Nenhum registro encontrado",
+                    "sInfo": "Mostrando de _START_ até _END_ de _TOTAL_ registros",
+                    "sInfoEmpty": "Mostrando 0 até 0 de 0 registros",
+                    "sInfoFiltered": "(Filtrados de _MAX_ registros)",
+                    "sInfoThousands": ".",
+                    "sLengthMenu": "_MENU_ resultados por página",
+                    "sLoadingRecords": "Carregando...",
+                    "sProcessing": "Processando...",
+                    "sZeroRecords": "Nenhum registro encontrado",
+                    "sSearch": "Pesquisar",
+                    "oPaginate": {
+                    "sNext": "»",
+                    "sPrevious": "«",
+                    "sFirst": "Primeiro",
+                    "sLast": "Último"
+                    }
+                },
+            });
+        });
+    </script>
 
     <script>
         function mostrarocultar(mostrar, ocultar){
@@ -120,3 +153,4 @@
         </div>
     {% endif %}
 {%endblock%}
+
