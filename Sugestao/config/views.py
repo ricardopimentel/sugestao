@@ -6,7 +6,7 @@ from django.shortcuts import render, redirect, resolve_url as r
 
 # Create your views here.
 from Sugestao.config.forms import AdForm, SetorForm
-from Sugestao.core.models import config, setor
+from Sugestao.core.models import config, setor, pessoa
 
 
 def Administracao(request):
@@ -80,15 +80,27 @@ def GerenciarSetores(request):
 
 def CadastroSetor(request, id):
     if dict(request.session).get('nome'):
-        if id == 'cadastro':
+        editar =False
+
+        if id == 'cadastro': # verifica se é para cadastrar ou alterar
             form = SetorForm(request)
-        else:
+        else: # se for para alterar cria um formulário já preenchido
             obj = setor.objects.get(id=id)
+            editar = True
             form = SetorForm(request, initial={'nome': obj.nome, 'responsavel': obj.responsavel, 'email': obj.email})
+
         if request.method == 'POST':
             form = SetorForm(request, data=request.POST)
             # Checa se os dados são válidos:
             if form.is_valid():
+                if editar:
+                    obj.nome = request.POST['nome']
+                    obj.responsavel = pessoa.objects.get(id=request.POST['responsavel'])
+                    obj.email = request.POST['email']
+                    obj.save()
+                else:
+                    form.save()
+                messages.success(request, "Sucesso!")
                 return redirect(r('GerenciarSetores'))
         return render(request, 'config/admin_cadastro.html', {
             'title': 'Administração',
