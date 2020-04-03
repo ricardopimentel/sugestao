@@ -50,9 +50,9 @@ def MontarMenu(request, ret, usuario):
         request.session['usertip'] = 'admin'
         # Preparar menu admin
         request.session['menu'] = ['logo', 'HOME', 'ADMINISTRAÇÃO', 'sair']
-        request.session['url'] = [r('Home').replace('/restaurante/', 'restaurante/'),
-                                  r('Home').replace('/restaurante/', 'restaurante/'),
-                                  r('Administracao').replace('/restaurante/', 'restaurante/'), '']
+        request.session['url'] = [r('Home').replace('/sugestao/', 'sugestao/'),
+                                  r('Home').replace('/sugestao/', 'sugestao/'),
+                                  r('Administracao').replace('/sugestao/', 'sugestao/'), '']
         request.session['img'] = ['if.png', 'home24.png', 'dinheiro24b.png', 'relatorio24.png', 'admin24.png', '']
         # logou então, adicionar os dados do usuário na sessão
         request.session['userl'] = usuario
@@ -70,8 +70,8 @@ def MontarMenu(request, ret, usuario):
         request.session['usertip'] = 'user'
         # Preparar menu user
         request.session['menu'] = ['logo', 'HOME', 'sair']
-        request.session['url'] = [r('Home').replace('/restaurante/', 'restaurante/'),
-                                  r('Home').replace('/restaurante/', 'restaurante/'), '']
+        request.session['url'] = [r('Home').replace('/sugestao/', 'sugestao/'),
+                                  r('Home').replace('/sugestao/', 'sugestao/'), '']
         request.session['img'] = ['if.png', 'home24.png', 'dinheiro24b.png', 'relatorio24.png', '']
         # logou então, adicionar os dados do usuário na sessão
         request.session['userl'] = usuario

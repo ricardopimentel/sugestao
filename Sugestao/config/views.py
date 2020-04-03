@@ -11,7 +11,7 @@ from Sugestao.core.models import config
 
 def Administracao(request):
     if dict(request.session).get('nome'):
-        return render(request, 'config/list_sugestoes.html', {
+        return render(request, 'config/administracao.html', {
             'title': 'Administração',
             'itemselec': 'ADMINISTRAÇÃO',
         })
