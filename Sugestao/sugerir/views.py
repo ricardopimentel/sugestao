@@ -36,14 +36,26 @@ def FazerSugestao(request):
                 sugestaoobj = sugestao(status='1', titulo=request.POST['titulo'], setor=Sugestao.core.models.setor.objects.get(id=request.POST['setor']), pessoa=Sugestao.core.models.pessoa.objects.get(id=request.POST['pessoa']), descricao=request.POST['descricao'], imagem=request.FILES['imagem'], datahora=datetime.now())
             else:
                 sugestaoobj = sugestao(status='1', titulo=request.POST['titulo'], setor=Sugestao.core.models.setor.objects.get(id=request.POST['setor']), pessoa=Sugestao.core.models.pessoa.objects.get(id=request.POST['pessoa']), descricao=request.POST['descricao'], datahora=datetime.now())
-            #sugestaoobj.save()
+            sugestaoobj.save()
 
             # Send email
-            _send_email('Uma sugestão recebida',
-                settings.DEFAULT_FROM_EMAIL,
-                setor.objects.get(id=form.cleaned_data['setor']).email,
-                'sugerir/sugestao_email.txt',
-                form.cleaned_data)
+            # Preparação de contexto
+            contexto = form.cleaned_data
+            contexto['id'] = sugestaoobj.id
+            contexto['imagem'] = sugestaoobj.imagem
+            contexto['setor'] = sugestaoobj.setor
+            contexto['pessoa'] = sugestaoobj.pessoa
+
+            # tenta recuperar o email do criador da sugestão
+            mail = request.session['mail']
+            if mail == 'Não informado':
+                mail = ''
+            # Envio da msg
+            _send_email('Não responda essa mensagem',
+                [settings.DEFAULT_FROM_EMAIL, ],
+                [sugestaoobj.setor.email, mail],
+                'sugerir/sugestao_email.html',
+                contexto)
             # add msg
             messages.success(request, 'Sugestão número '+ str(sugestaoobj.id)+ ' salva com sucesso!')
             return redirect(r('DetalharSugestao', str(sugestaoobj.id)))
@@ -190,4 +202,4 @@ def VaParaSugestao(request):
 
 def _send_email(subject, from_, to, template_name, context):
     body = render_to_string(template_name, context)
-    mail.send_mail(subject, body, from_, [from_, to])
+    mail.send_mail(subject, body, from_, to, html_message=body)
