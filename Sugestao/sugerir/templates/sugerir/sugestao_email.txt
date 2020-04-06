@@ -1,0 +1,8 @@
+Nova sugeatão recebida
+
+Numero: {{ id }}
+Titulo: {{ titulo }}
+Descricao: {{ descricao }}
+Imagem: {{ imagem }}
+
+

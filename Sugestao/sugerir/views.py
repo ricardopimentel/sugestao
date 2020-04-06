@@ -1,8 +1,11 @@
 from django.contrib import messages
+from django.core import mail
 from django.shortcuts import render, redirect, resolve_url as r, render_to_response
+from django.template.loader import render_to_string
 from django.utils.datetime_safe import datetime
 
 import Sugestao
+from Sugestao import settings
 from Sugestao.core.models import setor, pessoa, sugestao, edicao, resposta, finalizacao
 from Sugestao.sugerir.forms import SugestaoForm, SugestaoEdicaoForm
 
@@ -33,7 +36,15 @@ def FazerSugestao(request):
                 sugestaoobj = sugestao(status='1', titulo=request.POST['titulo'], setor=Sugestao.core.models.setor.objects.get(id=request.POST['setor']), pessoa=Sugestao.core.models.pessoa.objects.get(id=request.POST['pessoa']), descricao=request.POST['descricao'], imagem=request.FILES['imagem'], datahora=datetime.now())
             else:
                 sugestaoobj = sugestao(status='1', titulo=request.POST['titulo'], setor=Sugestao.core.models.setor.objects.get(id=request.POST['setor']), pessoa=Sugestao.core.models.pessoa.objects.get(id=request.POST['pessoa']), descricao=request.POST['descricao'], datahora=datetime.now())
-            sugestaoobj.save()
+            #sugestaoobj.save()
+
+            # Send email
+            _send_email('Uma sugestão recebida',
+                settings.DEFAULT_FROM_EMAIL,
+                setor.objects.get(id=form.cleaned_data['setor']).email,
+                'sugerir/sugestao_email.txt',
+                form.cleaned_data)
+            # add msg
             messages.success(request, 'Sugestão número '+ str(sugestaoobj.id)+ ' salva com sucesso!')
             return redirect(r('DetalharSugestao', str(sugestaoobj.id)))
         else:
@@ -175,3 +186,8 @@ def VaParaSugestao(request):
         if request.POST.get('id'):
             return redirect(r("DetalharSugestao", request.POST['id']))
     return redirect(r('Sugestoes'))
+
+
+def _send_email(subject, from_, to, template_name, context):
+    body = render_to_string(template_name, context)
+    mail.send_mail(subject, body, from_, [from_, to])
