@@ -54,7 +54,7 @@ def MontarMenu(request, ret, usuario):
                                   r('Home').replace('/sugestao/', 'sugestao/'),
                                   r('Sugestoes').replace('/sugestao/', 'sugestao/'),
                                   r('Administracao').replace('/sugestao/', 'sugestao/'), '']
-        request.session['img'] = ['if.png', 'home24.png', 'dinheiro24b.png', 'relatorio24.png', 'admin24.png', '']
+        request.session['img'] = ['if.png', 'home24.png', 'balloons24w.png', 'admin24.png', '']
         # logou então, adicionar os dados do usuário na sessão
         request.session['userl'] = usuario
         request.session['nome'] = result['displayName'].title()
@@ -74,7 +74,7 @@ def MontarMenu(request, ret, usuario):
         request.session['url'] = [r('Home').replace('/sugestao/', 'sugestao/'),
                                   r('Home').replace('/sugestao/', 'sugestao/'),
                                   r('Sugestoes').replace('/sugestao/', 'sugestao/'),'']
-        request.session['img'] = ['if.png', 'home24.png', 'dinheiro24b.png', 'relatorio24.png', '']
+        request.session['img'] = ['if.png', 'home24.png', 'balloons24w.png' '']
         # logou então, adicionar os dados do usuário na sessão
         request.session['userl'] = usuario
         request.session['nome'] = result['displayName'].title()

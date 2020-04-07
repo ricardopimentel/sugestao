@@ -187,7 +187,7 @@ def MinhasSugestoes(request, view):
 def Sugestoes(request):
     try:# Verificar se usuario esta logado
         if request.session['nome']:
-            return render(request, 'sugerir/sugestoes.html', {'err': '', 'itemselec': 'HOME', 'titulo': 'Sugestões',})
+            return render(request, 'sugerir/sugestoes.html', {'err': '', 'itemselec': 'SUGESTÕES', 'titulo': 'Sugestões',})
 
     except KeyError:
         return redirect(r('Login'))

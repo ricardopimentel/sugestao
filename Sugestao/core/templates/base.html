@@ -40,8 +40,9 @@
                 <img alt="" src="{% static 'images/if.png' %}">
             </div>
 		</a>
+
 		<div id="menu" class="menu">
-			<input type="checkbox" id="control-nav" />
+			<input type="checkbox" id="control-nav" onclick="toggleBoxIndex()"/>
 			<label for="control-nav" class="control-nav"></label>
 			<label for="control-nav" class="control-nav-close"></label>
 			<div class="conteiner-menu">
@@ -77,5 +78,19 @@
 				}
 			});
 		});
+
+		function toggleBoxIndex() {
+			var nav = $('#menu');
+			if (document.getElementById("control-nav").checked == true) {
+
+				nav.addClass("menu-to-top");
+
+			}
+			else {
+
+				nav.removeClass("menu-to-top");
+
+			}
+		}
 	</script>
 </html>

@@ -2421,7 +2421,7 @@ a.icon:hover:before {
 }
 
 .detalhamento-secao-esq{
-    background: #004d4017;
+    background: #004d4030;
     padding: 15px;
     border-radius: 15px 15px 40px 0px;
     margin: 0px 0px 15px 0px;
@@ -2562,8 +2562,15 @@ a.icon:hover:before {
     vertical-align: bottom;
 }
 
+.menu-to-top{
+    z-index: 5;
+}
+
 @media screen and (max-width: 767px) {
 	.conteiner-menu{
+	    position: absolute;
+	    top: 0px;
+	    left: 0px;
 		background: var(--primary);
 		border-radius: 0px 15px 15px 0px;
 		position: fixed;
@@ -2594,6 +2601,11 @@ a.icon:hover:before {
 
 	.conteiner-menu ul li a{
 		padding-bottom: 10px;
+	}
+
+	.menu ul li{
+	    margin-left: 50px;
+	    display: block
 	}
 
 	.control-nav { /* label icon */
@@ -2651,6 +2663,10 @@ a.icon:hover:before {
 		transform: translate(0, 0);
 	}
 
+	input#control-nav:checked .menu{
+		z-index: 10;
+	}
+
     .header-container-img{
         z-index: 4;
         display: block;
@@ -2662,6 +2678,22 @@ a.icon:hover:before {
         left: 50%;
         transform: translate(-50%, -0%);
     }
+
+    /* menu-fixo*/
+
+    .menu-fixo {
+        padding-left: 0px;
+    }
+
+    .menu-fixo #hidemenu{
+        display: none;
+    }
+
+    .menu-fixo #hidemenusair{
+        display: none;
+    }
+
+    /* checked nav Detalhamento secao*/
 
     .detalhamento-secao-barra-info p{
         margin: 0px 5px 5px 5px;
