@@ -7,6 +7,7 @@ from tinymce import models as tinymce_models
 class pessoa (models.Model):
     nome = models.CharField(max_length=100)
     usuario = models.CharField(max_length=11, unique=True)
+    email = models.CharField(max_length=70)
     status = models.BooleanField()
 
 

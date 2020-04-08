@@ -47,11 +47,11 @@ def FazerSugestao(request):
             contexto['pessoa'] = sugestaoobj.pessoa
 
             # tenta recuperar o email do criador da sugestão
-            mail = request.session['mail']
+            mail = sugestaoobj.pessoa.email
             if mail == 'Não informado':
                 mail = ''
             # Envio da msg
-            _send_email('Não responda essa mensagem',
+            _send_email('Não responda essa mensagem '+ str(sugestaoobj.id),
                 [settings.DEFAULT_FROM_EMAIL, ],
                 [sugestaoobj.setor.email, mail],
                 'sugerir/sugestao_email.html',
@@ -126,6 +126,25 @@ def ResponderSugestao(request, id):
         if form.is_valid():# se dados do formulário são válidos, salva os dados na linha abaixo
             respostaobj = resposta(descricao=request.POST['descricao'], datahora=datetime.now(), sugestao=Sugestao.core.models.sugestao.objects.get(id=id), pessoa=pessoa.objects.get(usuario=request.session['userl']))
             respostaobj.save()
+
+            # Send email
+            # Preparação de contexto
+            contexto = form.cleaned_data
+            contexto['id'] = respostaobj.sugestao.id
+            contexto['pessoa'] = respostaobj.pessoa.nome
+            contexto['titulo'] = "A Sugestão "+str(respostaobj.sugestao.id) +" foi respondida"
+
+            # tenta recuperar o email do criador da sugestão
+            mail = respostaobj.sugestao.pessoa.email
+            if mail == 'Não informado':
+                mail = ''
+            # Envio da msg
+            _send_email('Não responda essa mensagem '+ str(respostaobj.sugestao.id),
+                [settings.DEFAULT_FROM_EMAIL, ],
+                [sugestaoobj.setor.email, mail],
+                'sugerir/resposta_email.html',
+                contexto)
+
             messages.success(request, 'Resposta salva com sucesso!')
             return redirect(r('DetalharSugestao', str(sugestaoobj.id)))
         else:
@@ -149,6 +168,25 @@ def FinalizarSugestao(request, id):
             finalizacaoobj.save()
             sugestaoobj.status=False
             sugestaoobj.save()
+
+            # Send email
+            # Preparação de contexto
+            contexto = form.cleaned_data
+            contexto['id'] = finalizacaoobj.sugestao.id
+            contexto['pessoa'] = finalizacaoobj.pessoa.nome
+            contexto['titulo'] = "A Sugestão "+str(finalizacaoobj.sugestao.id) +" foi finalizada"
+
+            # tenta recuperar o email do criador da sugestão
+            mail = finalizacaoobj.sugestao.pessoa.email
+            if mail == 'Não informado':
+                mail = ''
+            # Envio da msg
+            _send_email('Não responda essa mensagem '+ str(finalizacaoobj.sugestao.id),
+                [settings.DEFAULT_FROM_EMAIL, ],
+                [sugestaoobj.setor.email, mail],
+                'sugerir/resposta_email.html',
+                contexto)
+
             messages.success(request, 'Sugestão finalizada com sucesso!')
             return redirect(r('DetalharSugestao', str(sugestaoobj.id)))
         else:

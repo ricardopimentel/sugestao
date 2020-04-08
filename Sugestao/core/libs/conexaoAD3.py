@@ -114,7 +114,7 @@ class conexaoAD(object):
                          attributes=['displayName', 'memberof'], get_operational_attributes=False)
 
             res = (c.response)
-            print(res)
+            #print(res)
             if res:
                 return res[0]['attributes']
             else:
