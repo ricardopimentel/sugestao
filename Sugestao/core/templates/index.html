@@ -79,6 +79,22 @@
         <h1>Minhas Sugestões</h1>
         <br>
 
+        <div class="navegation_bar">
+            <a href="{% url 'Home' %}">Home</a>
+            <a href="{% url 'Sugestoes' %}">Sugestões</a>
+        </div>
+
+        <div class="action_bar">
+            <form method="post" action="{% url 'VaParaSugestao' %}"> {%csrf_token%}
+                {% if view|compare_string:1 %}
+                    <p><a href="{% url 'FazerSugestao' %}" title="Fazer uma sugestão"><img src="{% static 'images/add24b.png' %}"></a><input required type="text" id="id" name="id" placeholder="Número da Sugestão"><input type="submit" name="commit" value="" id="actionbarbuttom"></p>
+                {% else %}
+                    <p><a href="{% url 'FazerSugestao' %}" title="Fazer uma sugestão"><img src="{% static 'images/add24b.png' %}"></a><input required type="text" id="id" name="id" placeholder="Número da Sugestão"><input type="submit" name="commit" value="" id="actionbarbuttom"></p>
+                {% endif %}
+
+            </form>
+        </div>
+
         <div class="container-conteudo-cartao">
             <div class="box-file">
                 {%if sugestoes %}
@@ -101,6 +117,8 @@
                 {%else%}
                     <p>Você não fez nenhuma sugestão 😥</p>
                     <hr>
+                    <br>
+                    <p><a id="botao" href="{% url 'FazerSugestao' %}">Fazer uma sugestão</a></p>
                 {%endif%}
                 <!-- Melhor não ;)
                 <br><br><br><br>

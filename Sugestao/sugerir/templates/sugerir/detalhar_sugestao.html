@@ -202,6 +202,8 @@
                                     <img src="{% static 'images/reply24b.png' %}" />
                                 </div>
                             </a>
+                        {%endif%}
+                        {% if finalizar == 'finalizar' %}
                             <a href="{% url 'FinalizarSugestao' sugestao.id%}" title="Finalizar">
                                 <div class="sistemas">
                                     <img src="{% static 'images/checkbutton24b.png' %}" />
@@ -247,6 +249,8 @@
                                     <img src="{% static 'images/reply24b.png' %}" />
                                 </div>
                             </a>
+                        {%endif%}
+                        {% if finalizar == 'finalizar' %}
                             <a href="{% url 'FinalizarSugestao' sugestao.id%}" title="Finalizar">
                                 <div class="sistemas">
                                     <img src="{% static 'images/checkbutton24b.png' %}" />

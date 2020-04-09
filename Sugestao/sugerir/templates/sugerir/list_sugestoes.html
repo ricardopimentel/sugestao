@@ -74,9 +74,9 @@
         <div class="action_bar">
             <form method="post" action="{% url 'VaParaSugestao' %}"> {%csrf_token%}
                 {% if view|compare_string:1 %}
-                    <p><a href="{% url URL 'all' %}" title="Mostrar Todas"><img src="{% static 'images/olho24b.png' %}"> </a><input required type="text" id="id" name="id" placeholder="Número da Sugestão"><input type="submit" name="commit" value="" id="actionbarbuttom"></p>
+                    <p><a href="{% url 'FazerSugestao' %}" title="Fazer uma sugestão"><img src="{% static 'images/add24b.png' %}"></a><a href="{% url URL 'all' %}" title="Mostrar Todas"><img src="{% static 'images/olho24b.png' %}"> </a><input required type="text" id="id" name="id" placeholder="Número da Sugestão"><input type="submit" name="commit" value="" id="actionbarbuttom"></p>
                 {% else %}
-                    <p><a href="{% url URL '1' %}" title="Ocultar Finalizadas"><img src="{% static 'images/olhoCortado24b.png' %}"> </a><input required type="text" id="id" name="id" placeholder="Número da Sugestão"><input type="submit" name="commit" value="" id="actionbarbuttom"></p>
+                    <p><a href="{% url 'FazerSugestao' %}" title="Fazer uma sugestão"><img src="{% static 'images/add24b.png' %}"></a><a href="{% url URL '1' %}" title="Ocultar Finalizadas"><img src="{% static 'images/olhoCortado24b.png' %}"> </a><input required type="text" id="id" name="id" placeholder="Número da Sugestão"><input type="submit" name="commit" value="" id="actionbarbuttom"></p>
                 {% endif %}
 
             </form>
@@ -85,7 +85,7 @@
         <div class="container-conteudo-cartao">
             <div class="box-file">
                 {%if sugestoes %}
-                    {% autopaginate sugestoes 3 %}
+                    {% autopaginate sugestoes 6 %}
                         {% for sugestao in sugestoes %}
                             <a href="{% url 'DetalharSugestao' sugestao.id %}" title="Abrir {{sugestao.titulo}}">
                                 <div class="sugestao-box">
@@ -102,7 +102,7 @@
                     {% paginate %}
                     <br><hr>
                 {%elif sugestoesparamim %}
-                    {% autopaginate sugestoesparamim 3 %}
+                    {% autopaginate sugestoesparamim 6 %}
                         {% for sugestao in sugestoesparamim %}
                             <a href="{% url 'DetalharSugestao' sugestao.id %}" title="Abrir {{sugestao.titulo}}">
                                 <div class="sugestao-box">
@@ -121,7 +121,8 @@
                 {%else%}
                     <p>Não temos sugestões 😥</p>
                 {%endif%}
-                <a href="{% url 'FazerSugestao' %}">Fazer uma sugestão</a>
+                <br>
+                <p><a id="botao" href="{% url 'FazerSugestao' %}">Fazer uma sugestão</a></p>
             </div>
         </div>
     </div>

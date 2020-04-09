@@ -75,10 +75,19 @@ def DetalharSugestao(request, id):
     editar = ''
     responder = ''
     visualizar = ''
-    if sugestaoobj.pessoa.usuario == request.session['userl']: #O usuário pode editar a sugestão
-        editar = 'editar'
-    if sugestaoobj.setor.responsavel == pessoa.objects.get(usuario=request.session['userl']): #O usuário pode responder a sugestão
-        responder = 'responder'
+    finalizar = ''
+
+    try:
+        respostaobj = resposta.objects.get(sugestao=sugestaoobj.id)
+        if sugestaoobj.pessoa.usuario == request.session['userl']: #O usuário pode editar a sugestão
+            visualizar = 'visualizar'
+        if sugestaoobj.setor.responsavel == pessoa.objects.get(usuario=request.session['userl']): #O usuário pode responder a sugestão
+            finalizar = 'finalizar'
+    except:
+        if sugestaoobj.pessoa.usuario == request.session['userl']: #O usuário pode editar a sugestão
+            editar = 'editar'
+        if sugestaoobj.setor.responsavel == pessoa.objects.get(usuario=request.session['userl']): #O usuário pode responder a sugestão
+            responder = 'responder'
     if sugestaoobj.pessoa.usuario == '000000':
         visualizar = 'visualizar'
 
@@ -89,7 +98,7 @@ def DetalharSugestao(request, id):
     respostaobj = resposta.objects.filter(sugestao=id)
     finalizacaoaobj = finalizacao.objects.filter(sugestao=id)
 
-    return render(request, 'sugerir/detalhar_sugestao.html', {'err': '', 'editar': editar, 'responder': responder, 'itemselec': 'HOME', 'sugestao': sugestaoobj, 'edicoes': edicaoobj, 'respostas': respostaobj, 'finalizacoes': finalizacaoaobj})
+    return render(request, 'sugerir/detalhar_sugestao.html', {'err': '', 'editar': editar, 'responder': responder, 'finalizar': finalizar, 'itemselec': 'SUGESTÕES', 'sugestao': sugestaoobj, 'edicoes': edicaoobj, 'respostas': respostaobj, 'finalizacoes': finalizacaoaobj})
 
 
 def EditarSugestao(request, id):

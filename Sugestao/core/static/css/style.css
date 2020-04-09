@@ -661,7 +661,7 @@ input#control-nav {
 }
 
 .card h1{
-	font-family: serif;
+	font-family: 'Roboto', sans-serif;
 	font-size: 1.5em;
 	text-align: center;
 	font-weight: lighter;
@@ -1280,6 +1280,7 @@ input#control-nav {
 }
 
 .navegation_bar a{
+    font-family: 'Roboto', sans-serif;
 	padding: 5px;
 	background: var(--accent);
 	border-radius: 10px 10px 10px 10px;
@@ -2691,6 +2692,16 @@ a.icon:hover:before {
 
     .menu-fixo #hidemenusair{
         display: none;
+    }
+
+    .navegation_bar a{
+        font-size: .8em;
+    }
+
+    .cartao h1 {
+        font-size: 1.2em;
+        margin-bottom: 30px;
+        margin-left: 60px;
     }
 
     /* checked nav Detalhamento secao*/
