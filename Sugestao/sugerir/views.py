@@ -78,7 +78,7 @@ def DetalharSugestao(request, id):
     finalizar = ''
 
     try:
-        respostaobj = resposta.objects.get(sugestao=sugestaoobj.id)
+        respostaobj = resposta.objects.get(sugestao=sugestaoobj.id) # verifica se há uma resposta
         if sugestaoobj.pessoa.usuario == request.session['userl']: #O usuário pode editar a sugestão
             visualizar = 'visualizar'
         if sugestaoobj.setor.responsavel == pessoa.objects.get(usuario=request.session['userl']): #O usuário pode responder a sugestão
