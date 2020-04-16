@@ -107,7 +107,9 @@
                         </div>
                     </div>
                     <p>{{finalizacao.descricao|safe}}</p>
-                    <p>Por: {{finalizacao.pessoa}}</p>
+                    <div class="bottom-balao" title="Ver imagem">
+                        <p>Por: {{finalizacao.pessoa}}</p>
+                    </div>
                 </div>
             {% else %}
                 <div class="detalhamento-secao-esq" style="margin-right: 20px">
@@ -118,7 +120,9 @@
                         <p>Finalizado às: {{finalizacao.datahora|convert_datetime}}</p>
                     </div>
                     <p>{{finalizacao.descricao|safe}}</p>
-                    <p>Por: {{finalizacao.pessoa}}</p>
+                    <div class="bottom-balao" title="Ver imagem">
+                        <p>Por: {{finalizacao.pessoa}}</p>
+                    </div>
                 </div>
             {% endif %}
         {% endfor %}
@@ -134,7 +138,9 @@
                         </div>
                     </div>
                     <p>{{resposta.descricao|safe}}</p>
-                    <p>Por: {{resposta.pessoa}}</p>
+                    <div class="bottom-balao" title="Ver imagem">
+                        <p>Por: {{resposta.pessoa}}</p>
+                    </div>
                 </div>
             {% else %}
                <div class="detalhamento-secao-esq" style="margin-right: 20px">
@@ -144,8 +150,10 @@
                         </div>
                         <p>Respondido às: {{resposta.datahora|convert_datetime}}</p>
                     </div>
-                    <p>{{resposta.descricao|safe}}</p>
-                    <p>Por: {{resposta.pessoa}}</p>
+                   <p>{{resposta.descricao|safe}}</p>
+                   <div class="bottom-balao" title="Ver imagem">
+                        <p>Por: {{resposta.pessoa}}</p>
+                   </div>
                 </div>
             {% endif %}
         {% endfor %}
@@ -162,7 +170,9 @@
                         </div>
                     </div>
                     <p>{{edicao.descricao|safe}}</p>
-                    <p>Por: {{sugestao.pessoa}}</p>
+                    <div class="bottom-balao" title="Ver imagem">
+                        <p>Por: {{sugestao.pessoa}}</p>
+                    </div>
                 </div>
 
             {% else %}
@@ -174,7 +184,9 @@
                         <p>Alterado às: {{edicao.datahora|convert_datetime}}</p>
                     </div>
                     <p>{{edicao.descricao|safe}}</p>
-                    <p>Por: {{sugestao.pessoa}}</p>
+                    <div class="bottom-balao" title="Ver imagem">
+                        <p>Por: {{sugestao.pessoa}}</p>
+                    </div>
                 </div>
             {% endif %}
         {% endfor %}

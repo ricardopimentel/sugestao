@@ -1,5 +1,6 @@
 from django.contrib import messages
 from django.core import mail
+from django.core.mail import EmailMessage
 from django.shortcuts import render, redirect, resolve_url as r, render_to_response
 from django.template.loader import render_to_string
 from django.utils.datetime_safe import datetime
@@ -53,14 +54,14 @@ def FazerSugestao(request):
             # Envio da msg
             _send_email('Não responda essa mensagem '+ str(sugestaoobj.id),
                 [settings.DEFAULT_FROM_EMAIL, ],
-                [sugestaoobj.setor.email, mail],
+                sugestaoobj.setor.email, mail,
                 'sugerir/sugestao_email.html',
                 contexto)
             # add msg
             messages.success(request, 'Sugestão número '+ str(sugestaoobj.id)+ ' salva com sucesso!')
             return redirect(r('DetalharSugestao', str(sugestaoobj.id)))
         else:
-            messages.success(request, 'Erro ao salvar sua sugestão')
+            messages.error(request, 'Erro ao salvar sua sugestão')
             return redirect(r('FazerSugestao'))
     return render(request, 'sugerir/cadastro_sugestao.html', {'URL': 'FazerSugestao', 'err': '','form': form, 'itemselec': 'HOME'})
 
@@ -150,7 +151,7 @@ def ResponderSugestao(request, id):
             # Envio da msg
             _send_email('Não responda essa mensagem '+ str(respostaobj.sugestao.id),
                 [settings.DEFAULT_FROM_EMAIL, ],
-                [sugestaoobj.setor.email, mail],
+                sugestaoobj.setor.email, mail,
                 'sugerir/resposta_email.html',
                 contexto)
 
@@ -192,8 +193,8 @@ def FinalizarSugestao(request, id):
             # Envio da msg
             _send_email('Não responda essa mensagem '+ str(finalizacaoobj.sugestao.id),
                 [settings.DEFAULT_FROM_EMAIL, ],
-                [sugestaoobj.setor.email, mail],
-                'sugerir/resposta_email.html',
+                sugestaoobj.setor.email, mail,
+                'sugerir/finalizacao_email.html',
                 contexto)
 
             messages.success(request, 'Sugestão finalizada com sucesso!')
@@ -247,6 +248,17 @@ def VaParaSugestao(request):
     return redirect(r('Sugestoes'))
 
 
-def _send_email(subject, from_, to, template_name, context):
+def _send_email(subject, from_, to, copy, template_name, context):
     body = render_to_string(template_name, context)
-    mail.send_mail(subject, body, from_, to, html_message=body)
+    #mail.send_mail(subject, body, from_, to, html_message=body)
+
+    email = EmailMessage(
+            subject,
+            body,
+            from_,
+            [to],
+            [copy],
+            reply_to=['cpd.paraiso@ifto.edu.br']
+        )
+    email.content_subtype = "html"
+    email.send(fail_silently=False)

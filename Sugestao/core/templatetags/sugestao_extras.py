@@ -27,8 +27,6 @@ def cut_string(texto, tamanho_max):
 
 @register.filter
 def compare_string(texto1, texto2):
-    print('url'+str(texto1))
-    print('comparacao'+str(texto2))
     if(str(texto1) == str(texto2)):
         return True
     else:

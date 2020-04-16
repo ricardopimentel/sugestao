@@ -10,19 +10,26 @@
     </head>
     <body>
 
-    <div>
-        <h1>Nova sugestão recebida</h1>
-
-        <p>Número da Sugestão: <b>{{ id }}</b></p>
-        <a href="http://10.9.10.165:8000{% url 'DetalharSugestao' id%}">Visualizar</a>
-        <p>Título: {{ titulo }}</p>
-        <p>Setor: {{ setor }}</p>
-        <p>Aberto por: {{ pessoa }}</p>
-        <div style="background:#e8e6e6; border-radius: 15px; padding: 15px; border: 0px solid black;">
-            <p>Descrição: {{ descricao|safe }}</p>
+    <div style="background: #004d4030; width: 100%; height: 100%;">
+        <div style="background: #00695c; border-top: 10px solid #004d40; color: white; text-align: center; padding: 5px;">
+            <h1>Nova sugestão recebida</h1>
         </div>
-        <img src="http://10.9.10.165:8000{% static imagem.url %}" alt="" width="200"/>
-        <br>
+        <div style="background: white; padding: 5px;">
+            <p>Número da Sugestão: <b>{{ id }}</b></p>
+            <a href="https://campusparaiso.ifto.edu.br{% url 'DetalharSugestao' id%}">Visualizar</a>
+            <p>Título: {{ titulo }}</p>
+            <p>Setor: {{ setor }}</p>
+            <p>Aberto por: {{ pessoa }}</p>
+            <div style="border-radius: 0px; padding: 15px; border: 1px solid #004d40;">
+                <p>Descrição: {{ descricao|safe }}</p>
+            </div>
+            <img src="https://campusparaiso.ifto.edu.br{% static imagem.url %}" alt="" width="200"/>
+            <br>
+        </div>
+        <div style="background: #00695c; width: 100%; border-bottom: 10px solid #004d40; padding: 5px; text-align: center; color: white;">
+            <p>CGTI - 63 3361-0314</p>
+        </div>
+
     </div>
     </body>
 </html>
