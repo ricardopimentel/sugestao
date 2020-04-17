@@ -67,6 +67,12 @@ def FazerSugestao(request):
 
 
 def DetalharSugestao(request, id):
+    try:# Verificar se usuario esta logado
+        if request.session['nome']:
+            pass
+    except KeyError:
+        return redirect(r('Login'))
+
     # Verificar se foi aberto por mim ou para mim
     try:
         sugestaoobj = sugestao.objects.get(id=id)
@@ -82,7 +88,7 @@ def DetalharSugestao(request, id):
         respostaobj = resposta.objects.get(sugestao=sugestaoobj.id) # verifica se há uma resposta
         if sugestaoobj.pessoa.usuario == request.session['userl']: #O usuário pode editar a sugestão
             visualizar = 'visualizar'
-        if sugestaoobj.setor.responsavel == pessoa.objects.get(usuario=request.session['userl']): #O usuário pode responder a sugestão
+        if sugestaoobj.setor.responsavel == pessoa.objects.get(usuario=request.session['userl']): #O usuário pode finalizar a sugestão
             finalizar = 'finalizar'
     except:
         if sugestaoobj.pessoa.usuario == request.session['userl']: #O usuário pode editar a sugestão
@@ -92,8 +98,8 @@ def DetalharSugestao(request, id):
     if sugestaoobj.pessoa.usuario == '000000':
         visualizar = 'visualizar'
 
-    if editar == '' and responder == '' and visualizar == '': #Apessoa não tem direito a visializar essa sugestão, redireciona para a home
-        messages.success(request, 'Você não pode acessar essa página')
+    if editar == '' and responder == '' and visualizar == '' and finalizar =='': #Apessoa não tem direito a visializar essa sugestão, redireciona para a home
+        messages.error(request, 'Você não pode acessar essa página')
         return redirect(r('Sugestoes'))
     edicaoobj = edicao.objects.filter(sugestao=id).order_by('-datahora')
     respostaobj = resposta.objects.filter(sugestao=id)
@@ -103,6 +109,12 @@ def DetalharSugestao(request, id):
 
 
 def EditarSugestao(request, id):
+    try:# Verificar se usuario esta logado
+        if request.session['nome']:
+            pass
+    except KeyError:
+        return redirect(r('Login'))
+
     #Preencher Formulário
 
     sugestaoobj = sugestao.objects.get(id=id)#Buscar dados da sugestão a ser alterada
@@ -124,6 +136,12 @@ def EditarSugestao(request, id):
 
 
 def ResponderSugestao(request, id):
+    try:# Verificar se usuario esta logado
+        if request.session['nome']:
+            pass
+    except KeyError:
+        return redirect(r('Login'))
+
     #Preencher Formulário
 
     sugestaoobj = sugestao.objects.get(id=id)#Buscar dados da sugestão a ser alterada
@@ -164,6 +182,12 @@ def ResponderSugestao(request, id):
 
 
 def FinalizarSugestao(request, id):
+    try:# Verificar se usuario esta logado
+        if request.session['nome']:
+            pass
+    except KeyError:
+        return redirect(r('Login'))
+
     #Preencher Formulário
 
     sugestaoobj = sugestao.objects.get(id=id)#Buscar dados da sugestão a ser alterada
@@ -242,6 +266,12 @@ def Sugestoes(request):
 
 
 def VaParaSugestao(request):
+    try:# Verificar se usuario esta logado
+        if request.session['nome']:
+            pass
+    except KeyError:
+        return redirect(r('Login'))
+
     if request.method == 'POST':
         if request.POST.get('id'):
             return redirect(r("DetalharSugestao", request.POST['id']))
