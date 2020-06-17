@@ -2266,12 +2266,6 @@ a.icon:hover:before {
     border-radius: 10px 10px 0px 0px;
 }
 
-.progressao img{
-	margin-top: -35px;
-	box-shadow: 1px 1px 3px #535353;
-	border-radius: 50%;
-}
-
 .progressao-rotulo{
 	width: 100%;
 	height: 33px;
@@ -2565,6 +2559,23 @@ a.icon:hover:before {
 
 .menu-to-top{
     z-index: 5;
+}
+
+.botao-circulo{
+    width: 70px;
+    height: 70px;
+    background: #62659b;
+    border-radius: 100%;
+    display: inline-block;
+    margin-top: -30px;
+}
+
+.botao-circulo:hover{
+    background: #6468b3;
+}
+
+.botao-circulo img{
+    margin: 20px;
 }
 
 @media screen and (max-width: 767px) {

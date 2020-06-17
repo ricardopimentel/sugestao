@@ -25,7 +25,7 @@ def FazerSugestao(request):
     for set in setorobj:
         SETORES.append((set.id, set.nome))
     PESSOAS = []
-    pessoaobj = pessoa.objects.filter(nome="Anônimo") | pessoa.objects.filter(nome=request.session['nome'])
+    pessoaobj = pessoa.objects.filter(nome="Anônimo") | pessoa.objects.filter(nome=request.session['nome']) #Filtra o objeto pessoa, anonima e a pessoa logada
     for pess in pessoaobj:
         PESSOAS.append((pess.id, pess.nome))
     form = SugestaoForm(request, SETORES, PESSOAS)

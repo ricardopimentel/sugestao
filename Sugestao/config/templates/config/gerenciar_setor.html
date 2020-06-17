@@ -60,9 +60,11 @@
 {%block conteudo%}
     <div class="card-progressao">
         <div class="progressao">
-            <img src="{% static 'images/aluno.png' %}" alt="" width="70">
-            <img src="{% static 'images/ticket.png' %}" alt="" width="70">
-            <img src="{% static 'images/comida.png' %}" alt="" width="70">
+            <a href="{% url 'CadastroSetor' 'cadastro' %}" title="Cadastrar Novo Setor">
+                <div class="botao-circulo">
+                    <img src="{% static 'images/add24.png' %}" alt="" width="24">
+                </div>
+            </a>
             <!--- <h1>Alunos</h1> --->
         </div>
         <div class="progressao-rotulo">
@@ -72,7 +74,7 @@
             <div class="navegation_bar">
                 <a href="{% url 'Home' %}">Home</a>
                 <a href="{% url 'Administracao' %}">Administração</a>
-                <a href="{% url 'GerenciarSetores' %}">GerenciarSetores</a>
+                <a href="{% url 'GerenciarSetores' %}">Gerenciar Setores</a>
             </div>
             <table id="minhaTabela">
                 <thead>
