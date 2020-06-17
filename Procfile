@@ -1,1 +1,1 @@
-web: gunicorn Jasmine.wsgi --log-file -
+web: gunicorn Sugestao.wsgi --log-file -
