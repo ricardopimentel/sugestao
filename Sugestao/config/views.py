@@ -5,7 +5,7 @@ from django.shortcuts import render, redirect, resolve_url as r
 
 
 # Create your views here.
-from Sugestao.config.forms import AdForm, SetorForm
+from Sugestao.config.forms import AdForm, SetorForm, PessoaForm
 from Sugestao.core.models import config, setor, pessoa
 
 
@@ -102,11 +102,57 @@ def CadastroSetor(request, id):
                     form.save()
                 messages.success(request, "Sucesso!")
                 return redirect(r('GerenciarSetores'))
-        return render(request, 'config/admin_cadastro.html', {
+        return render(request, 'config/admin_cadastro_setor.html', {
             'title': 'Administração',
             'itemselec': 'ADMINISTRAÇÃO',
             'id': id,
             'titulo': 'Cadastro de Setor',
+            'form': form,
+        })
+    return redirect(r('Login'))
+
+
+def GerenciarPessoas(request):
+    pessoas = pessoa.objects.all()
+    if dict(request.session).get('nome'):
+        return render(request, 'config/gerenciar_pessoa.html', {
+            'title': 'Administração',
+            'itemselec': 'ADMINISTRAÇÃO',
+            'pessoas': pessoas,
+        })
+    return redirect(r('Login'))
+
+
+def CadastroPessoa(request, id):
+    if dict(request.session).get('nome'):
+        editar =False
+
+        if id == 'cadastro': # verifica se é para cadastrar ou alterar
+            form = PessoaForm(request)
+        else: # se for para alterar cria um formulário já preenchido
+            obj = pessoa.objects.get(id=id)
+            editar = True
+            form = PessoaForm(request, initial={'nome': obj.nome, 'usuario': obj.usuario, 'status': obj.status, 'email': obj.email})
+
+        if request.method == 'POST':
+            form = PessoaForm(request, data=request.POST)
+            # Checa se os dados são válidos:
+            if form.is_valid():
+                if editar:
+                    obj.nome = request.POST['nome']
+                    obj.usuario = request.POST['usuario']
+                    obj.status = request.POST['status']
+                    obj.email = request.POST['email']
+                    obj.save()
+                else:
+                    form.save()
+                messages.success(request, "Sucesso!")
+                return redirect(r('GerenciarPessoas'))
+        return render(request, 'config/admin_cadastro_pessoa.html', {
+            'title': 'Administração',
+            'itemselec': 'ADMINISTRAÇÃO',
+            'id': id,
+            'titulo': 'Cadastro de Pessoas',
             'form': form,
         })
     return redirect(r('Login'))

@@ -1,7 +1,7 @@
 from django import forms
 from django.core.exceptions import ObjectDoesNotExist
 
-from Sugestao.core.models import config, setor
+from Sugestao.core.models import config, setor, pessoa
 from Sugestao.core.libs.conexaoAD3 import conexaoAD
 
 
@@ -84,4 +84,20 @@ class SetorForm(forms.ModelForm):
         self.fields['nome'].widget = forms.TextInput(attrs={'placeholder': 'Nome do Setor', 'title': 'Nome do Setor'})
         self.fields['nome'].label = ""
         self.fields['email'].widget = forms.TextInput(attrs={'placeholder': 'E-mail', 'title': 'e-mail do setor'})
+        self.fields['email'].label = ""
+
+
+class PessoaForm(forms.ModelForm):
+
+    class Meta:  # Define os campos vindos do Model
+        model = pessoa
+        fields = ('nome', 'usuario', 'email', 'status')
+
+    def __init__(self, request, *args, **kwargs):  # INIT define caracteristicas para os campos de formulário vindos do Model (banco de dados)
+        super(PessoaForm, self).__init__(*args, **kwargs)
+        self.fields['nome'].widget = forms.TextInput(attrs={'placeholder': 'Nome da Pessoa', 'title': 'Nome da Pessoa'})
+        self.fields['nome'].label = ""
+        self.fields['usuario'].widget = forms.TextInput(attrs={'placeholder': 'Usuário', 'title': 'Usuário Pessoa'})
+        self.fields['usuario'].label = ""
+        self.fields['email'].widget = forms.TextInput(attrs={'placeholder': 'E-mail', 'title': 'e-mail da pessoa'})
         self.fields['email'].label = ""

@@ -8,4 +8,6 @@ urlpatterns = [
     url(r'^configuracaoinicial/$', views.ConfigInicial, name='ConfigInicial'),
     url(r'^gerenciarsetores/$', views.GerenciarSetores, name='GerenciarSetores'),
     url(r'^cadastrosetor/(?P<id>.+)$', views.CadastroSetor, name='CadastroSetor'),
+    url(r'^gerenciarpessoas/$', views.GerenciarPessoas, name='GerenciarPessoas'),
+    url(r'^cadastropessoa/(?P<id>.+)$', views.CadastroPessoa, name='CadastroPessoa'),
 ]
