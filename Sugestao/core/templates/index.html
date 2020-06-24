@@ -109,6 +109,7 @@
                                     <div class="descricao-sugestao-box">{{sugestao.descricao|safe}}</div>
                                     <hr>
                                     <p>{{sugestao.datahora|convert_datetime}}</p>
+                                    <p>{% static sugestao.imagem.url %}</p>
                                 </div>
                             </a>
                         {% endfor %}
