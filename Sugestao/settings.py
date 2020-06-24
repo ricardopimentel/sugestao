@@ -137,8 +137,7 @@ STATIC_URL = '/sugestao/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 MEDIA_URL = '/sugestao/media/'
-MEDIA_ROOT = '/storage'
-#MEDIA_ROOT = os.path.join(BASE_DIR, 'mediafiles')'/storage'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'storage')
 
 # Email configuration
 #EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
