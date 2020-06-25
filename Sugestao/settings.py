@@ -137,11 +137,11 @@ STATIC_URL = '/sugestao/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 MEDIA_URL = '/sugestao/media/'
-MEDIA_ROOT = '/storage'
+MEDIA_ROOT = '/media'
 
 # Email configuration
 #EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-DEFAULT_FROM_EMAIL = 'cpd.paraiso@ifto.edu.br'
+DEFAULT_FROM_EMAIL = 'ti.paraiso@ifto.edu.br'
 
 EMAIL_BACKEND = config('EMAIL_BACKEND')
 EMAIL_HOST = config('EMAIL_HOST')
