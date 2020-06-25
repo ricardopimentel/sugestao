@@ -1,5 +1,4 @@
 from django.contrib import messages
-from django.core import mail
 from django.core.mail import EmailMessage
 from django.shortcuts import render, redirect, resolve_url as r, render_to_response
 from django.template.loader import render_to_string
@@ -22,10 +21,12 @@ def FazerSugestao(request):
     #Preencher Formulário
     SETORES = []
     setorobj = setor.objects.all()
+    SETORES.append(('', 'Para qual setor é a sugestão?'))
     for set in setorobj:
         SETORES.append((set.id, set.nome))
     PESSOAS = []
     pessoaobj = pessoa.objects.filter(nome="Anônimo") | pessoa.objects.filter(nome=request.session['nome']) #Filtra o objeto pessoa, anonima e a pessoa logada
+    PESSOAS.append(('', 'Você deseja se identificar?'))
     for pess in pessoaobj:
         PESSOAS.append((pess.id, pess.nome))
     form = SugestaoForm(request, SETORES, PESSOAS)
@@ -60,52 +61,8 @@ def FazerSugestao(request):
             # add msg
             messages.success(request, 'Sugestão número '+ str(sugestaoobj.id)+ ' salva com sucesso!')
             return redirect(r('DetalharSugestao', str(sugestaoobj.id)))
-        else:
-            messages.error(request, 'Erro ao salvar sua sugestão')
-            return redirect(r('FazerSugestao'))
-    return render(request, 'sugerir/cadastro_sugestao.html', {'URL': 'FazerSugestao', 'err': '','form': form, 'itemselec': 'HOME'})
 
-
-def DetalharSugestao(request, id):
-    try:# Verificar se usuario esta logado
-        if request.session['nome']:
-            pass
-    except KeyError:
-        return redirect(r('Login'))
-
-    # Verificar se foi aberto por mim ou para mim
-    try:
-        sugestaoobj = sugestao.objects.get(id=id)
-    except:
-        messages.success(request, 'Não encontrada')
-        return redirect(r('Sugestoes'))
-    editar = ''
-    responder = ''
-    visualizar = ''
-    finalizar = ''
-
-    try:
-        respostaobj = resposta.objects.get(sugestao=sugestaoobj.id) # verifica se há uma resposta
-        if sugestaoobj.pessoa.usuario == request.session['userl']: #O usuário pode editar a sugestão
-            visualizar = 'visualizar'
-        if sugestaoobj.setor.responsavel == pessoa.objects.get(usuario=request.session['userl']): #O usuário pode finalizar a sugestão
-            finalizar = 'finalizar'
-    except:
-        if sugestaoobj.pessoa.usuario == request.session['userl']: #O usuário pode editar a sugestão
-            editar = 'editar'
-        if sugestaoobj.setor.responsavel == pessoa.objects.get(usuario=request.session['userl']): #O usuário pode responder a sugestão
-            responder = 'responder'
-    if sugestaoobj.pessoa.usuario == '000000':
-        visualizar = 'visualizar'
-
-    if editar == '' and responder == '' and visualizar == '' and finalizar =='': #Apessoa não tem direito a visializar essa sugestão, redireciona para a home
-        messages.error(request, 'Você não pode acessar essa página')
-        return redirect(r('Sugestoes'))
-    edicaoobj = edicao.objects.filter(sugestao=id).order_by('-datahora')
-    respostaobj = resposta.objects.filter(sugestao=id)
-    finalizacaoaobj = finalizacao.objects.filter(sugestao=id)
-
-    return render(request, 'sugerir/detalhar_sugestao.html', {'err': '', 'editar': editar, 'responder': responder, 'finalizar': finalizar, 'itemselec': 'SUGESTÕES', 'sugestao': sugestaoobj, 'edicoes': edicaoobj, 'respostas': respostaobj, 'finalizacoes': finalizacaoaobj})
+    return render(request, 'sugerir/cadastro_sugestao.html', {'URL': 'FazerSugestao', 'err': '','form': form, 'itemselec': 'HOME', 'titulo': 'Deixe Sua Sugestão'})
 
 
 def EditarSugestao(request, id):
@@ -129,10 +86,8 @@ def EditarSugestao(request, id):
             edicaoobj.save()
             messages.success(request, 'Edição salva com sucesso!')
             return redirect(r('DetalharSugestao', str(sugestaoobj.id)))
-        else:
-            messages.success(request, 'Erro ao salvar sua edição')
-            return redirect(r('EditarSugestao'))
-    return render(request, 'sugerir/cadastro_sugestao.html', {'URL': 'EditarSugestao', 'err': '','id': id, 'form': form, 'itemselec': 'HOME'})
+
+    return render(request, 'sugerir/cadastro_sugestao.html', {'URL': 'EditarSugestao', 'err': '','id': id, 'form': form, 'itemselec': 'HOME', "titulo": 'Editar Sugestão: '+ id})
 
 
 def ResponderSugestao(request, id):
@@ -175,10 +130,8 @@ def ResponderSugestao(request, id):
 
             messages.success(request, 'Resposta salva com sucesso!')
             return redirect(r('DetalharSugestao', str(sugestaoobj.id)))
-        else:
-            messages.success(request, 'Erro ao salvar sua resposta')
-            return redirect(r('ResponderSugestao'))
-    return render(request, 'sugerir/cadastro_sugestao.html', {'URL': 'ResponderSugestao', 'err': '','id': id, 'form': form, 'itemselec': 'HOME'})
+
+    return render(request, 'sugerir/cadastro_sugestao.html', {'URL': 'ResponderSugestao', 'err': '','id': id, 'form': form, 'itemselec': 'HOME', 'titulo': 'Responder Sugestão: '+ id})
 
 
 def FinalizarSugestao(request, id):
@@ -223,10 +176,50 @@ def FinalizarSugestao(request, id):
 
             messages.success(request, 'Sugestão finalizada com sucesso!')
             return redirect(r('DetalharSugestao', str(sugestaoobj.id)))
-        else:
-            messages.success(request, 'Erro ao salvar')
-            return redirect(r('FinalizarSugestao'))
-    return render(request, 'sugerir/cadastro_sugestao.html', {'URL': 'FinalizarSugestao', 'err': '','id': id, 'form': form, 'itemselec': 'HOME'})
+
+    return render(request, 'sugerir/cadastro_sugestao.html', {'URL': 'FinalizarSugestao', 'err': '','id': id, 'form': form, 'itemselec': 'HOME', 'titulo': 'Finalizar Sugestão: '+ id})
+
+
+def DetalharSugestao(request, id):
+    try:# Verificar se usuario esta logado
+        if request.session['nome']:
+            pass
+    except KeyError:
+        return redirect(r('Login'))
+
+    # Verificar se foi aberto por mim ou para mim
+    try:
+        sugestaoobj = sugestao.objects.get(id=id)
+    except:
+        messages.success(request, 'Não encontrada')
+        return redirect(r('Sugestoes'))
+    editar = ''
+    responder = ''
+    visualizar = ''
+    finalizar = ''
+
+    try:
+        respostaobj = resposta.objects.get(sugestao=sugestaoobj.id) # verifica se há uma resposta
+        if sugestaoobj.pessoa.usuario == request.session['userl']: #O usuário pode editar a sugestão
+            visualizar = 'visualizar'
+        if sugestaoobj.setor.responsavel == pessoa.objects.get(usuario=request.session['userl']): #O usuário pode finalizar a sugestão
+            finalizar = 'finalizar'
+    except:
+        if sugestaoobj.pessoa.usuario == request.session['userl']: #O usuário pode editar a sugestão
+            editar = 'editar'
+        if sugestaoobj.setor.responsavel == pessoa.objects.get(usuario=request.session['userl']): #O usuário pode responder a sugestão
+            responder = 'responder'
+    if sugestaoobj.pessoa.usuario == '000000':
+        visualizar = 'visualizar'
+
+    if editar == '' and responder == '' and visualizar == '' and finalizar =='': #Apessoa não tem direito a visializar essa sugestão, redireciona para a home
+        messages.error(request, 'Você não pode acessar essa página')
+        return redirect(r('Sugestoes'))
+    edicaoobj = edicao.objects.filter(sugestao=id).order_by('-datahora')
+    respostaobj = resposta.objects.filter(sugestao=id)
+    finalizacaoaobj = finalizacao.objects.filter(sugestao=id)
+
+    return render(request, 'sugerir/detalhar_sugestao.html', {'err': '', 'editar': editar, 'responder': responder, 'finalizar': finalizar, 'itemselec': 'SUGESTÕES', 'sugestao': sugestaoobj, 'edicoes': edicaoobj, 'respostas': respostaobj, 'finalizacoes': finalizacaoaobj})
 
 
 def SugestoesPraMim(request, view):

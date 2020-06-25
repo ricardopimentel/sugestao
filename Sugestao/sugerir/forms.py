@@ -16,6 +16,10 @@ class SugestaoForm(forms.Form):
     def __init__(self, request, SETORES, PESSOAS, *args, **kwargs):
         super(SugestaoForm, self).__init__(*args, **kwargs)
         self.request = request
+        self.fields['titulo'].widget = forms.TextInput(attrs={'placeholder': 'Título', 'title': 'Título da sugestão'})
+        self.fields['titulo'].label = ""
+        self.fields['setor'].label = ""
+        self.fields['pessoa'].label = ""
         self.fields['setor'].choices = SETORES
         self.fields['pessoa'].choices = PESSOAS
 
