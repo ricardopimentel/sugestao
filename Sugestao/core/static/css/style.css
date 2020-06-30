@@ -2411,6 +2411,10 @@ a.icon:hover:before {
     margin: 5px;
 }
 
+.detalhamento-secao-dir a{
+    font-size: .5em;
+}
+
 .detalhamento-secao-dir img{
     border-radius: 0%;
 }
@@ -2429,6 +2433,10 @@ a.icon:hover:before {
 
 .detalhamento-secao-esq p{
     margin: 5px;
+}
+
+.detalhamento-secao-esq a{
+    font-size: .5em;
 }
 
 .detalhamento-secao-esq img{
