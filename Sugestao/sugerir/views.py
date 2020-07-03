@@ -181,6 +181,7 @@ def FinalizarSugestao(request, id):
 
 
 def DetalharSugestao(request, id):
+    msganonima = ''
     try:# Verificar se usuario esta logado
         if request.session['nome']:
             pass
@@ -209,8 +210,9 @@ def DetalharSugestao(request, id):
             editar = 'editar'
         if sugestaoobj.setor.responsavel == pessoa.objects.get(usuario=request.session['userl']): #O usuário pode responder a sugestão
             responder = 'responder'
-    if sugestaoobj.pessoa.usuario == '000000':
+    if sugestaoobj.pessoa.usuario == '000000':# foi criada anonimamente
         visualizar = 'visualizar'
+        msganonima = "Sugestões anônimas não aparecem na sua lista de sugestões. Para acompanhar o feedback delas, você deve guardar o seu número ("+id+"). Sugerimos imprimir ou salvar essa página em PDF."
 
     if editar == '' and responder == '' and visualizar == '' and finalizar =='': #Apessoa não tem direito a visializar essa sugestão, redireciona para a home
         messages.error(request, 'Você não pode acessar essa página')
@@ -219,7 +221,7 @@ def DetalharSugestao(request, id):
     respostaobj = resposta.objects.filter(sugestao=id)
     finalizacaoaobj = finalizacao.objects.filter(sugestao=id)
 
-    return render(request, 'sugerir/detalhar_sugestao.html', {'err': '', 'editar': editar, 'responder': responder, 'finalizar': finalizar, 'itemselec': 'SUGESTÕES', 'sugestao': sugestaoobj, 'edicoes': edicaoobj, 'respostas': respostaobj, 'finalizacoes': finalizacaoaobj})
+    return render(request, 'sugerir/detalhar_sugestao.html', {'err': '', 'editar': editar, 'responder': responder, 'finalizar': finalizar, 'itemselec': 'SUGESTÕES', 'sugestao': sugestaoobj, 'edicoes': edicaoobj, 'respostas': respostaobj, 'finalizacoes': finalizacaoaobj, 'msganonima': msganonima})
 
 
 def SugestoesPraMim(request, view):
@@ -284,4 +286,4 @@ def _send_email(subject, from_, to, copy, template_name, context):
             reply_to=['cpd.paraiso@ifto.edu.br']
         )
     email.content_subtype = "html"
-    email.send(fail_silently=False)
+    email.send(fail_silently=True)

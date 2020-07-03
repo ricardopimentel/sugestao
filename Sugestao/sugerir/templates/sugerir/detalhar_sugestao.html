@@ -95,6 +95,7 @@
             <a href="{% url 'DetalharSugestao' sugestao.id %}">Sugestão {{sugestao.id}}</a>
         </div>
         <br>
+        <div class="Erro-form" style="max-width: 500px"><p>{{msganonima}}</p></div>
 
         <!-- Finalização -->
         {% for finalizacao in finalizacoes %}
@@ -223,6 +224,11 @@
                             </a>
                         {% endif %}
                     {% endif %}
+                    <a onclick="window.print();" title="Imprimir">
+                        <div class="sistemas">
+                            <img src="{% static 'images/print24b.png' %}" />
+                        </div>
+                    </a>
                 </div>
                 <p style="text-align: center;"><b>{{sugestao.titulo}}</b></p>
                 <p>{{sugestao.descricao|safe}}</p>
@@ -270,6 +276,11 @@
                             </a>
                         {% endif %}
                     {% endif %}
+                    <a onclick="window.print();" title="Imprimir">
+                        <div class="sistemas">
+                            <img src="{% static 'images/print24b.png' %}" />
+                        </div>
+                    </a>
                 </div>
                 <p style="text-align: center;"><b>{{sugestao.titulo}}</b></p>
                 <p>{{sugestao.descricao|safe}}</p>
