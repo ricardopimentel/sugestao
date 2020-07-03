@@ -14,6 +14,9 @@ def Login(request):
     except:
         return redirect(r('ConfigInicial'))
 
+    if dict(request.session).get('nomesugestao'):# se já está logado redireciona p home
+        return redirect(r('Home'))
+
     # Se vier algo pelo post significa que houve requisição
     if request.method == 'POST':
         # Cria uma instancia do formulario com os dados vindos do request POST:

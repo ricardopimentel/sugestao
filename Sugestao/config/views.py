@@ -10,7 +10,7 @@ from Sugestao.core.models import config, setor, pessoa
 
 
 def Administracao(request):
-    if dict(request.session).get('nome'):
+    if dict(request.session).get('nomesugestao'):
         return render(request, 'config/administracao.html', {
             'title': 'Administração',
             'itemselec': 'ADMINISTRAÇÃO',
@@ -69,7 +69,7 @@ def ConfigInicial(request):
 
 def GerenciarSetores(request):
     setores = setor.objects.all()
-    if dict(request.session).get('nome'):
+    if dict(request.session).get('nomesugestao'):
         return render(request, 'config/gerenciar_setor.html', {
             'title': 'Administração',
             'itemselec': 'ADMINISTRAÇÃO',
@@ -79,7 +79,7 @@ def GerenciarSetores(request):
 
 
 def CadastroSetor(request, id):
-    if dict(request.session).get('nome'):
+    if dict(request.session).get('nomesugestao'):
         editar =False
 
         if id == 'cadastro': # verifica se é para cadastrar ou alterar
@@ -114,7 +114,7 @@ def CadastroSetor(request, id):
 
 def GerenciarPessoas(request):
     pessoas = pessoa.objects.all()
-    if dict(request.session).get('nome'):
+    if dict(request.session).get('nomesugestao'):
         return render(request, 'config/gerenciar_pessoa.html', {
             'title': 'Administração',
             'itemselec': 'ADMINISTRAÇÃO',
@@ -124,7 +124,7 @@ def GerenciarPessoas(request):
 
 
 def CadastroPessoa(request, id):
-    if dict(request.session).get('nome'):
+    if dict(request.session).get('nomesugestao'):
         editar =False
 
         if id == 'cadastro': # verifica se é para cadastrar ou alterar
