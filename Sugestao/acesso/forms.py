@@ -57,7 +57,7 @@ def MontarMenu(request, ret, usuario):
         request.session['img'] = ['if.png', 'home24.png', 'balloons24w.png', 'admin24.png', '']
         # logou então, adicionar os dados do usuário na sessão
         request.session['userl'] = usuario
-        request.session['nome'] = result['displayName'].title()
+        request.session['nomesugestao'] = result['displayName'].title()
         try:
             request.session['mail'] = result['mail']
         except KeyError:
@@ -77,7 +77,7 @@ def MontarMenu(request, ret, usuario):
         request.session['img'] = ['if.png', 'home24.png', 'balloons24w.png' '']
         # logou então, adicionar os dados do usuário na sessão
         request.session['userl'] = usuario
-        request.session['nome'] = result['displayName'].title()
+        request.session['nomesugestao'] = result['displayName'].title()
         try:
             request.session['mail'] = result['mail']
         except KeyError:

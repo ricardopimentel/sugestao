@@ -28,7 +28,7 @@ def Login(request):
                     return redirect(r('Home'))
             except:
                 # Pessoa não cadastrada - Fazer cadastro
-                pessoaobj = pessoa(nome=request.session['nome'], usuario=request.session['userl'], email=request.session['mail'], status=True)
+                pessoaobj = pessoa(nome=request.session['nomesugestao'], usuario=request.session['userl'], email=request.session['mail'], status=True)
                 pessoaobj.save()
                 # Verificar tipo de usuário
                 if (request.session['usertip'] == 'admin'):  # Cadastrar Admin
@@ -54,7 +54,7 @@ def Login(request):
 
 def Logout(request):
     try:
-        del request.session['nome']
+        del request.session['nomesugestao']
         del request.session['mail']
         del request.session['curso']
         del request.session['userl']

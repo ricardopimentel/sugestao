@@ -10,7 +10,7 @@ from Sugestao.core.models import sugestao, pessoa
 
 def Home(request):
     try:# Verificar se usuario esta logado
-        if request.session['nome']:
+        if request.session['nomesugestao']:
             sugestoes = sugestao.objects.filter(pessoa__usuario=request.session['userl'], status='1') #filtra as sugestões para mostrar somente as realizadas por esse usuário, e estejam ativas
             idpessoa = pessoa.objects.get(usuario=request.session['userl'])
             sugestoesparamim = sugestao.objects.filter(setor__responsavel=idpessoa, status='1') #filtra as sugestões atribuidas ao setor que eu sou responsável            print(sugestoesparamim)

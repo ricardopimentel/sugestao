@@ -31,8 +31,8 @@
 {%endblock%}
 
 {%block top%}
-	{% if request.session.nome%}
-			<h1>{{request.session.nome}}</h1>
+	{% if request.session.nomesugestao%}
+			<h1>{{request.session.nomesugestao}}</h1>
 			<a href="{% url 'Logout' %}"><h2>Sair</h2></a>
 		{%endif%}
 {%endblock%}
@@ -58,8 +58,8 @@
                     {% elif item == 'sair' %}
                         <div id="hidemenusair">
                             <div class="background-nome">
-                                {% if request.session.nome %}
-                                    <h1>{{request.session.nome}}</h1>
+                                {% if request.session.nomesugestao %}
+                                    <h1>{{request.session.nomesugestao}}</h1>
                                     <a href="{% url 'Logout' %}"><h2>Sair</h2></a>
                                 {%else%}
                                     <h1>Faça Login</h1>
@@ -99,7 +99,7 @@
 
         <!-- Finalização -->
         {% for finalizacao in finalizacoes %}
-            {% if request.session.nome|compare_string:finalizacao.pessoa %}
+            {% if request.session.nomesugestao|compare_string:finalizacao.pessoa %}
                 <div class="detalhamento-secao-dir" style="margin-left: 20px">
                     <div class="detalhamento-secao-barra-info">
                         <p>Finalizado às: {{finalizacao.datahora|convert_datetime}}</p>
@@ -130,7 +130,7 @@
         <!-- Respostas -->
 
         {% for resposta in respostas %}
-            {% if request.session.nome|compare_string:resposta.pessoa %}
+            {% if request.session.nomesugestao|compare_string:resposta.pessoa %}
                 <div class="detalhamento-secao-dir" style="margin-left: 20px">
                     <div class="detalhamento-secao-barra-info" style="text-align: right;">
                         <p>Respondido às: {{resposta.datahora|convert_datetime}}</p>
@@ -161,7 +161,7 @@
 
         <!-- Edições -->
         {% for edicao in edicoes %}
-            {% if request.session.nome|compare_string:sugestao.pessoa %}
+            {% if request.session.nomesugestao|compare_string:sugestao.pessoa %}
 
                 <div class="detalhamento-secao-dir" style="margin-left: 20px">
                     <div class="detalhamento-secao-barra-info" style="text-align: right;">
@@ -192,7 +192,7 @@
             {% endif %}
         {% endfor %}
         <!-- Sugestão -->
-        {% if request.session.nome|compare_string:sugestao.pessoa %}
+        {% if request.session.nomesugestao|compare_string:sugestao.pessoa %}
             <div class="detalhamento-secao-dir" style="margin-left: 20px">
                 <div class="detalhamento-secao-barra-info">
                     <p>Aberto às: {{sugestao.datahora|convert_datetime}}</p>

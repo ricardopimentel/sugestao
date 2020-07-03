@@ -12,7 +12,7 @@ from Sugestao.sugerir.forms import SugestaoForm, SugestaoEdicaoForm
 
 def FazerSugestao(request):
     try:# Verificar se usuario esta logado
-        if request.session['nome']:
+        if request.session['nomesugestao']:
             pass
     except KeyError:
         return redirect(r('Login'))
@@ -25,7 +25,7 @@ def FazerSugestao(request):
     for set in setorobj:
         SETORES.append((set.id, set.nome))
     PESSOAS = []
-    pessoaobj = pessoa.objects.filter(nome="Anônimo") | pessoa.objects.filter(nome=request.session['nome']) #Filtra o objeto pessoa, anonima e a pessoa logada
+    pessoaobj = pessoa.objects.filter(nome="Anônimo") | pessoa.objects.filter(nome=request.session['nomesugestao']) #Filtra o objeto pessoa, anonima e a pessoa logada
     PESSOAS.append(('', 'Você deseja se identificar?'))
     for pess in pessoaobj:
         PESSOAS.append((pess.id, pess.nome))
@@ -67,7 +67,7 @@ def FazerSugestao(request):
 
 def EditarSugestao(request, id):
     try:# Verificar se usuario esta logado
-        if request.session['nome']:
+        if request.session['nomesugestao']:
             pass
     except KeyError:
         return redirect(r('Login'))
@@ -92,7 +92,7 @@ def EditarSugestao(request, id):
 
 def ResponderSugestao(request, id):
     try:# Verificar se usuario esta logado
-        if request.session['nome']:
+        if request.session['nomesugestao']:
             pass
     except KeyError:
         return redirect(r('Login'))
@@ -136,7 +136,7 @@ def ResponderSugestao(request, id):
 
 def FinalizarSugestao(request, id):
     try:# Verificar se usuario esta logado
-        if request.session['nome']:
+        if request.session['nomesugestao']:
             pass
     except KeyError:
         return redirect(r('Login'))
@@ -183,7 +183,7 @@ def FinalizarSugestao(request, id):
 def DetalharSugestao(request, id):
     msganonima = ''
     try:# Verificar se usuario esta logado
-        if request.session['nome']:
+        if request.session['nomesugestao']:
             pass
     except KeyError:
         return redirect(r('Login'))
@@ -226,7 +226,7 @@ def DetalharSugestao(request, id):
 
 def SugestoesPraMim(request, view):
     try:# Verificar se usuario esta logado
-        if request.session['nome']:
+        if request.session['nomesugestao']:
             idpessoa = pessoa.objects.get(usuario=request.session['userl'])
             if view == '1':
                 sugestoesparamim = sugestao.objects.filter(setor__responsavel=idpessoa, status='1') #filtra as sugestões atribuidas ao setor que eu sou responsável
@@ -240,7 +240,7 @@ def SugestoesPraMim(request, view):
 
 def MinhasSugestoes(request, view):
     try:# Verificar se usuario esta logado
-        if request.session['nome']:
+        if request.session['nomesugestao']:
             if view == '1':
                 sugestoes = sugestao.objects.filter(pessoa__usuario=request.session['userl'], status='1') #filtra as sugestões para mostrar somente as realizadas por esse usuário, e estejam ativas
             else:
@@ -253,7 +253,7 @@ def MinhasSugestoes(request, view):
 
 def Sugestoes(request):
     try:# Verificar se usuario esta logado
-        if request.session['nome']:
+        if request.session['nomesugestao']:
             return render(request, 'sugerir/sugestoes.html', {'err': '', 'itemselec': 'SUGESTÕES', 'titulo': 'Sugestões',})
 
     except KeyError:
@@ -262,7 +262,7 @@ def Sugestoes(request):
 
 def VaParaSugestao(request):
     try:# Verificar se usuario esta logado
-        if request.session['nome']:
+        if request.session['nomesugestao']:
             pass
     except KeyError:
         return redirect(r('Login'))

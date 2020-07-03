@@ -5,8 +5,8 @@
 {%block titulo%}{{title}}{%endblock%}
 
 {%block top%}
-	{% if request.session.nome %}
-		<h1>{{request.session.nome}}</h1>
+	{% if request.session.nomesugestao %}
+		<h1>{{request.session.nomesugestao}}</h1>
 		<a href="{% url 'Logout' %}"><h2>Sair</h2></a>
 	{%else%}
 		<h1>Faça Login</h1>
@@ -34,8 +34,8 @@
                     {% elif item == 'sair' %}
                         <div id="hidemenusair">
                             <div class="background-nome">
-                                {% if request.session.nome %}
-                                    <h1>{{request.session.nome}}</h1>
+                                {% if request.session.nomesugestao %}
+                                    <h1>{{request.session.nomesugestao}}</h1>
                                     <a href="{% url 'Logout' %}"><h2>Sair</h2></a>
                                 {%else%}
                                     <h1>Faça Login</h1>
