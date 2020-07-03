@@ -2,6 +2,6 @@ from django.conf.urls import url
 from Sugestao.acesso import views
 
 urlpatterns = [
-    url(r'^login/$', views.Login, name='Login'),
-    url(r'^logout/$', views.Logout, name='Logout'),
+    url(r'^entrar/$', views.Login, name='Login'),
+    url(r'^sair/$', views.Logout, name='Logout'),
 ]
