@@ -17,7 +17,7 @@
         </div>
         <div style="background: white; padding: 5px;">
             <p>Sugestão: <b>{{ id }}</b></p>
-            <a href="https://campusparaiso.ifto.edu.br{% url 'DetalharSugestao' id%}">Visualizar </a>
+            <a href="https://campusparaiso.ifto.edu.br{% url 'DetalharSugestao' id senha %}">Visualizar </a>
             <p>Finalizado por: {{ pessoa }}</p>
             <div style="border-radius: 0px; padding: 15px; border: 1px solid #004d40;">
                 <p>Finalização: {{ descricao|safe }}</p>

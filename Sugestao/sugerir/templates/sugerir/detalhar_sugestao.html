@@ -89,13 +89,19 @@
         {% endif %}
         </h1>
         <br>
-        <div class="navegation_bar">
-            <a href="{% url 'Home' %}">Home</a>
-            <a href="{% url 'Sugestoes' %}">Sugestões</a>
-            <a href="{% url 'DetalharSugestao' sugestao.id %}">Sugestão {{sugestao.id}}</a>
+        <div class="notprint">
+            <div class="navegation_bar">
+                <a href="{% url 'Home' %}">Home</a>
+                <a href="{% url 'Sugestoes' %}">Sugestões</a>
+                <a href="{% url 'DetalharSugestao' sugestao.id sugestao.senha %}">Sugestão {{sugestao.id}}</a>
+            </div>
         </div>
         <br>
-        <div class="Erro-form" style="max-width: 500px"><p>{{msganonima}}</p></div>
+        <div class="Erro-form" style="max-width: 500px">
+            {% if msganonima and finalizar == '' and responder == '' %}
+                <p>{{msganonima}}</p>
+            {% endif %}
+        </div>
 
         <!-- Finalização -->
         {% for finalizacao in finalizacoes %}
@@ -200,35 +206,37 @@
                         <img src="{% static sugestao.imagem.url %}" alt=""/>
                     </div>
                 </div>
-                <div class="detalhamento-secao-barra-actions">
-                    {% if sugestao.status %}
-                        {% if editar == 'editar' %}
-                            <a href="{% url 'EditarSugestao' sugestao.id%}" title="Editar">
-                                <div class="sistemas">
-                                    <img src="{% static 'images/edit24b.png' %}" />
-                                </div>
-                            </a>
+                <div class="notprint">
+                    <div class="detalhamento-secao-barra-actions">
+                        {% if sugestao.status %}
+                            {% if editar == 'editar' %}
+                                <a href="{% url 'EditarSugestao' sugestao.id%}" title="Editar">
+                                    <div class="sistemas">
+                                        <img src="{% static 'images/edit24b.png' %}" />
+                                    </div>
+                                </a>
+                            {% endif %}
+                            {% if responder == 'responder' %}
+                                <a href="{% url 'ResponderSugestao' sugestao.id%}" title="Responder">
+                                    <div class="sistemas">
+                                        <img src="{% static 'images/reply24b.png' %}" />
+                                    </div>
+                                </a>
+                            {%endif%}
+                            {% if finalizar == 'finalizar' %}
+                                <a href="{% url 'FinalizarSugestao' sugestao.id%}" title="Finalizar">
+                                    <div class="sistemas">
+                                        <img src="{% static 'images/checkbutton24b.png' %}" />
+                                    </div>
+                                </a>
+                            {% endif %}
                         {% endif %}
-                        {% if responder == 'responder' %}
-                            <a href="{% url 'ResponderSugestao' sugestao.id%}" title="Responder">
-                                <div class="sistemas">
-                                    <img src="{% static 'images/reply24b.png' %}" />
-                                </div>
-                            </a>
-                        {%endif%}
-                        {% if finalizar == 'finalizar' %}
-                            <a href="{% url 'FinalizarSugestao' sugestao.id%}" title="Finalizar">
-                                <div class="sistemas">
-                                    <img src="{% static 'images/checkbutton24b.png' %}" />
-                                </div>
-                            </a>
-                        {% endif %}
-                    {% endif %}
-                    <a onclick="window.print();" title="Imprimir">
-                        <div class="sistemas">
-                            <img src="{% static 'images/print24b.png' %}" />
-                        </div>
-                    </a>
+                        <a onclick="window.print();" title="Imprimir">
+                            <div class="sistemas">
+                                <img src="{% static 'images/print24b.png' %}" />
+                            </div>
+                        </a>
+                    </div>
                 </div>
                 <p style="text-align: center;"><b>{{sugestao.titulo}}</b></p>
                 <p>{{sugestao.descricao|safe}}</p>
@@ -252,35 +260,37 @@
                     </div>
                     <p>Aberto às: {{sugestao.datahora|convert_datetime}}</p>
                 </div>
-                <div class="detalhamento-secao-barra-actions">
-                    {% if sugestao.status %}
-                        {% if editar == 'editar' %}
-                            <a href="{% url 'EditarSugestao' sugestao.id%}" title="Editar">
-                                <div class="sistemas">
-                                    <img src="{% static 'images/edit24b.png' %}" />
-                                </div>
-                            </a>
+                <div class="notprint">
+                    <div class="detalhamento-secao-barra-actions">
+                        {% if sugestao.status %}
+                            {% if editar == 'editar' %}
+                                <a href="{% url 'EditarSugestao' sugestao.id%}" title="Editar">
+                                    <div class="sistemas">
+                                        <img src="{% static 'images/edit24b.png' %}" />
+                                    </div>
+                                </a>
+                            {% endif %}
+                            {% if responder == 'responder' %}
+                                <a href="{% url 'ResponderSugestao' sugestao.id%}" title="Responder">
+                                    <div class="sistemas">
+                                        <img src="{% static 'images/reply24b.png' %}" />
+                                    </div>
+                                </a>
+                            {%endif%}
+                            {% if finalizar == 'finalizar' %}
+                                <a href="{% url 'FinalizarSugestao' sugestao.id%}" title="Finalizar">
+                                    <div class="sistemas">
+                                        <img src="{% static 'images/checkbutton24b.png' %}" />
+                                    </div>
+                                </a>
+                            {% endif %}
                         {% endif %}
-                        {% if responder == 'responder' %}
-                            <a href="{% url 'ResponderSugestao' sugestao.id%}" title="Responder">
-                                <div class="sistemas">
-                                    <img src="{% static 'images/reply24b.png' %}" />
-                                </div>
-                            </a>
-                        {%endif%}
-                        {% if finalizar == 'finalizar' %}
-                            <a href="{% url 'FinalizarSugestao' sugestao.id%}" title="Finalizar">
-                                <div class="sistemas">
-                                    <img src="{% static 'images/checkbutton24b.png' %}" />
-                                </div>
-                            </a>
-                        {% endif %}
-                    {% endif %}
-                    <a onclick="window.print();" title="Imprimir">
-                        <div class="sistemas">
-                            <img src="{% static 'images/print24b.png' %}" />
-                        </div>
-                    </a>
+                        <a onclick="window.print();" title="Imprimir">
+                            <div class="sistemas">
+                                <img src="{% static 'images/print24b.png' %}" />
+                            </div>
+                        </a>
+                    </div>
                 </div>
                 <p style="text-align: center;"><b>{{sugestao.titulo}}</b></p>
                 <p>{{sugestao.descricao|safe}}</p>

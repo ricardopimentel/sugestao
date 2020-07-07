@@ -1,3 +1,5 @@
+import random
+
 from django.contrib import messages
 from django.core.mail import EmailMessage
 from django.shortcuts import render, redirect, resolve_url as r, render_to_response
@@ -17,7 +19,6 @@ def FazerSugestao(request):
     except KeyError:
         return redirect(r('Login'))
 
-
     #Preencher Formulário
     SETORES = []
     setorobj = setor.objects.all()
@@ -34,16 +35,20 @@ def FazerSugestao(request):
     if request.method == 'POST':
         form = SugestaoForm(request, SETORES, PESSOAS, request.POST, request.FILES)
         if form.is_valid():# se dados do formulário são válidos, salva os dados na linha abaixo
+            senhasugestao = '' #para visualizar uma sugestao anonima é preciso ter uma senha que identifica o criador
+            if Sugestao.core.models.pessoa.objects.get(id=request.POST['pessoa']).usuario == '000000': #verifica se a sugestão é anonima
+                senhasugestao = GerarSenha()
             if request.FILES:
-                sugestaoobj = sugestao(status='1', titulo=request.POST['titulo'], setor=Sugestao.core.models.setor.objects.get(id=request.POST['setor']), pessoa=Sugestao.core.models.pessoa.objects.get(id=request.POST['pessoa']), descricao=request.POST['descricao'], imagem=request.FILES['imagem'], datahora=datetime.now())
+                sugestaoobj = sugestao(status='1', titulo=request.POST['titulo'], setor=Sugestao.core.models.setor.objects.get(id=request.POST['setor']), pessoa=Sugestao.core.models.pessoa.objects.get(id=request.POST['pessoa']), descricao=request.POST['descricao'], imagem=request.FILES['imagem'], datahora=datetime.now(), senha=senhasugestao)
             else:
-                sugestaoobj = sugestao(status='1', titulo=request.POST['titulo'], setor=Sugestao.core.models.setor.objects.get(id=request.POST['setor']), pessoa=Sugestao.core.models.pessoa.objects.get(id=request.POST['pessoa']), descricao=request.POST['descricao'], datahora=datetime.now())
+                sugestaoobj = sugestao(status='1', titulo=request.POST['titulo'], setor=Sugestao.core.models.setor.objects.get(id=request.POST['setor']), pessoa=Sugestao.core.models.pessoa.objects.get(id=request.POST['pessoa']), descricao=request.POST['descricao'], datahora=datetime.now(), senha=senhasugestao)
             sugestaoobj.save()
 
             # Send email
             # Preparação de contexto
             contexto = form.cleaned_data
             contexto['id'] = sugestaoobj.id
+            contexto['senha'] = sugestaoobj.senha
             contexto['imagem'] = sugestaoobj.imagem
             contexto['setor'] = sugestaoobj.setor
             contexto['pessoa'] = sugestaoobj.pessoa
@@ -60,7 +65,7 @@ def FazerSugestao(request):
                 contexto)
             # add msg
             messages.success(request, 'Sugestão número '+ str(sugestaoobj.id)+ ' salva com sucesso!')
-            return redirect(r('DetalharSugestao', str(sugestaoobj.id)))
+            return redirect(r('DetalharSugestao', str(sugestaoobj.id), sugestaoobj.senha))
 
     return render(request, 'sugerir/cadastro_sugestao.html', {'URL': 'FazerSugestao', 'err': '','form': form, 'itemselec': 'HOME', 'titulo': 'Deixe Sua Sugestão'})
 
@@ -85,7 +90,7 @@ def EditarSugestao(request, id):
             edicaoobj = edicao(descricao=request.POST['descricao'], datahora=datetime.now(), sugestao=Sugestao.core.models.sugestao.objects.get(id=id))
             edicaoobj.save()
             messages.success(request, 'Edição salva com sucesso!')
-            return redirect(r('DetalharSugestao', str(sugestaoobj.id)))
+            return redirect(r('DetalharSugestao', str(sugestaoobj.id), edicaoobj.sugestao.senha))
 
     return render(request, 'sugerir/cadastro_sugestao.html', {'URL': 'EditarSugestao', 'err': '','id': id, 'form': form, 'itemselec': 'HOME', "titulo": 'Editar Sugestão: '+ id})
 
@@ -114,6 +119,7 @@ def ResponderSugestao(request, id):
             # Preparação de contexto
             contexto = form.cleaned_data
             contexto['id'] = respostaobj.sugestao.id
+            contexto['senha'] = respostaobj.sugestao.senha
             contexto['pessoa'] = respostaobj.pessoa.nome
             contexto['titulo'] = "A Sugestão "+str(respostaobj.sugestao.id) +" foi respondida"
 
@@ -129,7 +135,7 @@ def ResponderSugestao(request, id):
                 contexto)
 
             messages.success(request, 'Resposta salva com sucesso!')
-            return redirect(r('DetalharSugestao', str(sugestaoobj.id)))
+            return redirect(r('DetalharSugestao', str(sugestaoobj.id), respostaobj.sugestao.senha))
 
     return render(request, 'sugerir/cadastro_sugestao.html', {'URL': 'ResponderSugestao', 'err': '','id': id, 'form': form, 'itemselec': 'HOME', 'titulo': 'Responder Sugestão: '+ id})
 
@@ -160,6 +166,7 @@ def FinalizarSugestao(request, id):
             # Preparação de contexto
             contexto = form.cleaned_data
             contexto['id'] = finalizacaoobj.sugestao.id
+            contexto['senha'] = finalizacaoobj.sugestao.senha
             contexto['pessoa'] = finalizacaoobj.pessoa.nome
             contexto['titulo'] = "A Sugestão "+str(finalizacaoobj.sugestao.id) +" foi finalizada"
 
@@ -175,18 +182,19 @@ def FinalizarSugestao(request, id):
                 contexto)
 
             messages.success(request, 'Sugestão finalizada com sucesso!')
-            return redirect(r('DetalharSugestao', str(sugestaoobj.id)))
+            return redirect(r('DetalharSugestao', str(sugestaoobj.id), finalizacaoobj.sugestao.senha))
 
     return render(request, 'sugerir/cadastro_sugestao.html', {'URL': 'FinalizarSugestao', 'err': '','id': id, 'form': form, 'itemselec': 'HOME', 'titulo': 'Finalizar Sugestão: '+ id})
 
 
-def DetalharSugestao(request, id):
-    msganonima = ''
+def DetalharSugestao(request, id, senha):
     try:# Verificar se usuario esta logado
         if request.session['nomesugestao']:
             pass
     except KeyError:
         return redirect(r('Login'))
+
+    msganonima = '' #mensagem que aparece para sugestões anônimas
 
     # Verificar se foi aberto por mim ou para mim
     try:
@@ -194,6 +202,7 @@ def DetalharSugestao(request, id):
     except:
         messages.success(request, 'Não encontrada')
         return redirect(r('Sugestoes'))
+
     editar = ''
     responder = ''
     visualizar = ''
@@ -212,9 +221,13 @@ def DetalharSugestao(request, id):
             responder = 'responder'
     if sugestaoobj.pessoa.usuario == '000000':# foi criada anonimamente
         visualizar = 'visualizar'
-        msganonima = "Sugestões anônimas não aparecem na sua lista de sugestões. Para acompanhar o feedback delas, você deve guardar o seu número ("+id+"). Sugerimos imprimir ou salvar essa página em PDF."
+        msganonima = "Sugestões anônimas não aparecem na sua lista de sugestões. Para acompanhar o feedback delas, você deve guardar o seu número ("+id+") e a chave de acesso ("+sugestaoobj.senha+"). Sugerimos imprimir ou salvar essa página em PDF."
+        # Verifica a senha no caso de mensagens anomimas
+        if (not sugestaoobj.senha == senha) and (finalizar == '' and responder == ''):# Redireciona para pedir a senha caso ela não esteja correta, só precisa por senha se a sugestão não for para você
+            messages.error(request, 'Informe uma chave de acesso válida para visualizar essa sugestão')
+            return render(request, 'sugerir/senha_sugestao.html', {'err': '', 'itemselec': 'SUGESTÕES', 'sugestao': sugestaoobj, 'id': id})
 
-    if editar == '' and responder == '' and visualizar == '' and finalizar =='': #Apessoa não tem direito a visializar essa sugestão, redireciona para a home
+    if editar == '' and responder == '' and visualizar == '' and finalizar =='': #Apessoa não tem direito a visializar essa sugestão, redireciona para a página de sugestões
         messages.error(request, 'Você não pode acessar essa página')
         return redirect(r('Sugestoes'))
     edicaoobj = edicao.objects.filter(sugestao=id).order_by('-datahora')
@@ -269,7 +282,7 @@ def VaParaSugestao(request):
 
     if request.method == 'POST':
         if request.POST.get('id'):
-            return redirect(r("DetalharSugestao", request.POST['id']))
+            return redirect(r("DetalharSugestao", request.POST['id'], request.POST['key']))
     return redirect(r('Sugestoes'))
 
 
@@ -287,3 +300,7 @@ def _send_email(subject, from_, to, copy, template_name, context):
         )
     email.content_subtype = "html"
     email.send(fail_silently=True)
+
+
+def GerarSenha():
+    return(random.randint(10000000, 99999999)) #retorna uma senha aleatória

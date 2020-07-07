@@ -86,12 +86,7 @@
 
         <div class="action_bar">
             <form method="post" action="{% url 'VaParaSugestao' %}"> {%csrf_token%}
-                {% if view|compare_string:1 %}
-                    <p><a href="{% url 'FazerSugestao' %}" title="Fazer uma sugestão"><img src="{% static 'images/add24b.png' %}"></a><input required type="text" id="id" name="id" placeholder="Número da Sugestão"><input type="submit" name="commit" value="" id="actionbarbuttom"></p>
-                {% else %}
-                    <p><a href="{% url 'FazerSugestao' %}" title="Fazer uma sugestão"><img src="{% static 'images/add24b.png' %}"></a><input required type="text" id="id" name="id" placeholder="Número da Sugestão"><input type="submit" name="commit" value="" id="actionbarbuttom"></p>
-                {% endif %}
-
+                <p><a href="{% url 'FazerSugestao' %}" title="Fazer uma sugestão"><img src="{% static 'images/add24b.png' %}"></a><input required type="hidden" id="key" name="key" placeholder="Chave de acesso" value="*"><input required type="text" id="id" name="id" placeholder="Número da Sugestão"><input type="submit" name="commit" value="" id="actionbarbuttom"></p>
             </form>
         </div>
 
@@ -100,7 +95,7 @@
                 {%if sugestoes %}
                     {% autopaginate sugestoes 3 %}
                         {% for sugestao in sugestoes %}
-                            <a href="{% url 'DetalharSugestao' sugestao.id %}" title="Abrir {{sugestao.titulo}}">
+                            <a href="{% url 'DetalharSugestao' sugestao.id ' ' %}" title="Abrir {{sugestao.titulo}}">
                                 <div class="sugestao-box">
                                     <div class="sugestao-box_bar_top">
                                         <img src="{% static sugestao.imagem.url %}" alt="" />
@@ -127,7 +122,7 @@
                 {% if sugestoesparamim %}
                     {% autopaginate sugestoesparamim 3 %}
                         {% for sugestao in sugestoesparamim %}
-                            <a href="{% url 'DetalharSugestao' sugestao.id %}" title="Abrir {{sugestao.titulo}}">
+                            <a href="{% url 'DetalharSugestao' sugestao.id ' ' %}" title="Abrir {{sugestao.titulo}}">
                                 <div class="sugestao-box">
                                     <div class="sugestao-box_bar_top">
                                         <img src="{% static sugestao.imagem.url %}" alt="" />

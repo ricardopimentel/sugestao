@@ -2578,6 +2578,9 @@ a.icon:hover:before {
     margin: 20px;
 }
 
+.notprint{
+}
+
 @media screen and (max-width: 767px) {
 	.conteiner-menu{
 	    position: absolute;
@@ -2731,5 +2734,11 @@ a.icon:hover:before {
 
     .detalhamento-secao-esq a{
         font-size: .5em;
+    }
+}
+
+@media print{
+    .notprint{
+        visibility: hidden;
     }
 }

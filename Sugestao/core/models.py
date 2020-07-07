@@ -56,6 +56,7 @@ class sugestao(models.Model):
     datahora = models.DateTimeField('Data')
     setor = models.ForeignKey(setor)
     pessoa = models.ForeignKey(pessoa)
+    senha = models.CharField(max_length=8, default='*')
     status = models.BooleanField()
 
 
