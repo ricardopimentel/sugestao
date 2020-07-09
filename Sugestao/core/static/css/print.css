@@ -2,13 +2,14 @@ body {
     margin:0; 
     padding:0;
     line-height: 1.4em;
-    font: 12pt Georgia, "Times New Roman", Times, serif;
+    font-family: 'Roboto', sans-serif;
+    font-size: .5em;
     color: #000;
 }
 
 @page {
     margin: 0.5cm;
-    size:landscape;
+    size:portraint;
 }
 
 .wrap { 
@@ -147,4 +148,24 @@ table{
 	width: 100%; 
 	margin: 0; 
 	float: none !important;
+}
+
+.notprint{
+    display: none !important;
+}
+
+.detalhamento-secao-barra-info-dir{
+    text-align: center;
+}
+
+.detalhamento-secao-barra-info-dir p {
+    color: black;
+}
+
+.detalhamento-secao-barra-info-esq{
+    text-align: center;
+}
+
+.detalhamento-secao-barra-info-esq p {
+    color: black;
 }
