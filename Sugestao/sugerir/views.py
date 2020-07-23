@@ -35,7 +35,7 @@ def FazerSugestao(request):
     if request.method == 'POST':
         form = SugestaoForm(request, SETORES, PESSOAS, request.POST, request.FILES)
         if form.is_valid():# se dados do formulário são válidos, salva os dados na linha abaixo
-            senhasugestao = '' #para visualizar uma sugestao anonima é preciso ter uma senha que identifica o criador
+            senhasugestao = '*' #para visualizar uma sugestao anonima é preciso ter uma senha que identifica o criador
             if Sugestao.core.models.pessoa.objects.get(id=request.POST['pessoa']).usuario == '000000': #verifica se a sugestão é anonima
                 senhasugestao = GerarSenha()
             if request.FILES:
