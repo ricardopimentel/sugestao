@@ -898,6 +898,7 @@ input#control-nav {
 	margin: 0px;
 	padding: 0px;
 	border-bottom: 1px solid #e0e0e0;
+	object-fit: cover;
 }
 
 .sugestao-box:hover{
