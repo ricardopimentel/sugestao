@@ -319,11 +319,7 @@ def GerarSenha():
 
 
 def comprimir(request, imagem):
-    if platform.system() == 'Windows':
-        BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-    else:
-        BASE_DIR = '/app/media'
-
+    BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
     localimagem = os.path.join(BASE_DIR + '/media/'+ str(imagem))
 
     im = Image.open(localimagem)
