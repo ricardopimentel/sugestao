@@ -57,13 +57,15 @@ def Login(request):
 
 def Logout(request):
     try:
+        del request.session['usertip']
         del request.session['nomesugestao']
         del request.session['mail']
-        del request.session['curso']
         del request.session['userl']
         del request.session['menu']
         del request.session['url']
         del request.session['phone']
+        if request.session.get('curso', None):
+            del request.session['curso']
 
     except KeyError:
         print(sys.exc_info())
