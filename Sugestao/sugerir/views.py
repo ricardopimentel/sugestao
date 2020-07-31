@@ -1,4 +1,5 @@
 import os
+import platform
 import random
 import shutil
 import threading
@@ -318,7 +319,11 @@ def GerarSenha():
 
 
 def comprimir(request, imagem):
-    BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    if platform.system() == 'Windows':
+        BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    else:
+        BASE_DIR = '/app/media'
+
     localimagem = os.path.join(BASE_DIR + '/media/'+ str(imagem))
 
     im = Image.open(localimagem)
