@@ -1,4 +1,7 @@
+import os
 import random
+import shutil
+import threading
 
 from django.contrib import messages
 from django.core.mail import EmailMessage
@@ -65,6 +68,11 @@ def FazerSugestao(request):
                 contexto)
             # add msg
             messages.success(request, 'Sugestão número '+ str(sugestaoobj.id)+ ' salva com sucesso!')
+
+            #Diminuir resolução da imagem
+            t = threading.Thread(target=comprimir, args=(request, sugestaoobj.imagem), kwargs={})
+            t.setDaemon(True)
+            t.start()
             return redirect(r('DetalharSugestao', str(sugestaoobj.id), sugestaoobj.senha))
 
     return render(request, 'sugerir/cadastro_sugestao.html', {'URL': 'FazerSugestao', 'err': '','form': form, 'itemselec': 'HOME', 'titulo': 'Deixe Sua Sugestão'})
@@ -304,3 +312,14 @@ def _send_email(subject, from_, to, copy, template_name, context):
 
 def GerarSenha():
     return(random.randint(10000000, 99999999)) #retorna uma senha aleatória
+
+
+def comprimir(request, imagem):
+    BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    localimagem = os.path.join(BASE_DIR + '/media/'+ str(imagem))
+    output = os.path.join(BASE_DIR + '/temp/'+ str(imagem))
+    msg = os.system("gs -sDEVICE=pdfwrite -dCompatibilityLevel=1.4 -dPDFSETTINGS=/ebook -dNOPAUSE -dQUIET -dBATCH -sOutputFile=%s %s" % (output, localimagem))
+
+    print(localimagem)
+    print(output)
+    print('\nFinalizada a compressão\n')

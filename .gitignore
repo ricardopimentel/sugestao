@@ -9,6 +9,8 @@ __pycache__/
 *pyc
 staticfiles
 mediafiles
+media
+temp
 .ipynb_checkpoints/
 
 
