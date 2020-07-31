@@ -2735,7 +2735,15 @@ a.icon:hover:before {
 
     /* checked nav Detalhamento secao*/
 
-    .detalhamento-secao-barra-info p{
+    .detalhamento-secao-barra-info-dir p{
+        margin: 0px 5px 5px 5px;
+        color: white;
+        display: inline-block;
+        vertical-align: top;
+        font-size: 0.6em;
+    }
+
+    .detalhamento-secao-barra-info-esq p{
         margin: 0px 5px 5px 5px;
         color: white;
         display: inline-block;
