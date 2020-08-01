@@ -13,7 +13,7 @@ from django.utils.datetime_safe import datetime
 
 import Sugestao
 from Sugestao import settings
-from Sugestao.core.models import setor, pessoa, sugestao, edicao, resposta, finalizacao
+from Sugestao.core.models import setor, pessoa, sugestao, edicao, resposta, finalizacao, config
 from Sugestao.sugerir.forms import SugestaoForm, SugestaoEdicaoForm
 
 
@@ -299,6 +299,12 @@ def VaParaSugestao(request):
 
 
 def _send_email(subject, from_, to, copy, template_name, context):
+
+    settings.EMAIL_HOST = config.email_host
+    settings.EMAIL_PORT = config.email_port
+    settings.EMAIL_HOST_USER = config.email_host_user
+    settings.EMAIL_HOST_PASSWORD = config.email_host_password
+
     body = render_to_string(template_name, context)
     #mail.send_mail(subject, body, from_, to, html_message=body)
 
