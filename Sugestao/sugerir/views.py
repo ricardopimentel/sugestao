@@ -1,5 +1,10 @@
+import os
+import platform
 import random
+import shutil
+import threading
 
+from PIL import Image
 from django.contrib import messages
 from django.core.mail import EmailMessage
 from django.shortcuts import render, redirect, resolve_url as r, render_to_response
@@ -65,6 +70,13 @@ def FazerSugestao(request):
                 contexto)
             # add msg
             messages.success(request, 'Sugestão número '+ str(sugestaoobj.id)+ ' salva com sucesso!')
+
+            #Se foi realizado upload de imagem
+            if not str(sugestaoobj.imagem) == 'uploads/default.png':
+                #Diminuir resolução da imagem
+                t = threading.Thread(target=comprimir, args=(request, sugestaoobj.imagem), kwargs={})
+                t.setDaemon(True)
+                t.start()
             return redirect(r('DetalharSugestao', str(sugestaoobj.id), sugestaoobj.senha))
 
     return render(request, 'sugerir/cadastro_sugestao.html', {'URL': 'FazerSugestao', 'err': '','form': form, 'itemselec': 'HOME', 'titulo': 'Deixe Sua Sugestão'})
@@ -304,3 +316,14 @@ def _send_email(subject, from_, to, copy, template_name, context):
 
 def GerarSenha():
     return(random.randint(10000000, 99999999)) #retorna uma senha aleatória
+
+
+def comprimir(request, imagem):
+    BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    localimagem = os.path.join(BASE_DIR + '/media/'+ str(imagem))
+
+    im = Image.open(localimagem)
+    im.save(localimagem, dpi=(600, 600))
+
+    print(localimagem)
+    print('\nFinalizada a compressão\n')

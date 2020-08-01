@@ -19,6 +19,9 @@ def Administracao(request):
 
 
 def Dados_ad(request):
+    if not dict(request.session).get('nomesugestao'):
+        return redirect(r('Login'))
+
     if dict(request.session).get('usertip') == 'admin':
         try:
             model = (config.objects.get(id=1))
