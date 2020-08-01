@@ -37,6 +37,11 @@ class config(models.Model):
     gadmin = models.CharField(max_length=200)
     ou = models.CharField(max_length=200)
     filter = models.TextField('Filtro')
+    email_host = models.CharField(max_length=20)
+    email_port = models.CharField(max_length=10)
+    email_use_tls = models.BooleanField(default=True)
+    email_host_user = models.CharField(max_length=50)
+    email_host_password = models.CharField(max_length=100)
 
 
 class setor(models.Model):

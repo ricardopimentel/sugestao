@@ -101,3 +101,42 @@ class PessoaForm(forms.ModelForm):
         self.fields['usuario'].label = ""
         self.fields['email'].widget = forms.TextInput(attrs={'placeholder': 'E-mail', 'title': 'e-mail da pessoa'})
         self.fields['email'].label = ""
+
+
+class EmailForm(forms.ModelForm):
+
+    class Meta:  # Define os campos vindos do Model
+        model = config
+        fields = ('email_host', 'email_port', 'email_host_user', 'email_host_password')
+    
+    def __init__(self, request, *args, **kwargs):  # INIT define caracteristicas para os campos de formulário vindos do Model (banco de dados)
+        super(EmailForm, self).__init__(*args, **kwargs)
+        self.fields['email_host'].widget = forms.TextInput(attrs={'placeholder': 'Host do Email', 'title': 'Host do Email'})
+        self.fields['email_host'].label = ""
+        self.fields['email_port'].widget = forms.TextInput(attrs={'placeholder': 'Porta', 'title': 'Porta'})
+        self.fields['email_port'].label = ""
+        self.fields['email_host_user'].widget = forms.TextInput(attrs={'placeholder': 'Usuário', 'title': 'Usuário'})
+        self.fields['email_host_user'].label = ""
+        self.fields['email_host_password'].widget = forms.TextInput(attrs={'placeholder': 'Senha', 'title': 'Senha'})
+        self.fields['email_host_password'].label = ""
+
+    def clean(self):
+        # Inicializa váriaveis com os dados digitados no formulario
+        cleaned_data = self.cleaned_data
+        Host = cleaned_data.get("email_host")
+        Port = cleaned_data.get("email_port")
+        User = cleaned_data.get("email_host_user")
+        Password = cleaned_data.get("email_host_password")
+       
+        try:
+            conf = config.objects.get(id=1)
+            conf.email_host = Host
+            conf.email_port = Port
+            conf.email_host_user = User
+            conf.email_host_password = Password
+            conf.save()
+        except ObjectDoesNotExist:  # caso não exista nada no bd cria um id 1 com os dados passados
+            conf = config(id=1, email_host = Host, email_port = Port, email_host_user = User, email_host_password = Password)
+            conf.save()
+        # Sempre retorne a coleção completa de dados válidos.
+        return cleaned_data

@@ -5,7 +5,7 @@ from django.shortcuts import render, redirect, resolve_url as r
 
 
 # Create your views here.
-from Sugestao.config.forms import AdForm, SetorForm, PessoaForm
+from Sugestao.config.forms import AdForm, SetorForm, PessoaForm, EmailForm
 from Sugestao.core.models import config, setor, pessoa
 
 
@@ -51,6 +51,38 @@ def Dados_ad(request):
         messages.error(request, "Você não tem permissão para acessar essa página, redirecionando para HOME")
         return redirect(r('Home'))
 
+def ConfEmail(request):
+    if dict(request.session).get('usertip') == 'admin':
+        try:
+            model = (config.objects.get(id=1))
+            # Vefirica se veio algo pelo POST
+            if request.method == 'POST':
+                # cria uma instancia do formulario
+                form = EmailForm(request, data=request.POST)
+                # Checa se os dados são válidos:
+                if form.is_valid():
+                    # Chama a página novamente
+                    messages.success(request, 'Configurações salvas com sucesso!')
+                return render(request, 'config/admin_config_email.html', {'form': form})
+            else:
+                form = EmailForm(request, initial={
+                    'email_host': model.email_host,
+                    'email_host_password': model.email_host_password,
+                    'email_host_user': model.email_host_user,
+                    'email_port': model.email_port
+                })
+                return render(request, 'config/admin_config_email.html', {
+                    'title': 'Config. Email',
+                    'itemselec': 'ADMINISTRAÇÃO',
+                    'form': form,
+                })
+        except ObjectDoesNotExist:
+            model = ''
+            messages.error(request, sys.exc_info())
+            return redirect(r('Administracao'))
+    else:
+        messages.error(request, "Você não tem permissão para acessar essa página, redirecionando para HOME")
+        return redirect(r('Home'))
 
 def ConfigInicial(request):
     form = AdForm(request)
