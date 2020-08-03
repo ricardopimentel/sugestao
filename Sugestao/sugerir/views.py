@@ -300,10 +300,12 @@ def VaParaSugestao(request):
 
 def _send_email(subject, from_, to, copy, template_name, context):
 
-    settings.EMAIL_HOST = config.email_host
-    settings.EMAIL_PORT = config.email_port
-    settings.EMAIL_HOST_USER = config.email_host_user
-    settings.EMAIL_HOST_PASSWORD = config.email_host_password
+    cfg = config.objects.get(id=1)
+
+    settings.EMAIL_HOST = cfg.email_host
+    settings.EMAIL_PORT = cfg.email_port
+    settings.EMAIL_HOST_USER = cfg.email_host_user
+    settings.EMAIL_HOST_PASSWORD = cfg.email_host_password
 
     body = render_to_string(template_name, context)
     #mail.send_mail(subject, body, from_, to, html_message=body)
