@@ -26,10 +26,10 @@ def FazerSugestao(request):
 
     #Preencher Formulário
     SETORES = []
-    setorobj = Setor.objects.all()
+    setores = Setor.objects.all()
     SETORES.append(('', 'Para qual setor é a sugestão?'))
-    for set in setorobj:
-        SETORES.append((set.id, set.nome))
+    for setor in setores:
+        SETORES.append((setor.id, setor.nome))
     PESSOAS = []
     pessoaobj = Pessoa.objects.filter(nome="Anônimo") | Pessoa.objects.filter(nome=request.session['nomesugestao']) #Filtra o objeto pessoa, anonima e a pessoa logada
     PESSOAS.append(('', 'Você deseja se identificar?'))
@@ -63,7 +63,7 @@ def FazerSugestao(request):
             if mail == 'Não informado':
                 mail = ''
             # Envio da msg
-            _send_email('Não responda essa mensagem '+ str(sugestaoobj.id),
+            _send_email('Não responda essa mensagem '+ str(sugestao.id),
                 [settings.DEFAULT_FROM_EMAIL, ],
                 sugestao.setor.email, mail,
                 'sugerir/sugestao_email.html',
@@ -94,7 +94,7 @@ def EditarSugestao(request, id):
     sugestao = Sugestao.objects.get(id=id)#Buscar dados da sugestão a ser alterada
 
     #criar instancia do formulário preencido
-    form = SugestaoEdicaoForm(initial={'descricao': sugestaoobj.descricao})
+    form = SugestaoEdicaoForm(initial={'descricao': sugestao.descricao})
     #Verifica se vieram dados pelo post
     if request.method == 'POST':
         form = SugestaoEdicaoForm(request.POST)
@@ -102,7 +102,7 @@ def EditarSugestao(request, id):
             edicao = Edicao(descricao=request.POST['descricao'], datahora=datetime.now(), sugestao=Sugestao.objects.get(id=id))
             edicao.save()
             messages.success(request, 'Edição salva com sucesso!')
-            return redirect(r('DetalharSugestao', str(sugestaoobj.id), edicaoobj.sugestao.senha))
+            return redirect(r('DetalharSugestao', str(sugestao.id), edicao.sugestao.senha))
 
     return render(request, 'sugerir/cadastro_sugestao.html', {'URL': 'EditarSugestao', 'err': '','id': id, 'form': form, 'itemselec': 'HOME', "titulo": 'Editar Sugestão: '+ id})
 
@@ -119,7 +119,7 @@ def ResponderSugestao(request, id):
     sugestao = Sugestao.objects.get(id=id)#Buscar dados da sugestão a ser alterada
 
     #criar instancia do formulário preencido
-    form = SugestaoEdicaoForm(initial={'descricao': sugestaoobj.descricao})
+    form = SugestaoEdicaoForm(initial={'descricao': sugestao.descricao})
     #Verifica se vieram dados pelo post
     if request.method == 'POST':
         form = SugestaoEdicaoForm(request.POST)
@@ -147,7 +147,7 @@ def ResponderSugestao(request, id):
                 contexto)
 
             messages.success(request, 'Resposta salva com sucesso!')
-            return redirect(r('DetalharSugestao', str(sugestaoobj.id), respostaobj.sugestao.senha))
+            return redirect(r('DetalharSugestao', str(sugestao.id), resposta.sugestao.senha))
 
     return render(request, 'sugerir/cadastro_sugestao.html', {'URL': 'ResponderSugestao', 'err': '','id': id, 'form': form, 'itemselec': 'HOME', 'titulo': 'Responder Sugestão: '+ id})
 
@@ -164,7 +164,7 @@ def FinalizarSugestao(request, id):
     sugestao = Sugestao.objects.get(id=id)#Buscar dados da sugestão a ser alterada
 
     #criar instancia do formulário preencido
-    form = SugestaoEdicaoForm(initial={'descricao': sugestaoobj.descricao})
+    form = SugestaoEdicaoForm(initial={'descricao': sugestao.descricao})
     #Verifica se vieram dados pelo post
     if request.method == 'POST':
         form = SugestaoEdicaoForm(request.POST)
@@ -180,21 +180,21 @@ def FinalizarSugestao(request, id):
             contexto['id'] = finalizacao.sugestao.id
             contexto['senha'] = finalizacao.sugestao.senha
             contexto['pessoa'] = finalizacao.pessoa.nome
-            contexto['titulo'] = "A Sugestão "+str(finalizacaoobj.sugestao.id) +" foi finalizada"
+            contexto['titulo'] = "A Sugestão "+str(finalizacao.sugestao.id) +" foi finalizada"
 
             # tenta recuperar o email do criador da sugestão
             mail = finalizacao.sugestao.pessoa.email
             if mail == 'Não informado':
                 mail = ''
             # Envio da msg
-            _send_email('Não responda essa mensagem '+ str(finalizacaoobj.sugestao.id),
+            _send_email('Não responda essa mensagem '+ str(finalizacao.sugestao.id),
                 [settings.DEFAULT_FROM_EMAIL, ],
-                sugestaoobj.setor.email, mail,
+                sugestao.setor.email, mail,
                 'sugerir/finalizacao_email.html',
                 contexto)
 
             messages.success(request, 'Sugestão finalizada com sucesso!')
-            return redirect(r('DetalharSugestao', str(sugestaoobj.id), finalizacaoobj.sugestao.senha))
+            return redirect(r('DetalharSugestao', str(sugestao.id), finalizacao.sugestao.senha))
 
     return render(request, 'sugerir/cadastro_sugestao.html', {'URL': 'FinalizarSugestao', 'err': '','id': id, 'form': form, 'itemselec': 'HOME', 'titulo': 'Finalizar Sugestão: '+ id})
 
@@ -221,7 +221,7 @@ def DetalharSugestao(request, id, senha):
     finalizar = ''
 
     try:
-        resposta = Resposta.objects.get(sugestao=sugestaoobj.id) # verifica se há uma resposta
+        resposta = Resposta.objects.get(sugestao=sugestao.id) # verifica se há uma resposta
         if sugestao.pessoa.usuario == request.session['userl']: #O usuário pode editar a sugestão
             visualizar = 'visualizar'
         if sugestao.setor.responsavel == Pessoa.objects.get(usuario=request.session['userl']): #O usuário pode finalizar a sugestão
@@ -233,20 +233,20 @@ def DetalharSugestao(request, id, senha):
             responder = 'responder'
     if sugestao.pessoa.usuario == '000000':# foi criada anonimamente
         visualizar = 'visualizar'
-        msganonima = "Sugestões anônimas não aparecem na sua lista de sugestões. Para acompanhar o feedback delas, você deve guardar o seu número ("+id+") e a chave de acesso ("+sugestaoobj.senha+"). Sugerimos imprimir ou salvar essa página em PDF."
+        msganonima = "Sugestões anônimas não aparecem na sua lista de sugestões. Para acompanhar o feedback delas, você deve guardar o seu número ("+id+") e a chave de acesso ("+sugestao.senha+"). Sugerimos imprimir ou salvar essa página em PDF."
         # Verifica a senha no caso de mensagens anomimas
         if (not sugestao.senha == senha) and (finalizar == '' and responder == ''):# Redireciona para pedir a senha caso ela não esteja correta, só precisa por senha se a sugestão não for para você
             messages.error(request, 'Informe uma chave de acesso válida para visualizar essa sugestão')
-            return render(request, 'sugerir/senha_sugestao.html', {'err': '', 'itemselec': 'SUGESTÕES', 'sugestao': sugestaoobj, 'id': id})
+            return render(request, 'sugerir/senha_sugestao.html', {'err': '', 'itemselec': 'SUGESTÕES', 'sugestao': sugestao, 'id': id})
 
     if editar == '' and responder == '' and visualizar == '' and finalizar =='': #Apessoa não tem direito a visializar essa sugestão, redireciona para a página de sugestões
         messages.error(request, 'Você não pode acessar essa página')
         return redirect(r('Sugestoes'))
     edicao = Edicao.objects.filter(sugestao=id).order_by('-datahora')
     resposta = Resposta.objects.filter(sugestao=id)
-    finalizacaoa = Finalizacao.objects.filter(sugestao=id)
+    finalizacao = Finalizacao.objects.filter(sugestao=id)
 
-    return render(request, 'sugerir/detalhar_sugestao.html', {'err': '', 'editar': editar, 'responder': responder, 'finalizar': finalizar, 'itemselec': 'SUGESTÕES', 'sugestao': sugestaoobj, 'edicoes': edicaoobj, 'respostas': respostaobj, 'finalizacoes': finalizacaoaobj, 'msganonima': msganonima})
+    return render(request, 'sugerir/detalhar_sugestao.html', {'err': '', 'editar': editar, 'responder': responder, 'finalizar': finalizar, 'itemselec': 'SUGESTÕES', 'sugestao': sugestao, 'edicoes': edicao, 'respostas': resposta, 'finalizacoes': finalizacao, 'msganonima': msganonima})
 
 
 def SugestoesPraMim(request, view):
