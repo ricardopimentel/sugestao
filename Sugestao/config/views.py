@@ -6,7 +6,7 @@ from django.shortcuts import render, redirect, resolve_url as r
 
 # Create your views here.
 from Sugestao.config.forms import AdForm, SetorForm, PessoaForm, EmailForm
-from Sugestao.core.models import config, setor, pessoa
+from Sugestao.core.models import Config, Setor, Pessoa
 
 
 def Administracao(request):
@@ -24,7 +24,7 @@ def Dados_ad(request):
 
     if dict(request.session).get('usertip') == 'admin':
         try:
-            model = (config.objects.get(id=1))
+            model = (Config.objects.get(id=1))
             # Vefirica se veio aolgo pelo POST
             if request.method == 'POST':
                 # cria uma instancia do formulario de preenchimento dos dados do AD com os dados vindos do request POST:
@@ -57,7 +57,7 @@ def Dados_ad(request):
 def ConfEmail(request):
     if dict(request.session).get('usertip') == 'admin':
         try:
-            model = (config.objects.get(id=1))
+            config = Config.objects.get(id=1)
             # Vefirica se veio algo pelo POST
             if request.method == 'POST':
                 # cria uma instancia do formulario
@@ -69,10 +69,10 @@ def ConfEmail(request):
                 return render(request, 'config/admin_config_email.html', {'form': form})
             else:
                 form = EmailForm(request, initial={
-                    'email_host': model.email_host,
-                    'email_host_password': model.email_host_password,
-                    'email_host_user': model.email_host_user,
-                    'email_port': model.email_port
+                    'email_host': config.email_host,
+                    'email_host_password': config.email_host_password,
+                    'email_host_user': config.email_host_user,
+                    'email_port': config.email_port
                 })
                 return render(request, 'config/admin_config_email.html', {
                     'title': 'Config. Email',
@@ -103,7 +103,7 @@ def ConfigInicial(request):
 
 
 def GerenciarSetores(request):
-    setores = setor.objects.all()
+    setores = Setor.objects.all()
     if dict(request.session).get('nomesugestao'):
         return render(request, 'config/gerenciar_setor.html', {
             'title': 'Administração',
@@ -120,7 +120,7 @@ def CadastroSetor(request, id):
         if id == 'cadastro': # verifica se é para cadastrar ou alterar
             form = SetorForm(request)
         else: # se for para alterar cria um formulário já preenchido
-            obj = setor.objects.get(id=id)
+            setor = Setor.objects.get(id=id)
             editar = True
             form = SetorForm(request, initial={'nome': obj.nome, 'responsavel': obj.responsavel, 'email': obj.email})
 
@@ -129,10 +129,10 @@ def CadastroSetor(request, id):
             # Checa se os dados são válidos:
             if form.is_valid():
                 if editar:
-                    obj.nome = request.POST['nome']
-                    obj.responsavel = pessoa.objects.get(id=request.POST['responsavel'])
-                    obj.email = request.POST['email']
-                    obj.save()
+                    setor.nome = request.POST['nome']
+                    setor.responsavel = Pessoa.objects.get(id=request.POST['responsavel'])
+                    setor.email = request.POST['email']
+                    setor.save()
                 else:
                     form.save()
                 messages.success(request, "Sucesso!")
@@ -148,7 +148,7 @@ def CadastroSetor(request, id):
 
 
 def GerenciarPessoas(request):
-    pessoas = pessoa.objects.all()
+    pessoas = Pessoa.objects.all()
     if dict(request.session).get('nomesugestao'):
         return render(request, 'config/gerenciar_pessoa.html', {
             'title': 'Administração',
@@ -165,7 +165,7 @@ def CadastroPessoa(request, id):
         if id == 'cadastro': # verifica se é para cadastrar ou alterar
             form = PessoaForm(request)
         else: # se for para alterar cria um formulário já preenchido
-            obj = pessoa.objects.get(id=id)
+            pessoa = Pessoa.objects.get(id=id)
             editar = True
             form = PessoaForm(request, initial={'nome': obj.nome, 'usuario': obj.usuario, 'status': obj.status, 'email': obj.email})
 
@@ -174,11 +174,11 @@ def CadastroPessoa(request, id):
             # Checa se os dados são válidos:
             if form.is_valid():
                 if editar:
-                    obj.nome = request.POST['nome']
-                    obj.usuario = request.POST['usuario']
-                    obj.status = request.POST['status']
-                    obj.email = request.POST['email']
-                    obj.save()
+                    pessoa.nome = request.POST['nome']
+                    pessoa.usuario = request.POST['usuario']
+                    pessoa.status = request.POST['status']
+                    pessoa.email = request.POST['email']
+                    pessoa.save()
                 else:
                     form.save()
                 messages.success(request, "Sucesso!")

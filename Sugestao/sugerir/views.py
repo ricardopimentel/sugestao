@@ -13,7 +13,7 @@ from django.utils.datetime_safe import datetime
 
 import Sugestao
 from Sugestao import settings
-from Sugestao.core.models import setor, pessoa, sugestao, edicao, resposta, finalizacao, config
+from Sugestao.core.models import Setor, Pessoa, Sugestao, Edicao, Resposta, Finalizacao, Config
 from Sugestao.sugerir.forms import SugestaoForm, SugestaoEdicaoForm
 
 
@@ -26,12 +26,12 @@ def FazerSugestao(request):
 
     #Preencher Formulário
     SETORES = []
-    setorobj = setor.objects.all()
+    setorobj = Setor.objects.all()
     SETORES.append(('', 'Para qual setor é a sugestão?'))
     for set in setorobj:
         SETORES.append((set.id, set.nome))
     PESSOAS = []
-    pessoaobj = pessoa.objects.filter(nome="Anônimo") | pessoa.objects.filter(nome=request.session['nomesugestao']) #Filtra o objeto pessoa, anonima e a pessoa logada
+    pessoaobj = Pessoa.objects.filter(nome="Anônimo") | Pessoa.objects.filter(nome=request.session['nomesugestao']) #Filtra o objeto pessoa, anonima e a pessoa logada
     PESSOAS.append(('', 'Você deseja se identificar?'))
     for pess in pessoaobj:
         PESSOAS.append((pess.id, pess.nome))
@@ -41,43 +41,43 @@ def FazerSugestao(request):
         form = SugestaoForm(request, SETORES, PESSOAS, request.POST, request.FILES)
         if form.is_valid():# se dados do formulário são válidos, salva os dados na linha abaixo
             senhasugestao = '*' #para visualizar uma sugestao anonima é preciso ter uma senha que identifica o criador
-            if Sugestao.core.models.pessoa.objects.get(id=request.POST['pessoa']).usuario == '000000': #verifica se a sugestão é anonima
+            if Pessoa.objects.get(id=request.POST['pessoa']).usuario == '000000': #verifica se a sugestão é anonima
                 senhasugestao = GerarSenha()
             if request.FILES:
-                sugestaoobj = sugestao(status='1', titulo=request.POST['titulo'], setor=Sugestao.core.models.setor.objects.get(id=request.POST['setor']), pessoa=Sugestao.core.models.pessoa.objects.get(id=request.POST['pessoa']), descricao=request.POST['descricao'], imagem=request.FILES['imagem'], datahora=datetime.now(), senha=senhasugestao)
+                sugestao = Sugestao(status='1', titulo=request.POST['titulo'], setor=Setor.objects.get(id=request.POST['setor']), pessoa=Pessoa.objects.get(id=request.POST['pessoa']), descricao=request.POST['descricao'], imagem=request.FILES['imagem'], datahora=datetime.now(), senha=senhasugestao)
             else:
-                sugestaoobj = sugestao(status='1', titulo=request.POST['titulo'], setor=Sugestao.core.models.setor.objects.get(id=request.POST['setor']), pessoa=Sugestao.core.models.pessoa.objects.get(id=request.POST['pessoa']), descricao=request.POST['descricao'], datahora=datetime.now(), senha=senhasugestao)
-            sugestaoobj.save()
+                sugestao = Sugestao(status='1', titulo=request.POST['titulo'], setor=Setor.objects.get(id=request.POST['setor']), pessoa=Pessoa.objects.get(id=request.POST['pessoa']), descricao=request.POST['descricao'], datahora=datetime.now(), senha=senhasugestao)
+            sugestao.save()
 
             # Send email
             # Preparação de contexto
             contexto = form.cleaned_data
-            contexto['id'] = sugestaoobj.id
-            contexto['senha'] = sugestaoobj.senha
-            contexto['imagem'] = sugestaoobj.imagem
-            contexto['setor'] = sugestaoobj.setor
-            contexto['pessoa'] = sugestaoobj.pessoa
+            contexto['id'] = sugestao.id
+            contexto['senha'] = sugestao.senha
+            contexto['imagem'] = sugestao.imagem
+            contexto['setor'] = sugestao.setor
+            contexto['pessoa'] = sugestao.pessoa
 
             # tenta recuperar o email do criador da sugestão
-            mail = sugestaoobj.pessoa.email
+            mail = sugestao.pessoa.email
             if mail == 'Não informado':
                 mail = ''
             # Envio da msg
             _send_email('Não responda essa mensagem '+ str(sugestaoobj.id),
                 [settings.DEFAULT_FROM_EMAIL, ],
-                sugestaoobj.setor.email, mail,
+                sugestao.setor.email, mail,
                 'sugerir/sugestao_email.html',
                 contexto)
             # add msg
-            messages.success(request, 'Sugestão número '+ str(sugestaoobj.id)+ ' salva com sucesso!')
+            messages.success(request, 'Sugestão número '+ str(sugestao.id)+ ' salva com sucesso!')
 
             #Se foi realizado upload de imagem
-            if not str(sugestaoobj.imagem) == 'uploads/default.png':
+            if not str(sugestao.imagem) == 'uploads/default.png':
                 #Diminuir resolução da imagem
-                t = threading.Thread(target=comprimir, args=(request, sugestaoobj.imagem), kwargs={})
+                t = threading.Thread(target=comprimir, args=(request, sugestao.imagem), kwargs={})
                 t.setDaemon(True)
                 t.start()
-            return redirect(r('DetalharSugestao', str(sugestaoobj.id), sugestaoobj.senha))
+            return redirect(r('DetalharSugestao', str(sugestao.id), sugestao.senha))
 
     return render(request, 'sugerir/cadastro_sugestao.html', {'URL': 'FazerSugestao', 'err': '','form': form, 'itemselec': 'HOME', 'titulo': 'Deixe Sua Sugestão'})
 
@@ -91,7 +91,7 @@ def EditarSugestao(request, id):
 
     #Preencher Formulário
 
-    sugestaoobj = sugestao.objects.get(id=id)#Buscar dados da sugestão a ser alterada
+    sugestao = Sugestao.objects.get(id=id)#Buscar dados da sugestão a ser alterada
 
     #criar instancia do formulário preencido
     form = SugestaoEdicaoForm(initial={'descricao': sugestaoobj.descricao})
@@ -99,8 +99,8 @@ def EditarSugestao(request, id):
     if request.method == 'POST':
         form = SugestaoEdicaoForm(request.POST)
         if form.is_valid():# se dados do formulário são válidos, salva os dados na linha abaixo
-            edicaoobj = edicao(descricao=request.POST['descricao'], datahora=datetime.now(), sugestao=Sugestao.core.models.sugestao.objects.get(id=id))
-            edicaoobj.save()
+            edicao = Edicao(descricao=request.POST['descricao'], datahora=datetime.now(), sugestao=Sugestao.objects.get(id=id))
+            edicao.save()
             messages.success(request, 'Edição salva com sucesso!')
             return redirect(r('DetalharSugestao', str(sugestaoobj.id), edicaoobj.sugestao.senha))
 
@@ -116,7 +116,7 @@ def ResponderSugestao(request, id):
 
     #Preencher Formulário
 
-    sugestaoobj = sugestao.objects.get(id=id)#Buscar dados da sugestão a ser alterada
+    sugestao = Sugestao.objects.get(id=id)#Buscar dados da sugestão a ser alterada
 
     #criar instancia do formulário preencido
     form = SugestaoEdicaoForm(initial={'descricao': sugestaoobj.descricao})
@@ -124,25 +124,25 @@ def ResponderSugestao(request, id):
     if request.method == 'POST':
         form = SugestaoEdicaoForm(request.POST)
         if form.is_valid():# se dados do formulário são válidos, salva os dados na linha abaixo
-            respostaobj = resposta(descricao=request.POST['descricao'], datahora=datetime.now(), sugestao=Sugestao.core.models.sugestao.objects.get(id=id), pessoa=pessoa.objects.get(usuario=request.session['userl']))
-            respostaobj.save()
+            resposta = Resposta(descricao=request.POST['descricao'], datahora=datetime.now(), sugestao=Sugestao.objects.get(id=id), pessoa=Pessoa.objects.get(usuario=request.session['userl']))
+            resposta.save()
 
             # Send email
             # Preparação de contexto
             contexto = form.cleaned_data
-            contexto['id'] = respostaobj.sugestao.id
-            contexto['senha'] = respostaobj.sugestao.senha
-            contexto['pessoa'] = respostaobj.pessoa.nome
+            contexto['id'] = resposta.sugestao.id
+            contexto['senha'] = resposta.sugestao.senha
+            contexto['pessoa'] = resposta.pessoa.nome
             contexto['titulo'] = "A Sugestão "+str(respostaobj.sugestao.id) +" foi respondida"
 
             # tenta recuperar o email do criador da sugestão
-            mail = respostaobj.sugestao.pessoa.email
+            mail = resposta.sugestao.pessoa.email
             if mail == 'Não informado':
                 mail = ''
             # Envio da msg
             _send_email('Não responda essa mensagem '+ str(respostaobj.sugestao.id),
                 [settings.DEFAULT_FROM_EMAIL, ],
-                sugestaoobj.setor.email, mail,
+                sugestao.setor.email, mail,
                 'sugerir/resposta_email.html',
                 contexto)
 
@@ -161,7 +161,7 @@ def FinalizarSugestao(request, id):
 
     #Preencher Formulário
 
-    sugestaoobj = sugestao.objects.get(id=id)#Buscar dados da sugestão a ser alterada
+    sugestao = Sugestao.objects.get(id=id)#Buscar dados da sugestão a ser alterada
 
     #criar instancia do formulário preencido
     form = SugestaoEdicaoForm(initial={'descricao': sugestaoobj.descricao})
@@ -169,21 +169,21 @@ def FinalizarSugestao(request, id):
     if request.method == 'POST':
         form = SugestaoEdicaoForm(request.POST)
         if form.is_valid():# se dados do formulário são válidos, salva os dados na linha abaixo
-            finalizacaoobj = finalizacao(descricao=request.POST['descricao'], datahora=datetime.now(), sugestao=Sugestao.core.models.sugestao.objects.get(id=id), pessoa=pessoa.objects.get(usuario=request.session['userl']))
-            finalizacaoobj.save()
-            sugestaoobj.status=False
-            sugestaoobj.save()
+            finalizacao = Finalizacao(descricao=request.POST['descricao'], datahora=datetime.now(), sugestao=Sugestao.objects.get(id=id), pessoa=Pessoa.objects.get(usuario=request.session['userl']))
+            finalizacao.save()
+            sugestao.status=False
+            sugestao.save()
 
             # Send email
             # Preparação de contexto
             contexto = form.cleaned_data
-            contexto['id'] = finalizacaoobj.sugestao.id
-            contexto['senha'] = finalizacaoobj.sugestao.senha
-            contexto['pessoa'] = finalizacaoobj.pessoa.nome
+            contexto['id'] = finalizacao.sugestao.id
+            contexto['senha'] = finalizacao.sugestao.senha
+            contexto['pessoa'] = finalizacao.pessoa.nome
             contexto['titulo'] = "A Sugestão "+str(finalizacaoobj.sugestao.id) +" foi finalizada"
 
             # tenta recuperar o email do criador da sugestão
-            mail = finalizacaoobj.sugestao.pessoa.email
+            mail = finalizacao.sugestao.pessoa.email
             if mail == 'Não informado':
                 mail = ''
             # Envio da msg
@@ -210,7 +210,7 @@ def DetalharSugestao(request, id, senha):
 
     # Verificar se foi aberto por mim ou para mim
     try:
-        sugestaoobj = sugestao.objects.get(id=id)
+        sugestao = Sugestao.objects.get(id=id)
     except:
         messages.success(request, 'Não encontrada')
         return redirect(r('Sugestoes'))
@@ -221,30 +221,30 @@ def DetalharSugestao(request, id, senha):
     finalizar = ''
 
     try:
-        respostaobj = resposta.objects.get(sugestao=sugestaoobj.id) # verifica se há uma resposta
-        if sugestaoobj.pessoa.usuario == request.session['userl']: #O usuário pode editar a sugestão
+        resposta = Resposta.objects.get(sugestao=sugestaoobj.id) # verifica se há uma resposta
+        if sugestao.pessoa.usuario == request.session['userl']: #O usuário pode editar a sugestão
             visualizar = 'visualizar'
-        if sugestaoobj.setor.responsavel == pessoa.objects.get(usuario=request.session['userl']): #O usuário pode finalizar a sugestão
+        if sugestao.setor.responsavel == Pessoa.objects.get(usuario=request.session['userl']): #O usuário pode finalizar a sugestão
             finalizar = 'finalizar'
     except:
-        if sugestaoobj.pessoa.usuario == request.session['userl']: #O usuário pode editar a sugestão
+        if sugestao.pessoa.usuario == request.session['userl']: #O usuário pode editar a sugestão
             editar = 'editar'
-        if sugestaoobj.setor.responsavel == pessoa.objects.get(usuario=request.session['userl']): #O usuário pode responder a sugestão
+        if sugestao.setor.responsavel == Pessoa.objects.get(usuario=request.session['userl']): #O usuário pode responder a sugestão
             responder = 'responder'
-    if sugestaoobj.pessoa.usuario == '000000':# foi criada anonimamente
+    if sugestao.pessoa.usuario == '000000':# foi criada anonimamente
         visualizar = 'visualizar'
         msganonima = "Sugestões anônimas não aparecem na sua lista de sugestões. Para acompanhar o feedback delas, você deve guardar o seu número ("+id+") e a chave de acesso ("+sugestaoobj.senha+"). Sugerimos imprimir ou salvar essa página em PDF."
         # Verifica a senha no caso de mensagens anomimas
-        if (not sugestaoobj.senha == senha) and (finalizar == '' and responder == ''):# Redireciona para pedir a senha caso ela não esteja correta, só precisa por senha se a sugestão não for para você
+        if (not sugestao.senha == senha) and (finalizar == '' and responder == ''):# Redireciona para pedir a senha caso ela não esteja correta, só precisa por senha se a sugestão não for para você
             messages.error(request, 'Informe uma chave de acesso válida para visualizar essa sugestão')
             return render(request, 'sugerir/senha_sugestao.html', {'err': '', 'itemselec': 'SUGESTÕES', 'sugestao': sugestaoobj, 'id': id})
 
     if editar == '' and responder == '' and visualizar == '' and finalizar =='': #Apessoa não tem direito a visializar essa sugestão, redireciona para a página de sugestões
         messages.error(request, 'Você não pode acessar essa página')
         return redirect(r('Sugestoes'))
-    edicaoobj = edicao.objects.filter(sugestao=id).order_by('-datahora')
-    respostaobj = resposta.objects.filter(sugestao=id)
-    finalizacaoaobj = finalizacao.objects.filter(sugestao=id)
+    edicao = Edicao.objects.filter(sugestao=id).order_by('-datahora')
+    resposta = Resposta.objects.filter(sugestao=id)
+    finalizacaoa = Finalizacao.objects.filter(sugestao=id)
 
     return render(request, 'sugerir/detalhar_sugestao.html', {'err': '', 'editar': editar, 'responder': responder, 'finalizar': finalizar, 'itemselec': 'SUGESTÕES', 'sugestao': sugestaoobj, 'edicoes': edicaoobj, 'respostas': respostaobj, 'finalizacoes': finalizacaoaobj, 'msganonima': msganonima})
 
@@ -252,11 +252,11 @@ def DetalharSugestao(request, id, senha):
 def SugestoesPraMim(request, view):
     try:# Verificar se usuario esta logado
         if request.session['nomesugestao']:
-            idpessoa = pessoa.objects.get(usuario=request.session['userl'])
+            idpessoa = Pessoa.objects.get(usuario=request.session['userl'])
             if view == '1':
-                sugestoesparamim = sugestao.objects.filter(setor__responsavel=idpessoa, status='1') #filtra as sugestões atribuidas ao setor que eu sou responsável
+                sugestoesparamim = Sugestao.objects.filter(setor__responsavel=idpessoa, status='1') #filtra as sugestões atribuidas ao setor que eu sou responsável
             else:
-                sugestoesparamim = sugestao.objects.filter(setor__responsavel=idpessoa) #filtra as sugestões atribuidas ao setor que eu sou responsável
+                sugestoesparamim = Sugestao.objects.filter(setor__responsavel=idpessoa) #filtra as sugestões atribuidas ao setor que eu sou responsável
             return render(request, 'sugerir/list_sugestoes.html', {'err': '', 'itemselec': 'HOME', 'sugestoesparamim': sugestoesparamim, 'titulo': 'Sugestões Para Mim', 'URL': 'SugestoesPraMim', 'view': view})
 
     except KeyError:
@@ -267,9 +267,9 @@ def MinhasSugestoes(request, view):
     try:# Verificar se usuario esta logado
         if request.session['nomesugestao']:
             if view == '1':
-                sugestoes = sugestao.objects.filter(pessoa__usuario=request.session['userl'], status='1') #filtra as sugestões para mostrar somente as realizadas por esse usuário, e estejam ativas
+                sugestoes = Sugestao.objects.filter(pessoa__usuario=request.session['userl'], status='1') #filtra as sugestões para mostrar somente as realizadas por esse usuário, e estejam ativas
             else:
-                sugestoes = sugestao.objects.filter(pessoa__usuario=request.session['userl']) #filtra as sugestões para mostrar somente as realizadas por esse usuário
+                sugestoes = Sugestao.objects.filter(pessoa__usuario=request.session['userl']) #filtra as sugestões para mostrar somente as realizadas por esse usuário
             return render(request, 'sugerir/list_sugestoes.html', {'err': '','sugestoes': sugestoes, 'itemselec': 'HOME', 'titulo': 'Minhas Sugestões', 'URL': 'MinhasSugestoes', 'view': view})
 
     except KeyError:
@@ -300,12 +300,11 @@ def VaParaSugestao(request):
 
 def _send_email(subject, from_, to, copy, template_name, context):
 
-    cfg = config.objects.get(id=1)
-
-    settings.EMAIL_HOST = cfg.email_host
-    settings.EMAIL_PORT = cfg.email_port
-    settings.EMAIL_HOST_USER = cfg.email_host_user
-    settings.EMAIL_HOST_PASSWORD = cfg.email_host_password
+    config = Config.objects.get(id=1)
+    settings.EMAIL_HOST = config.email_host
+    settings.EMAIL_PORT = config.email_port
+    settings.EMAIL_HOST_USER = config.email_host_user
+    settings.EMAIL_HOST_PASSWORD = config.email_host_password
 
     body = render_to_string(template_name, context)
     #mail.send_mail(subject, body, from_, to, html_message=body)

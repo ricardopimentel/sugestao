@@ -2,7 +2,7 @@ from django import forms
 from django.utils.datetime_safe import datetime
 
 import Sugestao
-from Sugestao.core.models import sugestao
+from Sugestao.core.models import Sugestao
 
 
 class SugestaoForm(forms.Form):
@@ -31,13 +31,11 @@ class SugestaoForm(forms.Form):
         pessoa = cleaned_data.get("pessoa")
         descricao = cleaned_data.get("descricao")
         imagem = cleaned_data.get("imagem")
-
         return cleaned_data
 
 
 class SugestaoEdicaoForm(forms.Form):
     descricao = forms.CharField(label="Sugestão", widget=forms.Textarea())
-
 
     def clean(self):
         cleaned_data = self.cleaned_data
