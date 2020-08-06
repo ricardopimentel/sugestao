@@ -167,7 +167,7 @@ def CadastroPessoa(request, id):
         else: # se for para alterar cria um formulário já preenchido
             pessoa = Pessoa.objects.get(id=id)
             editar = True
-            form = PessoaForm(request, initial={'nome': obj.nome, 'usuario': obj.usuario, 'status': obj.status, 'email': obj.email})
+            form = PessoaForm(request, initial={'nome': pessoa.nome, 'usuario': pessoa.usuario, 'status': pessoa.status, 'email': pessoa.email})
 
         if request.method == 'POST':
             form = PessoaForm(request, data=request.POST)
