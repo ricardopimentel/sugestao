@@ -1,7 +1,8 @@
 from django import forms
 from django.utils.datetime_safe import datetime
 
-import Sugestao
+# import Sugestao
+
 from Sugestao.core.models import Sugestao
 
 

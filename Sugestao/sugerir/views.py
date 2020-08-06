@@ -11,7 +11,7 @@ from django.shortcuts import render, redirect, resolve_url as r, render_to_respo
 from django.template.loader import render_to_string
 from django.utils.datetime_safe import datetime
 
-import Sugestao
+# import Sugestao
 from Sugestao import settings
 from Sugestao.core.models import Setor, Pessoa, Sugestao, Edicao, Resposta, Finalizacao, Config
 from Sugestao.sugerir.forms import SugestaoForm, SugestaoEdicaoForm
@@ -31,10 +31,10 @@ def FazerSugestao(request):
     for setor in setores:
         SETORES.append((setor.id, setor.nome))
     PESSOAS = []
-    pessoaobj = Pessoa.objects.filter(nome="Anônimo") | Pessoa.objects.filter(nome=request.session['nomesugestao']) #Filtra o objeto pessoa, anonima e a pessoa logada
+    pessoas = Pessoa.objects.filter(nome="Anônimo") | Pessoa.objects.filter(nome=request.session['nomesugestao']) #Filtra o objeto pessoa, anonima e a pessoa logada
     PESSOAS.append(('', 'Você deseja se identificar?'))
-    for pess in pessoaobj:
-        PESSOAS.append((pess.id, pess.nome))
+    for pessoa in pessoas:
+        PESSOAS.append((pessoa.id, pessoa.nome))
     form = SugestaoForm(request, SETORES, PESSOAS)
 
     if request.method == 'POST':
@@ -133,14 +133,14 @@ def ResponderSugestao(request, id):
             contexto['id'] = resposta.sugestao.id
             contexto['senha'] = resposta.sugestao.senha
             contexto['pessoa'] = resposta.pessoa.nome
-            contexto['titulo'] = "A Sugestão "+str(respostaobj.sugestao.id) +" foi respondida"
+            contexto['titulo'] = "A Sugestão "+str(resposta.sugestao.id) +" foi respondida"
 
             # tenta recuperar o email do criador da sugestão
             mail = resposta.sugestao.pessoa.email
             if mail == 'Não informado':
                 mail = ''
             # Envio da msg
-            _send_email('Não responda essa mensagem '+ str(respostaobj.sugestao.id),
+            _send_email('Não responda essa mensagem '+ str(resposta.sugestao.id),
                 [settings.DEFAULT_FROM_EMAIL, ],
                 sugestao.setor.email, mail,
                 'sugerir/resposta_email.html',
