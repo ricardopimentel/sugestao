@@ -4,7 +4,7 @@ from __future__ import unicode_literals
 
 from django.db import migrations
 
-from Sugestao.core.models import pessoa
+from Sugestao.core.models import Pessoa
 
 
 class Migration(migrations.Migration):
@@ -14,9 +14,9 @@ class Migration(migrations.Migration):
     ]
 
     def insertData(apps, schema_editor):
-     #Pessoaessoa = apps.get_model('pessoa')
-     pessoaobj = pessoa(nome="Anônimo", usuario="000000", status=True, email="Não informado")
-     pessoaobj.save()
+        #Pessoaessoa = apps.get_model('pessoa')
+        pessoa = Pessoa(nome="Anônimo", usuario="000000", status=True, email="Não informado")
+        pessoa.save()
 
     operations = [
         migrations.RunPython(insertData),

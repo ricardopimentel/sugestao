@@ -1,20 +1,20 @@
 import sys
 from ldap3 import Server, Connection, AUTO_BIND_NO_TLS, SUBTREE
 
-from Sugestao.core.models import config
+from Sugestao.core.models import Config
 
 
 class conexaoAD(object):
 
     def __init__(self, username, password):
         try:
-            conf = config.objects.get(id=1)
+            config = Config.objects.get(id=1)
             self.username = username
             self.password = password
-            self.base = conf.ou
-            self.dominio = conf.dominio
-            self.endservidor = conf.endservidor
-            self.filter = conf.filter
+            self.base = config.ou
+            self.dominio = config.dominio
+            self.endservidor = config.endservidor
+            self.filter = config.filter
         except:
             self.username = username
             self.password = password

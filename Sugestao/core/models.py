@@ -4,34 +4,31 @@ from django.db import models
 from tinymce import models as tinymce_models
 
 # Create your models here.
-class pessoa (models.Model):
+class Pessoa (models.Model):
     nome = models.CharField(max_length=100)
     usuario = models.CharField(max_length=11, unique=True)
     email = models.CharField(max_length=70)
     status = models.BooleanField()
 
-
     def __str__(self):
         return str(self.nome)
 
 
-class administrador (models.Model):
-    id_pessoa = models.ForeignKey(pessoa)
-
-
-    def __str__(self):
-        return str(pessoa.nome)
-
-
-class user (models.Model):
-    id_pessoa = models.ForeignKey(pessoa)
-
+class Administrador (models.Model):
+    id_pessoa = models.ForeignKey(Pessoa)
 
     def __str__(self):
-        return str(pessoa.nome)
+        return str(Pessoa.nome)
 
 
-class config(models.Model):
+class User (models.Model):
+    id_pessoa = models.ForeignKey(Pessoa)
+
+    def __str__(self):
+        return str(Pessoa.nome)
+
+
+class Config(models.Model):
     dominio = models.CharField(max_length=200)
     endservidor = models.CharField(max_length=200)
     gadmin = models.CharField(max_length=200)
@@ -44,49 +41,48 @@ class config(models.Model):
     email_host_password = models.CharField(max_length=100)
 
 
-class setor(models.Model):
+class Setor(models.Model):
     nome = models.CharField(max_length=200)
-    responsavel = models.ForeignKey(pessoa)
+    responsavel = models.ForeignKey(Pessoa)
     email = models.EmailField(max_length=200)
-
 
     def __str__(self):
         return self.nome
 
 
-class sugestao(models.Model):
+class Sugestao(models.Model):
     titulo = models.CharField(max_length=200)
     descricao = tinymce_models.HTMLField(max_length=10000)
     imagem = models.ImageField('Imagem', upload_to='uploads/', default='uploads/default.png')
     datahora = models.DateTimeField('Data')
-    setor = models.ForeignKey(setor)
-    pessoa = models.ForeignKey(pessoa)
+    setor = models.ForeignKey(Setor)
+    pessoa = models.ForeignKey(Pessoa)
     senha = models.CharField(max_length=8, default='*')
     status = models.BooleanField()
 
 
-class obs(models.Model):
+class Obs(models.Model):
     descricao = models.CharField(max_length=1000)
     datahora = models.DateTimeField('Data')
-    sugestao = models.ForeignKey(sugestao)
+    sugestao = models.ForeignKey(Sugestao)
 
 
-class resposta(models.Model):
+class Resposta(models.Model):
     descricao = models.CharField(max_length=1000)
     datahora = models.DateTimeField('Data')
-    sugestao = models.ForeignKey(sugestao)
+    sugestao = models.ForeignKey(Sugestao)
     imagem = models.ImageField('Imagem', upload_to='uploads/', default='uploads/default.png')
-    pessoa = models.ForeignKey(pessoa)
+    pessoa = models.ForeignKey(Pessoa)
 
 
-class edicao(models.Model):
+class Edicao(models.Model):
     descricao = models.CharField(max_length=1000)
     datahora = models.DateTimeField('Data')
-    sugestao = models.ForeignKey(sugestao)
+    sugestao = models.ForeignKey(Sugestao)
 
 
-class finalizacao(models.Model):
+class Finalizacao(models.Model):
     descricao = models.CharField(max_length=1000)
     datahora = models.DateTimeField('Data')
-    sugestao = models.ForeignKey(sugestao)
-    pessoa = models.ForeignKey(pessoa)
+    sugestao = models.ForeignKey(Sugestao)
+    pessoa = models.ForeignKey(Pessoa)

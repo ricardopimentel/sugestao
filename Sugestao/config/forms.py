@@ -1,7 +1,7 @@
 from django import forms
 from django.core.exceptions import ObjectDoesNotExist
 
-from Sugestao.core.models import config, setor, pessoa
+from Sugestao.core.models import Config, Setor, Pessoa
 from Sugestao.core.libs.conexaoAD3 import conexaoAD
 
 
@@ -12,7 +12,7 @@ class AdForm(forms.ModelForm):
     filter = forms.CharField(label="Filtro", widget=forms.Textarea)
 
     class Meta:  # Define os campos vindos do Model
-        model = config
+        model = Config
         fields = ('dominio', 'endservidor', 'gadmin', 'ou')
 
     def __init__(self, request, *args, **kwargs):  # INIT define caracteristicas para os campos de formulário vindos do Model (banco de dados)
@@ -59,16 +59,16 @@ class AdForm(forms.ModelForm):
             else:  # se logou
                 try:  # Tenta salvar tudo no banco de dados no id 1
                     # Pega uma instancia do item conf do banco de dados
-                    conf = config.objects.get(id=1)
-                    conf.dominio = Dominio
-                    conf.endservidor = Endservidor
-                    conf.gadmin = Gadmin
-                    conf.ou = Ou
-                    conf.filter = Filter
-                    conf.save()
+                    config = Config.objects.get(id=1)
+                    config.dominio = Dominio
+                    config.endservidor = Endservidor
+                    config.gadmin = Gadmin
+                    config.ou = Ou
+                    config.filter = Filter
+                    config.save()
                 except ObjectDoesNotExist:  # caso não exista nada no bd cria um id 1 com os dados passados
-                    conf = config(id=1, dominio=Dominio, endservidor=Endservidor, gadmin=Gadmin, ou=Ou, filter=Filter)
-                    conf.save()
+                    config = Config(id=1, dominio=Dominio, endservidor=Endservidor, gadmin=Gadmin, ou=Ou, filter=Filter)
+                    config.save()
         # Sempre retorne a coleção completa de dados válidos.
         return cleaned_data
 
@@ -76,7 +76,7 @@ class AdForm(forms.ModelForm):
 class SetorForm(forms.ModelForm):
 
     class Meta:  # Define os campos vindos do Model
-        model = setor
+        model = Setor
         fields = ('nome', 'responsavel', 'email')
 
     def __init__(self, request, *args, **kwargs):  # INIT define caracteristicas para os campos de formulário vindos do Model (banco de dados)
@@ -90,7 +90,7 @@ class SetorForm(forms.ModelForm):
 class PessoaForm(forms.ModelForm):
 
     class Meta:  # Define os campos vindos do Model
-        model = pessoa
+        model = Pessoa
         fields = ('nome', 'usuario', 'email', 'status')
 
     def __init__(self, request, *args, **kwargs):  # INIT define caracteristicas para os campos de formulário vindos do Model (banco de dados)
@@ -106,7 +106,7 @@ class PessoaForm(forms.ModelForm):
 class EmailForm(forms.ModelForm):
 
     class Meta:  # Define os campos vindos do Model
-        model = config
+        model = Config
         fields = ('email_host', 'email_port', 'email_host_user', 'email_host_password')
     
     def __init__(self, request, *args, **kwargs):  # INIT define caracteristicas para os campos de formulário vindos do Model (banco de dados)
@@ -129,14 +129,14 @@ class EmailForm(forms.ModelForm):
         Password = cleaned_data.get("email_host_password")
        
         try:
-            conf = config.objects.get(id=1)
-            conf.email_host = Host
-            conf.email_port = Port
-            conf.email_host_user = User
-            conf.email_host_password = Password
-            conf.save()
+            config = Config.objects.get(id=1)
+            config.email_host = Host
+            config.email_port = Port
+            config.email_host_user = User
+            config.email_host_password = Password
+            config.save()
         except ObjectDoesNotExist:  # caso não exista nada no bd cria um id 1 com os dados passados
-            conf = config(id=1, email_host = Host, email_port = Port, email_host_user = User, email_host_password = Password)
-            conf.save()
+            config = Config(id=1, email_host = Host, email_port = Port, email_host_user = User, email_host_password = Password)
+            config.save()
         # Sempre retorne a coleção completa de dados válidos.
         return cleaned_data

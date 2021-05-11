@@ -4,12 +4,12 @@ from django.shortcuts import render, redirect, resolve_url as r
 
 # Create your views here.
 from Sugestao.acesso.forms import LoginForm
-from Sugestao.core.models import config, user, pessoa, administrador
+from Sugestao.core.models import Config, User, Pessoa, Administrador
 
 
 def Login(request):
     try:
-        conf = config.objects.get(id=1)
+        conf = Config.objects.get(id=1)
         dominio = conf.dominio
     except:
         return redirect(r('ConfigInicial'))
@@ -25,20 +25,20 @@ def Login(request):
         if form.is_valid():
             # Logou no ad, verificar se está salvo no banco de dados
             try:
-                pess = pessoa.objects.get(usuario=request.session['userl'])
+                pess = Pessoa.objects.get(usuario=request.session['userl'])
                 if pess:  # Pessoa Cadastrada
                     # Pessoa cadastrada, abrir página inicial
                     return redirect(r('Home'))
             except:
                 # Pessoa não cadastrada - Fazer cadastro
-                pessoaobj = pessoa(nome=request.session['nomesugestao'], usuario=request.session['userl'], email=request.session['mail'], status=True)
+                pessoaobj = Pessoa(nome=request.session['nomesugestao'], usuario=request.session['userl'], email=request.session['mail'], status=True)
                 pessoaobj.save()
                 # Verificar tipo de usuário
                 if (request.session['usertip'] == 'admin'):  # Cadastrar Admin
-                    adminobj = administrador(id_pessoa=pessoaobj)
+                    adminobj = Administrador(id_pessoa=pessoaobj)
                     adminobj.save()
                 elif (request.session['usertip'] == 'user'):  # Usuário comum
-                    userobj = user(id_pessoa=pessoaobj)
+                    userobj = User(id_pessoa=pessoaobj)
                     userobj.save()
                 return redirect(r('Home'))
         return render(request, 'acesso/login.html', {'form': form, 'err': '', 'itemselec': 'HOME', })
