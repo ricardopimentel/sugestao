@@ -122,7 +122,7 @@ def CadastroSetor(request, id):
         else: # se for para alterar cria um formulário já preenchido
             setor = Setor.objects.get(id=id)
             editar = True
-            form = SetorForm(request, initial={'nome': obj.nome, 'responsavel': obj.responsavel, 'email': obj.email})
+            form = SetorForm(request, initial={'nome': setor.nome, 'responsavel': setor.responsavel, 'email': setor.email})
 
         if request.method == 'POST':
             form = SetorForm(request, data=request.POST)
