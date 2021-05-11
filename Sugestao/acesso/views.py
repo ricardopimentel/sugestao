@@ -46,6 +46,7 @@ def Login(request):
         # Criar instancia vazia do formulario de login
         request.session['menu'] = ['HOME']
         request.session['url'] = ['sugestao/']
+
         request.session['img'] = ['home24.png']
         form = LoginForm(request)
         return render(request, 'acesso/login.html', {
