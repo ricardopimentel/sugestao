@@ -42,7 +42,7 @@ class Config(models.Model):
 
 
 class Setor(models.Model):
-    nome = models.CharField(max_length=200)
+    nome = models.CharField(max_length=200, unique=True)
     responsavel = models.ForeignKey(Pessoa)
     email = models.EmailField(max_length=200)
 

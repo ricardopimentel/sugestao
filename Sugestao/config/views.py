@@ -125,7 +125,11 @@ def CadastroSetor(request, id):
             form = SetorForm(request, initial={'nome': setor.nome, 'responsavel': setor.responsavel, 'email': setor.email})
 
         if request.method == 'POST':
-            form = SetorForm(request, data=request.POST)
+            if editar:
+                setor = Setor.objects.get(id=id)
+                form = SetorForm(request, request.POST, instance=setor)
+            else:
+                form = SetorForm(request, request.POST)
             # Checa se os dados são válidos:
             if form.is_valid():
                 if editar:
@@ -137,6 +141,7 @@ def CadastroSetor(request, id):
                     form.save()
                 messages.success(request, "Sucesso!")
                 return redirect(r('GerenciarSetores'))
+
         return render(request, 'config/admin_cadastro_setor.html', {
             'title': 'Administração',
             'itemselec': 'ADMINISTRAÇÃO',
@@ -161,16 +166,16 @@ def GerenciarPessoas(request):
 def CadastroPessoa(request, id):
     if dict(request.session).get('nomesugestao'):
         editar =False
+        pessoa = Pessoa.objects.get(id=id)
 
         if id == 'cadastro': # verifica se é para cadastrar ou alterar
             form = PessoaForm(request)
         else: # se for para alterar cria um formulário já preenchido
-            pessoa = Pessoa.objects.get(id=id)
             editar = True
             form = PessoaForm(request, initial={'nome': pessoa.nome, 'usuario': pessoa.usuario, 'status': pessoa.status, 'email': pessoa.email})
 
         if request.method == 'POST':
-            form = PessoaForm(request, data=request.POST)
+            form = PessoaForm(request, request.POST, instance=pessoa)
             # Checa se os dados são válidos:
             if form.is_valid():
                 if editar:
