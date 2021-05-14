@@ -101,6 +101,7 @@ class PessoaForm(forms.ModelForm):
         self.fields['usuario'].label = ""
         self.fields['email'].widget = forms.TextInput(attrs={'placeholder': 'E-mail', 'title': 'e-mail da pessoa'})
         self.fields['email'].label = ""
+        self.fields['status'].label = "Ativo?"
 
 
 class EmailForm(forms.ModelForm):

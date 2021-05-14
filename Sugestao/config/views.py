@@ -153,7 +153,7 @@ def CadastroSetor(request, id):
 
 
 def GerenciarPessoas(request):
-    pessoas = Pessoa.objects.all()
+    pessoas = Pessoa.objects.all().exclude(usuario='000000')
     if dict(request.session).get('nomesugestao'):
         return render(request, 'config/gerenciar_pessoa.html', {
             'title': 'Administração',
@@ -185,7 +185,11 @@ def CadastroPessoa(request, id):
                 if editar:
                     pessoa.nome = request.POST['nome']
                     pessoa.usuario = request.POST['usuario']
-                    pessoa.status = request.POST['status']
+                    print(request.POST)
+                    if dict(request.POST).get('status'):
+                        pessoa.status = request.POST['status']
+                    else:
+                        pessoa.status = False
                     pessoa.email = request.POST['email']
                     pessoa.save()
                 else:
