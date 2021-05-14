@@ -166,16 +166,20 @@ def GerenciarPessoas(request):
 def CadastroPessoa(request, id):
     if dict(request.session).get('nomesugestao'):
         editar =False
-        pessoa = Pessoa.objects.get(id=id)
 
         if id == 'cadastro': # verifica se é para cadastrar ou alterar
             form = PessoaForm(request)
         else: # se for para alterar cria um formulário já preenchido
             editar = True
+            pessoa = Pessoa.objects.get(id=id)
             form = PessoaForm(request, initial={'nome': pessoa.nome, 'usuario': pessoa.usuario, 'status': pessoa.status, 'email': pessoa.email})
 
         if request.method == 'POST':
-            form = PessoaForm(request, request.POST, instance=pessoa)
+            if editar:
+                pessoa = Pessoa.objects.get(id=id)
+                form = PessoaForm(request, request.POST, instance=pessoa)
+            else:
+                form = PessoaForm(request, request.POST)
             # Checa se os dados são válidos:
             if form.is_valid():
                 if editar:
