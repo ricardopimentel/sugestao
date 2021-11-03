@@ -250,6 +250,10 @@ def _send_email(subject, from_, to, template_name, context):
     settings.EMAIL_PORT = config.email_port
     settings.EMAIL_HOST_USER = config.email_host_user
     settings.EMAIL_HOST_PASSWORD = config.email_host_password
+    print("\n\n\n")
+    print(settings.EMAIL_HOST_USER)
+    print(settings.EMAIL_HOST_PASSWORD)
+    print("\n\n\n")
 
     body = render_to_string(template_name, context)
     #mail.send_mail(subject, body, from_, to, html_message=body)
@@ -259,7 +263,7 @@ def _send_email(subject, from_, to, template_name, context):
             body,
             from_,
             [to],
-            reply_to=['ti.paraiso@ifto.edu.br']
+            reply_to=['ifto.pso@gmail.com']
         )
     email.content_subtype = "html"
     email.send(fail_silently=False)
