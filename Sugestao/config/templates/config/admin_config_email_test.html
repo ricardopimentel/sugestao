@@ -5,6 +5,31 @@
 {% load pagination_tags %}
 {%block titulo%}{{title}}{%endblock%}
 
+{%block head%}
+	<script src="{% static 'js/tinymce/tinymce.min.js' %}"></script>
+	<script>
+		tinymce.init({
+			selector: 'textarea',
+			theme: 'modern',
+			language: 'pt_BR',
+			plugins: [
+				'advlist autolink lists link image charmap print preview hr anchor pagebreak spellchecker',
+				'searchreplace wordcount visualblocks visualchars code fullscreen',
+				'insertdatetime media nonbreaking save table contextmenu directionality',
+				'emoticons template paste textcolor colorpicker textpattern imagetools codesample toc'
+			],
+			toolbar1: 'spellchecker | undo redo | insert | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image',
+			toolbar2: 'print preview media | forecolor backcolor emoticons | codesample',
+			image_advtab: true,
+			templates: [
+				{ title: 'Test template 1', content: 'Test 1' },
+				{ title: 'Test template 2', content: 'Test 2' }
+			],
+			browser_spellcheck : true,
+		});
+	</script>
+{%endblock%}
+
 {%block top%}
 	{% if request.session.nomesugestao%}
 			<h1>{{request.session.nomesugestao}}</h1>
@@ -57,8 +82,8 @@
 
 {%block conteudo%}
     <div class="cartao">
-        <img src="{% static 'images/icon-email.png' %}" alt="" width="70"/>
-        <h1>Configuração do Email</h1>
+        <img src="{% static 'images/urna.svg' %}" alt="" width="70"/>
+        <h1>Teste de E-mail</h1>
         <br>
         <div class="navegation_bar">
             <a href="{% url 'Home' %}">Home</a>
@@ -68,7 +93,7 @@
         </div>
         <br>
         <div class="formulario">
-            <form method="post" action="{% url 'ConfigEmail' %}"> {%csrf_token%}
+            <form enctype="multipart/form-data" method="post" action="{% url 'ConfigEmailTest' %}"> {%csrf_token%}
                 {{form.as_p}}
                 <p><input type="submit" name="commit" value="Salvar" id="botao" ></p>
             </form>

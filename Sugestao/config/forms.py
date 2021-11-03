@@ -141,3 +141,19 @@ class EmailForm(forms.ModelForm):
             config.save()
         # Sempre retorne a coleção completa de dados válidos.
         return cleaned_data
+
+
+class TestEmailForm(forms.Form):
+    texto = forms.CharField(label="Texto", widget=forms.Textarea())
+    destinatario = forms.EmailField(label="", widget=forms.EmailInput(attrs={'placeholder': 'Destino'}))
+
+    def __init__(self, request, *args, **kwargs):
+        self.request = request
+        super(TestEmailForm, self).__init__(*args, **kwargs)
+
+    def clean(self):
+        cleaned_data = self.cleaned_data
+        texto = cleaned_data.get('texto')
+        destinatario = cleaned_data.get("testinatario")
+
+        return cleaned_data
