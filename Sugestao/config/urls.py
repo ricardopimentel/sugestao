@@ -7,6 +7,7 @@ urlpatterns = [
     url(r'^activedirectory/$', views.Dados_ad, name='ConfigAD'),
     url(r'^configemail/$', views.ConfEmail, name='ConfigEmail'),
     url(r'^configemailtest/$', views.ConfEmailTest, name='ConfigEmailTest'),
+    url(r'^configemailenviolembretes/$', views.ConfEmailEnvioLembretes, name='ConfigEmailEnvioLembretes'),
     url(r'^configuracaoinicial/$', views.ConfigInicial, name='ConfigInicial'),
     url(r'^gerenciarsetores/$', views.GerenciarSetores, name='GerenciarSetores'),
     url(r'^cadastrosetor/(?P<id>.+)$', views.CadastroSetor, name='CadastroSetor'),

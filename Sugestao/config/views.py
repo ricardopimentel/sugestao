@@ -125,6 +125,41 @@ def ConfEmailTest(request):
         return redirect(r('Home'))
 
 
+def ConfEmailEnvioLembretes(request):
+    if dict(request.session).get('usertip') == 'admin':
+        try:
+            # Vefirica se veio algo pelo POST
+            if request.method == 'POST':
+                # cria uma instancia do formulario
+                form = TestEmailForm(request, data=request.POST)
+                # Checa se os dados são válidos:
+                if form.is_valid():
+                    # Chama a página novamente
+                    #tenta enviar e-mail
+                    mail = request.POST['destinatario']
+                    # Envio da msg
+                    _send_email('Não responda essa mensagem ',
+                                [settings.DEFAULT_FROM_EMAIL, ], mail,
+                                'sugerir/sugestao_test_email.html',{'texto': request.POST['texto']})
+                    # add msg
+                    messages.success(request, 'E-mail enviado com sucesso!')
+                return render(request, 'config/admin_config_email_test.html', {'form': form})
+            else:
+                form = TestEmailForm(request)
+                return render(request, 'config/admin_config_email_test.html', {
+                    'title': 'Config. Email',
+                    'itemselec': 'ADMINISTRAÇÃO',
+                    'form': form,
+                })
+        except ObjectDoesNotExist:
+            model = ''
+            messages.error(request, sys.exc_info())
+            return redirect(r('Administracao'))
+    else:
+        messages.error(request, "Você não tem permissão para acessar essa página, redirecionando para HOME")
+        return redirect(r('Home'))
+
+
 def ConfigInicial(request):
     form = AdForm(request)
     if request.method == 'POST':
