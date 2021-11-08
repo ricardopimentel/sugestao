@@ -7,6 +7,27 @@
     <head>
         <meta charset="UTF-8">
         <title>Sugestão</title>
+        <style>
+            p {
+                font-size: 2em;
+            }
+
+            a {
+                border-radius: 10px;
+                font-size: 2em;
+                background: #00695c;
+                border-bottom: 10px solid #004d40;
+                text-decoration: none;
+                color: white;
+                padding: 15px;
+            }
+
+            a:hover {
+                background: #028171;
+                border-bottom: 10px solid #025e4f;
+            }
+
+		</style>
     </head>
     <body>
 
@@ -16,9 +37,9 @@
             <h1>Teste de Envio de E-mail</h1>
         </div>
         <div style="background: white; padding: 5px;">
-            <p>Este é apenas um teste de envio de e-mails do sistema Sugestão, por favor fique a vontade para desconsiderá-lo</b></p>
+            <p>Este é apenas um teste de envio de e-mails do sistema Sugestão, por favor, fique a vontade para desconsiderá-lo</b></p>
             <br>
-            <p>{{texto}}</b></p>
+            <p>{{texto|safe}}</b></p>
         </div>
         <div style="background: #00695c; width: 100%; border-bottom: 10px solid #004d40; padding: 5px; text-align: center; color: white;">
             <p>CGTI - 63 3361-0314</p>

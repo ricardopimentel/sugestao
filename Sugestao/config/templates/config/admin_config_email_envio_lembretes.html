@@ -81,62 +81,71 @@
 {%endblock%}
 
 {%block conteudo%}
-    <div class="card-progressao">
-        <div class="progressao">
-            <a href="{% url 'CadastroSetor' 'cadastro' %}" title="Cadastrar Novo Setor">
-                <div class="botao-circulo">
-                    <img src="{% static 'images/add24.png' %}" alt="" width="24">
-                </div>
-            </a>
-            <!--- <h1>Alunos</h1> --->
-        </div>
-        <div class="progressao-rotulo">
-            <h1>Gerenciar Setores</h1>
-        </div>
-        <div class="card-progressao-container">
-            <div class="navegation_bar">
-                <a href="{% url 'Home' %}">Home</a>
-                <a href="{% url 'Administracao' %}">Administração</a>
-                <a href="{% url 'GerenciarSetores' %}">Gerenciar Setores</a>
-            </div>
-            <table id="minhaTabela">
-                <thead>
-                    <tr id="tr-no-shadow">
-                        <th>Nome</th>
-                        <th>Responsável</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {%for sugestao in sugestoes%}
-                        <tr>
-                            <td><a href="{% url 'CadastroSetor' setor.id %}">{{ sugestao.data }}</a></td>
-                            <td id="td-vermelho"><a href="{% url 'CadastroSetor' setor.id %}">{{ sugestao.titulo }}</a></td>
-                        </tr>
-                    {%endfor%}
-                </tbody>
-            </table>
-        </div>
-    </div>
-
-
     <div class="cartao">
         <img src="{% static 'images/urna.svg' %}" alt="" width="70"/>
-        <h1>Teste de E-mail</h1>
+        <h1>Enviar Lembretes por E-mail</h1>
         <br>
         <div class="navegation_bar">
             <a href="{% url 'Home' %}">Home</a>
             <a href="{% url 'Administracao' %}">Administração</a>
             <a href="{% url 'ConfigEmail' %}">Conf.Email</a>
-            <a href="{% url 'ConfigEmailTest' %}">Testar</a>
+            <a id="navegation_bar_selected" href="{% url 'ConfigEmailEnvioLembretes' 'nao' %}">Enviar Lembretes</a>
         </div>
-        <br>
-        <div class="formulario">
-            <form enctype="multipart/form-data" method="post" action="{% url 'ConfigEmailTest' %}"> {%csrf_token%}
-                {{form.as_p}}
-                <p><input type="submit" name="commit" value="Salvar" id="botao" ></p>
-            </form>
+        <div class="card-progressao-container">
+            <table id="minhaTabela">
+                <thead>
+                    <tr id="tr-no-shadow">
+                        <th>ID</th>
+                        <th>Data da Sugestão</th>
+                        <th>Tempo Decorrido</th>
+                        <th>Título</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {%for sugestao in sugestoes%}
+                        <tr>
+                            <td id="td-vermelho"><a href="{% url 'ConfigEmailEnvioLembretes' 'nao' %}">{{ sugestao.id }}</a></td>
+                            <td><a href="{% url 'DetalharSugestao' sugestao.id 1%}">{{ sugestao.datahora|convert_datetime }}</a></td>
+                            <td><a href="{% url 'DetalharSugestao' sugestao.id 1 %}">{{ sugestao.datahora|tempo_decorrido }} Dias</a></td>
+                            <td><a href="{% url 'DetalharSugestao' sugestao.id 1%}">{{ sugestao.titulo }}</a></td>
+                        </tr>
+                    {%endfor%}
+                </tbody>
+            </table>
+            <br>
+            <a href="{% url 'ConfigEmailEnvioLembretes' 'sim' %}" ><p id="botao_p">Enviar</p></a>
         </div>
     </div>
+
+     <script>
+        $(document).ready(function () {
+            $('#minhaTabela').DataTable({
+                "bPaginate": true,
+                "bLengthChange": false,
+                "bFilter": true,
+                "bInfo": true,
+                "bAutoWidth": true,
+                "language": {
+                    "sEmptyTable": "Nenhum registro encontrado",
+                    "sInfo": "Mostrando de _START_ até _END_ de _TOTAL_ registros",
+                    "sInfoEmpty": "Mostrando 0 até 0 de 0 registros",
+                    "sInfoFiltered": "(Filtrados de _MAX_ registros)",
+                    "sInfoThousands": ".",
+                    "sLengthMenu": "_MENU_ resultados por página",
+                    "sLoadingRecords": "Carregando...",
+                    "sProcessing": "Processando...",
+                    "sZeroRecords": "Nenhum registro encontrado",
+                    "sSearch": "Pesquisar",
+                    "oPaginate": {
+                    "sNext": "»",
+                    "sPrevious": "«",
+                    "sFirst": "Primeiro",
+                    "sLast": "Último"
+                    }
+                },
+            });
+        });
+    </script>
 
      <script>
         function mostrarocultar(mostrar, ocultar){

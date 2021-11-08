@@ -93,7 +93,7 @@
             <div class="navegation_bar">
                 <a href="{% url 'Home' %}">Home</a>
                 <a href="{% url 'Sugestoes' %}">Sugestões</a>
-                <a href="{% url 'DetalharSugestao' sugestao.id sugestao.senha %}">Sugestão {{sugestao.id}}</a>
+                <a id="navegation_bar_selected" href="{% url 'DetalharSugestao' sugestao.id sugestao.senha %}">Sugestão {{sugestao.id}}</a>
             </div>
         </div>
         <br>

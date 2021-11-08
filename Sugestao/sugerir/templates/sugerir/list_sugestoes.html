@@ -65,9 +65,9 @@
             <a href="{% url 'Home' %}">Home</a>
             <a href="{% url 'Sugestoes' %}">Sugestões</a>
             {% if URL|compare_string:'MinhasSugestoes' %}
-                <a href="{% url 'MinhasSugestoes' 1 %}">Minhas Sugestões</a>
+                <a id="navegation_bar_selected" href="{% url 'MinhasSugestoes' 1 %}">Minhas Sugestões</a>
             {% else %}
-                <a href="{% url 'SugestoesPraMim' 1 %}">Sugestões Para Mim</a>
+                <a id="navegation_bar_selected" href="{% url 'SugestoesPraMim' 1 %}">Sugestões Para Mim</a>
             {% endif %}
         </div>
 

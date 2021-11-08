@@ -1,13 +1,18 @@
+import datetime
 import sys
+from datetime import timedelta
+from django.utils import timezone
+
 from django.contrib import messages
 from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import render, redirect, resolve_url as r
 
 
 # Create your views here.
+import Sugestao.core.models
 from Sugestao import settings
 from Sugestao.config.forms import AdForm, SetorForm, PessoaForm, EmailForm, TestEmailForm
-from Sugestao.core.models import Config, Setor, Pessoa
+from Sugestao.core.models import Config, Setor, Pessoa, Sugestao, Resposta
 from django.template.loader import render_to_string
 from django.core.mail import EmailMessage
 
@@ -125,32 +130,41 @@ def ConfEmailTest(request):
         return redirect(r('Home'))
 
 
-def ConfEmailEnvioLembretes(request):
+def ConfEmailEnvioLembretes(request, enviar):
     if dict(request.session).get('usertip') == 'admin':
         try:
-            # Vefirica se veio algo pelo POST
-            if request.method == 'POST':
-                # cria uma instancia do formulario
-                form = TestEmailForm(request, data=request.POST)
-                # Checa se os dados são válidos:
-                if form.is_valid():
-                    # Chama a página novamente
-                    #tenta enviar e-mail
-                    mail = request.POST['destinatario']
+            dias = timezone.now() - timedelta(days=5)
+            sugestoes = Sugestao.objects.prefetch_related('sugestoes').filter(sugestoes=None, datahora__lte=dias)
+            form = TestEmailForm(request)
+
+            if (enviar == 'sim'):
+                #pega a data de hoje
+                hj = datetime.datetime.now()
+                for sugestao in sugestoes:
+                    contexto = dict()
+                    contexto['id'] = sugestao.id
+                    contexto['senha'] = sugestao.senha
+                    contexto['imagem'] = sugestao.imagem
+                    contexto['setor'] = sugestao.setor
+                    contexto['pessoa'] = sugestao.pessoa
+                    contexto['descricao'] = sugestao.descricao
+                    contexto['titulo'] = "Lembrete de sugestão não respondida"
+                    contexto['texto'] = "Estamos enviando um lebrete pois a sugestão número: "+str(sugestao.id)+" ainda não foi respondida"
+                    contexto['data'] = sugestao.datahora
+                    contexto['dias'] = (hj - sugestao.datahora).days
+
                     # Envio da msg
+                    mail = sugestao.setor.email
                     _send_email('Não responda essa mensagem ',
                                 [settings.DEFAULT_FROM_EMAIL, ], mail,
-                                'sugerir/sugestao_test_email.html',{'texto': request.POST['texto']})
-                    # add msg
-                    messages.success(request, 'E-mail enviado com sucesso!')
-                return render(request, 'config/admin_config_email_test.html', {'form': form})
-            else:
-                form = TestEmailForm(request)
-                return render(request, 'config/admin_config_email_test.html', {
-                    'title': 'Config. Email',
-                    'itemselec': 'ADMINISTRAÇÃO',
-                    'form': form,
-                })
+                                'sugerir/lembrete_email.html', contexto)
+
+            return render(request, 'config/admin_config_email_envio_lembretes.html', {
+                'title': 'Config. Email',
+                'itemselec': 'ADMINISTRAÇÃO',
+                'sugestoes': sugestoes,
+                'form': form,
+            })
         except ObjectDoesNotExist:
             model = ''
             messages.error(request, sys.exc_info())
@@ -258,7 +272,6 @@ def CadastroPessoa(request, id):
                 if editar:
                     pessoa.nome = request.POST['nome']
                     pessoa.usuario = request.POST['usuario']
-                    print(request.POST)
                     if dict(request.POST).get('status'):
                         pessoa.status = request.POST['status']
                     else:
@@ -285,11 +298,6 @@ def _send_email(subject, from_, to, template_name, context):
     settings.EMAIL_PORT = config.email_port
     settings.EMAIL_HOST_USER = config.email_host_user
     settings.EMAIL_HOST_PASSWORD = config.email_host_password
-    print("\n\n\n")
-    print(settings.EMAIL_HOST_USER)
-    print(settings.EMAIL_HOST_PASSWORD)
-    print("\n\n\n")
-
     body = render_to_string(template_name, context)
     #mail.send_mail(subject, body, from_, to, html_message=body)
 

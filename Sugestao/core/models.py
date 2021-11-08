@@ -70,7 +70,7 @@ class Obs(models.Model):
 class Resposta(models.Model):
     descricao = models.CharField(max_length=1000)
     datahora = models.DateTimeField('Data')
-    sugestao = models.ForeignKey(Sugestao)
+    sugestao = models.ForeignKey(Sugestao, related_name='sugestoes')
     imagem = models.ImageField('Imagem', upload_to='uploads/', default='uploads/default.png')
     pessoa = models.ForeignKey(Pessoa)
 

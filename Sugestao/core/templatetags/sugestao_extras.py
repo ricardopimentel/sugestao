@@ -15,6 +15,12 @@ def convert_datetime(data):
     return data.strftime("%d/%m/%Y %H:%M:%S")
 
 @register.filter
+def tempo_decorrido(data):
+    hoje = datetime.datetime.now()
+    dias = hoje - data
+    return dias.days
+
+@register.filter
 def convert_date(data):
     return datetime.datetime.strptime(str(data), '%Y-%m-%d').strftime('%d/%m/%Y')
 

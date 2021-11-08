@@ -63,8 +63,7 @@
         <div class="navegation_bar">
             <a href="{% url 'Home' %}">Home</a>
             <a href="{% url 'Administracao' %}">Administração</a>
-            <a href="{% url 'ConfigEmail' %}">Conf.Email</a>
-            <a href="{% url 'ConfigEmailTest' %}">Testar</a>
+            <a id="navegation_bar_selected" href="{% url 'ConfigEmail' %}">Conf.Email</a>
         </div>
         <br>
         <div class="formulario">
@@ -74,6 +73,38 @@
             </form>
         </div>
     </div>
+
+    <div class="card">
+        <img src="{% static 'images/listmenu.png' %}" alt="">
+        <h1>Opções Rápidas</h1>
+        <br>
+
+        {%if request.session.usertip == 'lanchonete' or request.session.usertip == 'admin' %}
+            <div class="box-file">
+                <div class="box_folder">
+                    <a href="{% url 'ConfigEmailTest' %}" title="Abrir Página de Teste de Envio de E-mails">
+                        <div class="folder">
+                            <br><img src="{% static 'images/money.png' %}" alt="" />
+                        </div>
+                        <p>Testar E-Mail</p>
+                    </a>
+                </div>
+            </div>
+        {%endif%}
+
+        <div class="box-file">
+            <div class="box_folder">
+                <a href="{% url 'ConfigEmailEnvioLembretes' 'nao' %}" title="Abrir Página de Envio de Lembretes">
+                    <div class="folder">
+                        <br><img src="{% static 'images/report.png' %}" alt="" />
+                    </div>
+                    <p>Envio de Lembretes</p>
+                </a>
+            </div>
+        </div>
+    </div>
+
+
 
      <script>
         function mostrarocultar(mostrar, ocultar){
