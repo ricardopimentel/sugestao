@@ -57,7 +57,7 @@
 
 {%block conteudo%}
     <div class="cartao">
-        <img src="{% static 'images/icon-email.png' %}" alt="" width="70"/>
+        <img src="{% static 'images/email-config-icon.png' %}" alt="" width="70"/>
         <h1>Configuração do Email</h1>
         <br>
         <div class="navegation_bar">
@@ -84,7 +84,7 @@
                 <div class="box_folder">
                     <a href="{% url 'ConfigEmailTest' %}" title="Abrir Página de Teste de Envio de E-mails">
                         <div class="folder">
-                            <br><img src="{% static 'images/money.png' %}" alt="" />
+                            <br><img src="{% static 'images/teste-email.png' %}" alt="" />
                         </div>
                         <p>Testar E-Mail</p>
                     </a>
@@ -96,7 +96,7 @@
             <div class="box_folder">
                 <a href="{% url 'ConfigEmailEnvioLembretes' 'nao' %}" title="Abrir Página de Envio de Lembretes">
                     <div class="folder">
-                        <br><img src="{% static 'images/report.png' %}" alt="" />
+                        <br><img src="{% static 'images/lembrete.png' %}" alt="" />
                     </div>
                     <p>Envio de Lembretes</p>
                 </a>
