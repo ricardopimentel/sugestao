@@ -10,7 +10,7 @@ from django.shortcuts import render, redirect, resolve_url as r
 
 # Create your views here.
 import Sugestao.core.models
-from Sugestao import settings
+from django.conf import settings
 from Sugestao.config.forms import AdForm, SetorForm, PessoaForm, EmailForm, TestEmailForm
 from Sugestao.core.models import Config, Setor, Pessoa, Sugestao, Resposta
 from django.template.loader import render_to_string
@@ -108,7 +108,7 @@ def ConfEmailTest(request):
                     #tenta enviar e-mail
                     mail = request.POST['destinatario']
                     # Envio da msg
-                    _send_email('Não responda essa mensagem ',
+                    _send_email('Sugestão ',
                                 [settings.DEFAULT_FROM_EMAIL, ], mail,
                                 'sugerir/sugestao_test_email.html',{'texto': request.POST['texto']})
                     # add msg
@@ -155,7 +155,7 @@ def ConfEmailEnvioLembretes(request, enviar):
 
                     # Envio da msg
                     mail = sugestao.setor.email
-                    _send_email('Não responda essa mensagem ',
+                    _send_email('Sugestão ',
                                 [settings.DEFAULT_FROM_EMAIL, ], mail,
                                 'sugerir/lembrete_email.html', contexto)
 
@@ -294,10 +294,11 @@ def CadastroPessoa(request, id):
 def _send_email(subject, from_, to, template_name, context):
 
     config = Config.objects.get(id=1)
-    settings.EMAIL_HOST = config.email_host
-    settings.EMAIL_PORT = config.email_port
-    settings.EMAIL_HOST_USER = config.email_host_user
-    settings.EMAIL_HOST_PASSWORD = config.email_host_password
+    setattr(settings, 'EMAIL_HOST', config.email_host)
+    setattr(settings, 'EMAIL_PORT', config.email_port)
+    setattr(settings, 'EMAIL_HOST_USER', config.email_host_user)
+    setattr(settings, 'EMAIL_HOST_PASSWORD', config.email_host_password)
+
     body = render_to_string(template_name, context)
     #mail.send_mail(subject, body, from_, to, html_message=body)
 
@@ -306,7 +307,6 @@ def _send_email(subject, from_, to, template_name, context):
             body,
             from_,
             [to],
-            reply_to=['ti.paraiso@ifto.edu.br']
         )
     email.content_subtype = "html"
-    email.send(fail_silently=False)
+    email.send(fail_silently=True)

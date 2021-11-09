@@ -1,7 +1,5 @@
 import os
-import platform
 import random
-import shutil
 import threading
 
 from PIL import Image
@@ -12,7 +10,7 @@ from django.template.loader import render_to_string
 from django.utils.datetime_safe import datetime
 
 # import Sugestao
-from Sugestao import settings
+from django.conf import settings
 from Sugestao.core.models import Setor, Pessoa, Sugestao, Edicao, Resposta, Finalizacao, Config
 from Sugestao.sugerir.forms import SugestaoForm, SugestaoEdicaoForm
 
@@ -63,7 +61,7 @@ def FazerSugestao(request):
             if mail == 'Não informado':
                 mail = ''
             # Envio da msg
-            _send_email('Não responda essa mensagem '+ str(sugestao.id),
+            _send_email('Sugestão '+ str(sugestao.id),
                 [settings.DEFAULT_FROM_EMAIL, ],
                 sugestao.setor.email, mail,
                 'sugerir/sugestao_email.html',
@@ -140,7 +138,7 @@ def ResponderSugestao(request, id):
             if mail == 'Não informado':
                 mail = ''
             # Envio da msg
-            _send_email('Não responda essa mensagem '+ str(resposta.sugestao.id),
+            _send_email('Sugestão '+ str(resposta.sugestao.id),
                 [settings.DEFAULT_FROM_EMAIL, ],
                 sugestao.setor.email, mail,
                 'sugerir/resposta_email.html',
@@ -187,7 +185,7 @@ def FinalizarSugestao(request, id):
             if mail == 'Não informado':
                 mail = ''
             # Envio da msg
-            _send_email('Não responda essa mensagem '+ str(finalizacao.sugestao.id),
+            _send_email('Sugestão '+ str(finalizacao.sugestao.id),
                 [settings.DEFAULT_FROM_EMAIL, ],
                 sugestao.setor.email, mail,
                 'sugerir/finalizacao_email.html',
@@ -301,10 +299,10 @@ def VaParaSugestao(request):
 def _send_email(subject, from_, to, copy, template_name, context):
 
     config = Config.objects.get(id=1)
-    settings.EMAIL_HOST = config.email_host
-    settings.EMAIL_PORT = config.email_port
-    settings.EMAIL_HOST_USER = config.email_host_user
-    settings.EMAIL_HOST_PASSWORD = config.email_host_password
+    setattr(settings, 'EMAIL_HOST', config.email_host)
+    setattr(settings, 'EMAIL_PORT', config.email_port)
+    setattr(settings, 'EMAIL_HOST_USER', config.email_host_user)
+    setattr(settings, 'EMAIL_HOST_PASSWORD', config.email_host_password)
 
     body = render_to_string(template_name, context)
     #mail.send_mail(subject, body, from_, to, html_message=body)
@@ -315,7 +313,6 @@ def _send_email(subject, from_, to, copy, template_name, context):
             from_,
             [to],
             [copy],
-            reply_to=['ti.paraiso@ifto.edu.br']
         )
     email.content_subtype = "html"
     email.send(fail_silently=True)
