@@ -315,7 +315,7 @@ def _send_email(subject, from_, to, copy, template_name, context):
             from_,
             [to],
             [copy],
-            reply_to=['cpd.paraiso@ifto.edu.br']
+            reply_to=['ti.paraiso@ifto.edu.br']
         )
     email.content_subtype = "html"
     email.send(fail_silently=True)

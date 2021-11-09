@@ -306,7 +306,7 @@ def _send_email(subject, from_, to, template_name, context):
             body,
             from_,
             [to],
-            reply_to=['ifto.pso@gmail.com']
+            reply_to=['ti.paraiso@ifto.edu.br']
         )
     email.content_subtype = "html"
     email.send(fail_silently=False)
