@@ -12,7 +12,7 @@
                 font-size: 2em;
             }
 
-            a {
+            #botao {
                 border-radius: 10px;
                 font-size: 2em;
                 background: #00695c;
@@ -22,7 +22,7 @@
                 padding: 15px;
             }
 
-            a:hover {
+            #botao:hover {
                 background: #028171;
                 border-bottom: 10px solid #025e4f;
             }
@@ -38,7 +38,7 @@
         </div>
         <div style="background: white; padding: 5px;">
             <p>Sugestão: <b>{{ id }}</b></p>
-            <a href="https://campusparaiso.ifto.edu.br{% url 'DetalharSugestao' id senha %}">Visualizar </a>
+            <a id="botao" href="https://campusparaiso.ifto.edu.br{% url 'DetalharSugestao' id senha %}">Visualizar </a>
             <p>Finalizado por: {{ pessoa }}</p>
             <div style="border-radius: 0px; padding: 15px; border: 1px solid #004d40;">
                 <p>Finalização: {{ descricao|safe }}</p>
