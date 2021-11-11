@@ -155,7 +155,7 @@ def ConfEmailEnvioLembretes(request, enviar):
 
                     # Envio da msg
                     mail = sugestao.setor.email
-                    _send_email('Sugestão ',
+                    _send_email('Sugestão '+str(sugestao.id),
                                 [settings.DEFAULT_FROM_EMAIL, ], mail,
                                 'sugerir/lembrete_email.html', contexto)
 
