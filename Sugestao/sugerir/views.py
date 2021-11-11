@@ -255,7 +255,7 @@ def SugestoesPraMim(request, view):
                 sugestoesparamim = Sugestao.objects.filter(setor__responsavel=idpessoa, status='1') #filtra as sugestões atribuidas ao setor que eu sou responsável
             else:
                 sugestoesparamim = Sugestao.objects.filter(setor__responsavel=idpessoa) #filtra as sugestões atribuidas ao setor que eu sou responsável
-            return render(request, 'sugerir/list_sugestoes.html', {'err': '', 'itemselec': 'HOME', 'sugestoesparamim': sugestoesparamim, 'titulo': 'Sugestões Para Mim', 'URL': 'SugestoesPraMim', 'view': view})
+            return render(request, 'sugerir/list_sugestoes.html', {'err': '', 'itemselec': 'SUGESTÕES', 'sugestoesparamim': sugestoesparamim, 'titulo': 'Sugestões Para Mim', 'URL': 'SugestoesPraMim', 'view': view})
 
     except KeyError:
         return redirect(r('Login'))
@@ -268,7 +268,7 @@ def MinhasSugestoes(request, view):
                 sugestoes = Sugestao.objects.filter(pessoa__usuario=request.session['userl'], status='1') #filtra as sugestões para mostrar somente as realizadas por esse usuário, e estejam ativas
             else:
                 sugestoes = Sugestao.objects.filter(pessoa__usuario=request.session['userl']) #filtra as sugestões para mostrar somente as realizadas por esse usuário
-            return render(request, 'sugerir/list_sugestoes.html', {'err': '','sugestoes': sugestoes, 'itemselec': 'HOME', 'titulo': 'Minhas Sugestões', 'URL': 'MinhasSugestoes', 'view': view})
+            return render(request, 'sugerir/list_sugestoes.html', {'err': '','sugestoes': sugestoes, 'itemselec': 'SUGESTÕES', 'titulo': 'Minhas Sugestões', 'URL': 'MinhasSugestoes', 'view': view})
 
     except KeyError:
         return redirect(r('Login'))
