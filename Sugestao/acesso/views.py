@@ -27,6 +27,10 @@ def Login(request):
             try:
                 pess = Pessoa.objects.get(usuario=request.session['userl'])
                 if pess:  # Pessoa Cadastrada
+                    # Atualizar dados de contato vindos do AD
+                    pess.nome = request.session['nomesugestao']
+                    pess.email = request.session['mail']
+                    pess.save()#salva possivel alteração vinda do AD
                     # Pessoa cadastrada, abrir página inicial
                     return redirect(r('Home'))
             except:
