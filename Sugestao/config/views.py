@@ -108,7 +108,8 @@ def ConfEmailTest(request):
                     #tenta enviar e-mail
                     mail = request.POST['destinatario']
                     # Envio da msg
-                    _send_email('Sugestão ', mail,
+                    _send_email('Sugestão ',
+                                [settings.DEFAULT_FROM_EMAIL, ], mail,
                                 'sugerir/sugestao_test_email.html',{'texto': request.POST['texto']})
                     # add msg
                     messages.success(request, 'E-mail enviado com sucesso!')
@@ -154,7 +155,8 @@ def ConfEmailEnvioLembretes(request, enviar):
 
                     # Envio da msg
                     mail = sugestao.setor.email
-                    _send_email('Sugestão '+str(sugestao.id), mail,
+                    _send_email('Sugestão '+str(sugestao.id),
+                                [settings.DEFAULT_FROM_EMAIL, ], mail,
                                 'sugerir/lembrete_email.html', contexto)
 
             return render(request, 'config/admin_config_email_envio_lembretes.html', {
@@ -289,7 +291,7 @@ def CadastroPessoa(request, id):
         })
     return redirect(r('Login'))
 
-def _send_email(subject, to, template_name, context):
+def _send_email(subject, from_, to, template_name, context):
 
     config = Config.objects.get(id=1)
     setattr(settings, 'EMAIL_HOST', config.email_host)
@@ -303,6 +305,7 @@ def _send_email(subject, to, template_name, context):
     email = EmailMessage(
             subject,
             body,
+            from_,
             [to],
         )
     email.content_subtype = "html"
