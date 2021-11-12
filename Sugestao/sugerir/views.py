@@ -62,7 +62,6 @@ def FazerSugestao(request):
                 mail = ''
             # Envio da msg
             _send_email('Sugestão '+ str(sugestao.id),
-                [settings.DEFAULT_FROM_EMAIL, ],
                 sugestao.setor.email, mail,
                 'sugerir/sugestao_email.html',
                 contexto)
@@ -139,7 +138,6 @@ def ResponderSugestao(request, id):
                 mail = ''
             # Envio da msg
             _send_email('Sugestão '+ str(resposta.sugestao.id),
-                [settings.DEFAULT_FROM_EMAIL, ],
                 sugestao.setor.email, mail,
                 'sugerir/resposta_email.html',
                 contexto)
@@ -186,7 +184,6 @@ def FinalizarSugestao(request, id):
                 mail = ''
             # Envio da msg
             _send_email('Sugestão '+ str(finalizacao.sugestao.id),
-                [settings.DEFAULT_FROM_EMAIL, ],
                 sugestao.setor.email, mail,
                 'sugerir/finalizacao_email.html',
                 contexto)
@@ -296,7 +293,7 @@ def VaParaSugestao(request):
     return redirect(r('Sugestoes'))
 
 
-def _send_email(subject, from_, to, copy, template_name, context):
+def _send_email(subject, to, copy, template_name, context):
 
     config = Config.objects.get(id=1)
     setattr(settings, 'EMAIL_HOST', config.email_host)
@@ -310,7 +307,6 @@ def _send_email(subject, from_, to, copy, template_name, context):
     email = EmailMessage(
             subject,
             body,
-            from_,
             [to],
             [copy],
         )
