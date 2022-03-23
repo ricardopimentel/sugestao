@@ -17,8 +17,10 @@ from django.conf.urls import url, include
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.conf.urls.static import static
 from django.conf import settings
+from django.urls import path
 
 urlpatterns = [
+    path('tinymce/', include('tinymce.urls')),
     url(r'^sugestao/', include('Sugestao.core.urls')),
     url(r'^sugestao/acesso/', include('Sugestao.acesso.urls')),
     url(r'^sugestao/config/', include('Sugestao.config.urls')),

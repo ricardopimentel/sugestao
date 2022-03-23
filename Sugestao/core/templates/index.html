@@ -83,7 +83,7 @@
                             <a href="{% url 'DetalharSugestao' sugestao.id ' ' %}" title="Abrir {{sugestao.titulo}}">
                                 <div class="sugestao-box">
                                     <div class="sugestao-box_bar_top">
-                                        <img src="{% static sugestao.imagem.url %}" alt="" />
+                                        <img src="{{ sugestao.imagem.url }}" alt="" />
                                     </div>
                                     <p><b>{{sugestao.titulo}}</b></p>
                                     <div class="descricao-sugestao-box">{{sugestao.descricao|safe}}</div>

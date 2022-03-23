@@ -1,5 +1,6 @@
 from django import forms
 from django.core.exceptions import ObjectDoesNotExist
+from tinymce.widgets import TinyMCE
 
 from Sugestao.core.models import Config, Setor, Pessoa
 from Sugestao.core.libs.conexaoAD3 import conexaoAD
@@ -144,7 +145,7 @@ class EmailForm(forms.ModelForm):
 
 
 class TestEmailForm(forms.Form):
-    texto = forms.CharField(label="Texto", widget=forms.Textarea())
+    texto = forms.CharField(label="Texto", widget=TinyMCE())
     destinatario = forms.EmailField(label="", widget=forms.EmailInput(attrs={'placeholder': 'Destino'}))
 
     def __init__(self, request, *args, **kwargs):

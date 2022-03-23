@@ -1,7 +1,7 @@
 from __future__ import unicode_literals
 
 from django.db import models
-from tinymce import models as tinymce_models
+from tinymce.models import HTMLField
 
 # Create your models here.
 class Pessoa (models.Model):
@@ -15,14 +15,14 @@ class Pessoa (models.Model):
 
 
 class Administrador (models.Model):
-    id_pessoa = models.ForeignKey(Pessoa)
+    id_pessoa = models.ForeignKey(Pessoa, on_delete=models.PROTECT)
 
     def __str__(self):
         return str(Pessoa.nome)
 
 
 class User (models.Model):
-    id_pessoa = models.ForeignKey(Pessoa)
+    id_pessoa = models.ForeignKey(Pessoa, on_delete=models.PROTECT)
 
     def __str__(self):
         return str(Pessoa.nome)
@@ -43,7 +43,7 @@ class Config(models.Model):
 
 class Setor(models.Model):
     nome = models.CharField(max_length=200, unique=True)
-    responsavel = models.ForeignKey(Pessoa, limit_choices_to={'status': True})
+    responsavel = models.ForeignKey(Pessoa, on_delete=models.PROTECT, limit_choices_to={'status': True})
     email = models.EmailField(max_length=200)
 
     def __str__(self):
@@ -52,11 +52,11 @@ class Setor(models.Model):
 
 class Sugestao(models.Model):
     titulo = models.CharField(max_length=200)
-    descricao = tinymce_models.HTMLField(max_length=10000)
+    descricao = HTMLField(max_length=10000)
     imagem = models.ImageField('Imagem', upload_to='uploads/', default='uploads/default.png')
     datahora = models.DateTimeField('Data')
-    setor = models.ForeignKey(Setor)
-    pessoa = models.ForeignKey(Pessoa)
+    setor = models.ForeignKey(Setor, on_delete=models.PROTECT)
+    pessoa = models.ForeignKey(Pessoa, on_delete=models.PROTECT)
     senha = models.CharField(max_length=8, default='*')
     status = models.BooleanField()
 
@@ -64,25 +64,25 @@ class Sugestao(models.Model):
 class Obs(models.Model):
     descricao = models.CharField(max_length=1000)
     datahora = models.DateTimeField('Data')
-    sugestao = models.ForeignKey(Sugestao)
+    sugestao = models.ForeignKey(Sugestao, on_delete=models.PROTECT)
 
 
 class Resposta(models.Model):
     descricao = models.CharField(max_length=1000)
     datahora = models.DateTimeField('Data')
-    sugestao = models.OneToOneField(Sugestao, related_name='sugestoes')
+    sugestao = models.OneToOneField(Sugestao, on_delete=models.PROTECT, related_name='sugestoes')
     imagem = models.ImageField('Imagem', upload_to='uploads/', default='uploads/default.png')
-    pessoa = models.ForeignKey(Pessoa)
+    pessoa = models.ForeignKey(Pessoa, on_delete=models.PROTECT)
 
 
 class Edicao(models.Model):
     descricao = models.CharField(max_length=1000)
     datahora = models.DateTimeField('Data')
-    sugestao = models.ForeignKey(Sugestao)
+    sugestao = models.ForeignKey(Sugestao, on_delete=models.PROTECT)
 
 
 class Finalizacao(models.Model):
     descricao = models.CharField(max_length=1000)
     datahora = models.DateTimeField('Data')
-    sugestao = models.OneToOneField(Sugestao)
-    pessoa = models.ForeignKey(Pessoa)
+    sugestao = models.OneToOneField(Sugestao, on_delete=models.PROTECT)
+    pessoa = models.ForeignKey(Pessoa, on_delete=models.PROTECT)

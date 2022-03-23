@@ -2,6 +2,7 @@ from django import forms
 from django.utils.datetime_safe import datetime
 
 # import Sugestao
+from tinymce.widgets import TinyMCE
 
 from Sugestao.core.models import Sugestao
 
@@ -10,7 +11,7 @@ class SugestaoForm(forms.Form):
     titulo = forms.CharField(label='Título')
     setor = forms.ChoiceField(label="Setor")
     pessoa = forms.ChoiceField(label="Pessoa")
-    descricao = forms.CharField(label="Sugestão", widget=forms.Textarea())
+    descricao = forms.CharField(label="Sugestão", widget=TinyMCE())
     imagem = forms.ImageField(label="", required=False, widget=forms.FileInput(attrs={'accept': 'image/*'}))
 
 
@@ -36,7 +37,7 @@ class SugestaoForm(forms.Form):
 
 
 class SugestaoEdicaoForm(forms.Form):
-    descricao = forms.CharField(label="Sugestão", widget=forms.Textarea())
+    descricao = forms.CharField(label="Sugestão", widget=TinyMCE())
 
     def clean(self):
         cleaned_data = self.cleaned_data

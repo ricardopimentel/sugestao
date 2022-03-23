@@ -41,24 +41,25 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 	'django.contrib.sites',
     'django.contrib.redirects',
-    'pagination_bootstrap',
+    'django_pagination_bootstrap',
     'Sugestao.acesso',
     'Sugestao.core',
     'Sugestao.config',
     'Sugestao.sugerir',
+    'tinymce',
 ]
 
-MIDDLEWARE_CLASSES = [
+MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'pagination_bootstrap.middleware.PaginationMiddleware',
+    'django_pagination_bootstrap.middleware.PaginationMiddleware',
 ]
+
 
 ROOT_URLCONF = 'Sugestao.urls'
 
