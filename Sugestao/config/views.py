@@ -1,5 +1,6 @@
 import datetime
 import sys
+import threading
 from datetime import timedelta
 from django.utils import timezone
 
@@ -155,9 +156,10 @@ def ConfEmailEnvioLembretes(request, enviar):
 
                     # Envio da msg
                     mail = sugestao.setor.email
-                    _send_email('Sugestão '+str(sugestao.id),
-                                [settings.DEFAULT_FROM_EMAIL, ], mail,
-                                'sugerir/lembrete_email.html', contexto)
+                    # Abrir Thread
+                    t = threading.Thread(target=_thread_email, args=(request, 'Sugestão '+str(sugestao.id), [settings.DEFAULT_FROM_EMAIL, ], mail, 'sugerir/lembrete_email.html', contexto), kwargs={})
+                    t.setDaemon(True)
+                    t.start()
 
             return render(request, 'config/admin_config_email_envio_lembretes.html', {
                 'title': 'Config. Email',
@@ -290,6 +292,33 @@ def CadastroPessoa(request, id):
             'form': form,
         })
     return redirect(r('Login'))
+
+
+def _thread_email(request, subject, from_, to, template_name, context):
+    try:
+        config = Config.objects.get(id=1)
+        setattr(settings, 'EMAIL_HOST', config.email_host)
+        setattr(settings, 'EMAIL_PORT', config.email_port)
+        setattr(settings, 'EMAIL_HOST_USER', config.email_host_user)
+        setattr(settings, 'EMAIL_HOST_PASSWORD', config.email_host_password)
+
+        body = render_to_string(template_name, context)
+        # mail.send_mail(subject, body, from_, to, html_message=body)
+
+        email = EmailMessage(
+            subject,
+            body,
+            from_,
+            [to],
+        )
+        email.content_subtype = "html"
+        email.send(fail_silently=True)
+
+        print('\nTerminado\n')
+    except:
+        messages.error(request, sys.exc_info())
+        return redirect(r('Home'))
+
 
 def _send_email(subject, from_, to, template_name, context):
 
