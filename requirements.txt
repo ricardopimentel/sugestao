@@ -30,7 +30,7 @@ python-decouple==3.0
 python3-ldap==0.9.8.4
 pytz==2017.2
 PyYAML==3.12
-reportlab==3.4.0
+reportlab==3.5.55
 requests==2.14.2
 requests-oauthlib==0.8.0
 six==1.10.0
