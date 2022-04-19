@@ -11,8 +11,8 @@ from django.utils.datetime_safe import datetime
 
 # import Sugestao
 from django.conf import settings
-from Sugestao.core.models import Setor, Pessoa, Sugestao, Edicao, Resposta, Finalizacao, Config
-from Sugestao.sugerir.forms import SugestaoForm, SugestaoEdicaoForm
+from Sugestao.core.models import Setor, Pessoa, Sugestao, Edicao, Resposta, Finalizacao, Config, Redirecionamento
+from Sugestao.sugerir.forms import SugestaoForm, SugestaoEdicaoForm, SugestaoRedirecionamentoForm
 
 
 def FazerSugestao(request):
@@ -102,7 +102,65 @@ def EditarSugestao(request, id):
             messages.success(request, 'Edição salva com sucesso!')
             return redirect(r('DetalharSugestao', str(sugestao.id), edicao.sugestao.senha))
 
-    return render(request, 'sugerir/cadastro_sugestao.html', {'URL': 'EditarSugestao', 'err': '','id': id, 'form': form, 'itemselec': 'HOME', "titulo": 'Editar Sugestão: '+ id})
+    return render(request, 'sugerir/cadastro_sugestao.html', {'URL': 'EditarSugestao', 'err': '','id': id, 'form': form, 'itemselec': 'HOME', "titulo": 'Editar Sugestão'})
+
+
+def RedirecionarSugestao(request, id):
+    try:  # Verificar se usuario esta logado
+        if request.session['nomesugestao']:
+            pass
+    except KeyError:
+        return redirect(r('Login'))
+
+    # Preencher Formulário
+    SETORES = []
+    setores = Setor.objects.all()
+    SETORES.append(('', 'Para qual setor é a sugestão?'))
+    for setor in setores:
+        SETORES.append((setor.id, setor.nome))
+
+    # Preencher Formulário
+    sugestao = Sugestao.objects.get(id=id)  # Buscar dados da sugestão a ser alterada
+
+    # criar instancia do formulário preencido
+    form = SugestaoRedirecionamentoForm(request, SETORES, initial={'descricao': sugestao.descricao})
+    # Verifica se vieram dados pelo post
+    if request.method == 'POST':
+        form = SugestaoEdicaoForm(request.POST)
+        if form.is_valid():  # se dados do formulário são válidos, salva os dados na linha abaixo
+            redirecionamento = Redirecionamento(descricao=request.POST['descricao'], datahora=datetime.now(),
+                                sugestao=Sugestao.objects.get(id=id),
+                                pessoa=Pessoa.objects.get(usuario=request.session['userl']))
+            redirecionamento.save()
+            # alterar sugestão
+            sugestao.setor = request.POST['setor']
+            sugestao.save()
+
+            # Send email
+            # Preparação de contexto
+            contexto = form.cleaned_data
+            contexto['id'] = redirecionamento.sugestao.id
+            contexto['senha'] = redirecionamento.sugestao.senha
+            contexto['pessoa'] = redirecionamento.pessoa.nome
+            contexto['titulo'] = "A Sugestão " + str(redirecionamento.sugestao.id) + " foi redirecionada"
+
+            # tenta recuperar o email do criador da sugestão
+            mail = redirecionamento.sugestao.pessoa.email
+            if mail == 'Não informado':
+                mail = ''
+            # Envio da msg
+            _send_email('Sugestão ' + str(redirecionamento.sugestao.id),
+                        [settings.DEFAULT_FROM_EMAIL, ],
+                        sugestao.setor.email, mail,
+                        'sugerir/redirecionamento_email.html',
+                        contexto)
+
+            messages.success(request, 'Redirecionado com sucesso!')
+            return redirect(r('DetalharSugestao', str(sugestao.id), redirecionamento.sugestao.senha))
+
+    return render(request, 'sugerir/cadastro_sugestao.html',
+                  {'URL': 'RedirecionarSugestao', 'err': '', 'id': id, 'form': form, 'itemselec': 'HOME',
+                   'titulo': 'Redirecionar Sugestão'})
 
 
 def ResponderSugestao(request, id):
@@ -147,7 +205,7 @@ def ResponderSugestao(request, id):
             messages.success(request, 'Resposta salva com sucesso!')
             return redirect(r('DetalharSugestao', str(sugestao.id), resposta.sugestao.senha))
 
-    return render(request, 'sugerir/cadastro_sugestao.html', {'URL': 'ResponderSugestao', 'err': '','id': id, 'form': form, 'itemselec': 'HOME', 'titulo': 'Responder Sugestão: '+ id})
+    return render(request, 'sugerir/cadastro_sugestao.html', {'URL': 'ResponderSugestao', 'err': '','id': id, 'form': form, 'itemselec': 'HOME', 'titulo': 'Responder Sugestão'})
 
 
 def FinalizarSugestao(request, id):
@@ -194,7 +252,7 @@ def FinalizarSugestao(request, id):
             messages.success(request, 'Sugestão finalizada com sucesso!')
             return redirect(r('DetalharSugestao', str(sugestao.id), finalizacao.sugestao.senha))
 
-    return render(request, 'sugerir/cadastro_sugestao.html', {'URL': 'FinalizarSugestao', 'err': '','id': id, 'form': form, 'itemselec': 'HOME', 'titulo': 'Finalizar Sugestão: '+ id})
+    return render(request, 'sugerir/cadastro_sugestao.html', {'URL': 'FinalizarSugestao', 'err': '','id': id, 'form': form, 'itemselec': 'HOME', 'titulo': 'Finalizar Sugestão'})
 
 
 def DetalharSugestao(request, id, senha):

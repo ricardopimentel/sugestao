@@ -8,6 +8,7 @@ urlpatterns = [
     url(r'^sugestoespmim/(?P<view>.+)$', views.SugestoesPraMim, name='SugestoesPraMim'),
     url(r'^detalharsugestao/(?P<id>.+)/(?P<senha>.+)$', views.DetalharSugestao, name='DetalharSugestao'),
     url(r'^editarsugestao/(?P<id>.+)$', views.EditarSugestao, name='EditarSugestao'),
+    url(r'^redirecionarsugestao/(?P<id>.+)$', views.RedirecionarSugestao, name='RedirecionarSugestao'),
     url(r'^respondersugestao/(?P<id>.+)$', views.ResponderSugestao, name='ResponderSugestao'),
     url(r'^finalizarsugestao/(?P<id>.+)$', views.FinalizarSugestao, name='FinalizarSugestao'),
     url(r'^goto/$', views.VaParaSugestao, name='VaParaSugestao'),

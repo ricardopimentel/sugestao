@@ -45,3 +45,20 @@ class SugestaoEdicaoForm(forms.Form):
 
         return cleaned_data
 
+
+class SugestaoRedirecionamentoForm(forms.Form):
+    setor = forms.ChoiceField(label="Setor")
+    descricao = forms.CharField(label="Motivo do Redirecionamento", widget=TinyMCE())
+
+
+    def __init__(self, request, SETORES, *args, **kwargs):
+        super(SugestaoRedirecionamentoForm, self).__init__(*args, **kwargs)
+        self.request = request
+        self.fields['setor'].choices = SETORES
+        self.fields['setor'].label = ""
+
+    def clean(self):
+        cleaned_data = self.cleaned_data
+        descricao = cleaned_data.get("descricao")
+
+        return cleaned_data

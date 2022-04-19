@@ -81,6 +81,13 @@ class Edicao(models.Model):
     sugestao = models.ForeignKey(Sugestao, on_delete=models.PROTECT)
 
 
+class Redirecionamento(models.Model):
+    descricao = models.CharField(max_length=1000)
+    datahora = models.DateTimeField('Data')
+    sugestao = models.ForeignKey(Sugestao, on_delete=models.PROTECT)
+    pessoa = models.ForeignKey(Pessoa, on_delete=models.PROTECT)
+
+
 class Finalizacao(models.Model):
     descricao = models.CharField(max_length=1000)
     datahora = models.DateTimeField('Data')

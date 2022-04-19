@@ -88,7 +88,18 @@
         <div class="navegation_bar">
             <a href="{% url 'Home' %}">Home</a>
             <a href="{% url 'Sugestoes' %}">Sugestões</a>
-            <a id="navegation_bar_selected" href="{% url 'FazerSugestao' %}">Fazer Sugestão</a>
+            <a href="{% url 'DetalharSugestao' id '*'%}">Detalhar Sugestão</a>
+            {% if titulo == 'Redirecionar Sugestão' %}
+                <a id="navegation_bar_selected" href="{% url 'RedirecionarSugestao' id%}">Redirecionar Sugestão</a>
+            {% elif titulo == 'Deixe Sua Sugestão' %}
+                <a id="navegation_bar_selected" href="{% url 'FazerSugestao' %}">Fazer Sugestão</a>
+            {% elif titulo == 'Responder Sugestão' %}
+                <a id="navegation_bar_selected" href="{% url 'ResponderSugestao' id%}">Responder Sugestão</a>
+            {% elif titulo == 'Editar Sugestão' %}
+                <a id="navegation_bar_selected" href="{% url 'EditarSugestao' id%}">Editar Sugestão</a>
+            {% elif titulo == 'Finalizar Sugestão' %}
+                <a id="navegation_bar_selected" href="{% url 'EditarSugestao' id%}">Finalizar Sugestão</a>
+            {% endif %}
         </div>
         <br>
         <div class="formulario">

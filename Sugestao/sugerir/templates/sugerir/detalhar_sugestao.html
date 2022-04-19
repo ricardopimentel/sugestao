@@ -236,6 +236,11 @@
                                         <img src="{% static 'images/reply24b.png' %}" />
                                     </div>
                                 </a>
+                                <a href="{% url 'RedirecionarSugestao' sugestao.id%}" title="Redirecionar esta sugestão para outro setor">
+                                    <div class="sistemas">
+                                        <img src="{% static 'images/redirect.png' %}" />
+                                    </div>
+                                </a>
                             {%endif%}
                             {% if finalizar == 'finalizar' %}
                                 <a href="{% url 'FinalizarSugestao' sugestao.id%}" title="Finalizar">
