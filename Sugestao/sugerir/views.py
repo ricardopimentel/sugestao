@@ -113,14 +113,14 @@ def RedirecionarSugestao(request, id):
         return redirect(r('Login'))
 
     # Preencher Formulário
+    sugestao = Sugestao.objects.get(id=id)  # Buscar dados da sugestão a ser alterada
+
     SETORES = []
-    setores = Setor.objects.all()
+    setores = Setor.objects.all().exclude(nome=sugestao.setor.nome)
     SETORES.append(('', 'Para qual setor é a sugestão?'))
+
     for setor in setores:
         SETORES.append((setor.id, setor.nome))
-
-    # Preencher Formulário
-    sugestao = Sugestao.objects.get(id=id)  # Buscar dados da sugestão a ser alterada
 
     # criar instancia do formulário preencido
     form = SugestaoRedirecionamentoForm(request, SETORES, initial={'descricao': sugestao.descricao, 'setor': sugestao.setor})
@@ -151,7 +151,7 @@ def RedirecionarSugestao(request, id):
             # Envio da msg
             _send_email('Sugestão ' + str(redirecionamento.sugestao.id),
                         [settings.DEFAULT_FROM_EMAIL, ],
-                        sugestao.setor.email, mail,
+                        Setor.objects.get(id=request.POST['setor']).email, mail,
                         'sugerir/redirecionamento_email.html',
                         contexto)
 
