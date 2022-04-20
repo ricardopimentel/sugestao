@@ -10,6 +10,8 @@ class Migration(migrations.Migration):
         ('core', '0001_initial'),
     ]
 
+
+
     operations = [
         migrations.CreateModel(
             name='Redirecionamento',

@@ -173,6 +173,45 @@
             {% endif %}
         {% endfor %}
 
+        <!-- Redirecionamentos -->
+        {% for redirecionamento in redirecionamentos %}
+            {% if request.session.nomesugestao|compare_string:redirecionamento.pessoa.nome %}
+
+                <div class="detalhamento-secao-dir" style="margin-left: 20px">
+                    <div class="detalhamento-secao-barra-info-dir" style="">
+                        <p>Redirecionado às: {{redirecionamento.datahora|convert_datetime}}</p>
+                        <div class="notprint" style="display: inline-block;">
+                            <div class="detalhamento-secao-edit-barra-imagem" style="margin: -10px -15px 5px 5px">
+                                <img src="{% static 'images/redirect1.png' %}" alt=""/>
+                            </div>
+                        </div>
+                    </div>
+                    <p>{{redirecionamento.descricao|safe}}</p>
+                    <div class="bottom-balao" title="Ver imagem">
+                        <p>Redirecionado {{redirecionamento.depara}}</p>
+                        <p>Por: {{redirecionamento.pessoa.nome}}</p>
+                    </div>
+                </div>
+
+            {% else %}
+                <div class="detalhamento-secao-esq" style="margin-right: 20px">
+                    <div class="detalhamento-secao-barra-info-esq" style="">
+                        <div class="notprint" style="display: inline-block;">
+                            <div class="detalhamento-secao-edit-barra-imagem" style="margin: -10px 5px 5px -15px">
+                                <img src="{% static 'images/redirect1.png' %}" alt=""/>
+                            </div>
+                        </div>
+                        <p>Redirecionado às: {{redirecionamento.datahora|convert_datetime}}</p>
+                    </div>
+                    <p>{{redirecionamento.descricao|safe}}</p>
+                    <div class="bottom-balao" title="Ver imagem">
+                        <p>Redirecionado {{redirecionamento.depara}}</p>
+                        <p>Por: {{redirecionamento.pessoa.nome}}</p>
+                    </div>
+                </div>
+            {% endif %}
+        {% endfor %}
+
         <!-- Edições -->
         {% for edicao in edicoes %}
             {% if request.session.nomesugestao|compare_string:sugestao.pessoa %}
@@ -209,6 +248,7 @@
                 </div>
             {% endif %}
         {% endfor %}
+
         <!-- Sugestão -->
         {% if request.session.nomesugestao|compare_string:sugestao.pessoa %}
             <div class="detalhamento-secao-dir" style="margin-left: 20px">
@@ -296,6 +336,11 @@
                                 <a href="{% url 'ResponderSugestao' sugestao.id%}" title="Responder">
                                     <div class="sistemas">
                                         <img src="{% static 'images/reply24b.png' %}" />
+                                    </div>
+                                </a>
+                                <a href="{% url 'RedirecionarSugestao' sugestao.id%}" title="Redirecionar esta sugestão para outro setor">
+                                    <div class="sistemas">
+                                        <img src="{% static 'images/redirect.png' %}" />
                                     </div>
                                 </a>
                             {%endif%}

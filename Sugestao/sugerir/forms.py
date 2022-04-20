@@ -60,5 +60,6 @@ class SugestaoRedirecionamentoForm(forms.Form):
     def clean(self):
         cleaned_data = self.cleaned_data
         descricao = cleaned_data.get("descricao")
+        setor = cleaned_data.get("setor")
 
         return cleaned_data

@@ -123,17 +123,17 @@ def RedirecionarSugestao(request, id):
     sugestao = Sugestao.objects.get(id=id)  # Buscar dados da sugestão a ser alterada
 
     # criar instancia do formulário preencido
-    form = SugestaoRedirecionamentoForm(request, SETORES, initial={'descricao': sugestao.descricao})
+    form = SugestaoRedirecionamentoForm(request, SETORES, initial={'descricao': sugestao.descricao, 'setor': sugestao.setor})
     # Verifica se vieram dados pelo post
     if request.method == 'POST':
-        form = SugestaoEdicaoForm(request.POST)
+        form = SugestaoRedirecionamentoForm(request, SETORES, request.POST)
         if form.is_valid():  # se dados do formulário são válidos, salva os dados na linha abaixo
             redirecionamento = Redirecionamento(descricao=request.POST['descricao'], datahora=datetime.now(),
                                 sugestao=Sugestao.objects.get(id=id),
-                                pessoa=Pessoa.objects.get(usuario=request.session['userl']))
+                                pessoa=Pessoa.objects.get(usuario=request.session['userl']), depara=str('de: '+ sugestao.setor.nome+ ' para: '+ Setor.objects.get(id=request.POST['setor']).nome))
             redirecionamento.save()
             # alterar sugestão
-            sugestao.setor = request.POST['setor']
+            sugestao.setor = Setor.objects.get(id=request.POST['setor'])
             sugestao.save()
 
             # Send email
@@ -156,7 +156,7 @@ def RedirecionarSugestao(request, id):
                         contexto)
 
             messages.success(request, 'Redirecionado com sucesso!')
-            return redirect(r('DetalharSugestao', str(sugestao.id), redirecionamento.sugestao.senha))
+            return redirect(r('SugestoesPraMim', 1))
 
     return render(request, 'sugerir/cadastro_sugestao.html',
                   {'URL': 'RedirecionarSugestao', 'err': '', 'id': id, 'form': form, 'itemselec': 'HOME',
@@ -289,20 +289,21 @@ def DetalharSugestao(request, id, senha):
             responder = 'responder'
     if sugestao.pessoa.usuario == '000000':# foi criada anonimamente
         visualizar = 'visualizar'
-        msganonima = "Sugestões anônimas não aparecem na sua lista de sugestões. Para acompanhar o feedback delas, você deve guardar o seu número ("+id+") e a chave de acesso ("+sugestao.senha+"). Sugerimos imprimir ou salvar essa página em PDF."
+        msganonima = "Sugestões anônimas não aparecem na sua lista de sugestões. Para acompanhar o feedback delas, você deve guardar o seu número ("+id+") e a chave de acesso ("+sugestao.senha+"). Sugerimos imprimir ou salvar esta página em PDF."
         # Verifica a senha no caso de mensagens anomimas
         if (not sugestao.senha == senha) and (finalizar == '' and responder == ''):# Redireciona para pedir a senha caso ela não esteja correta, só precisa por senha se a sugestão não for para você
             messages.error(request, 'Informe uma chave de acesso válida para visualizar essa sugestão')
             return render(request, 'sugerir/senha_sugestao.html', {'err': '', 'itemselec': 'SUGESTÕES', 'sugestao': sugestao, 'id': id})
 
     if editar == '' and responder == '' and visualizar == '' and finalizar =='': #Apessoa não tem direito a visializar essa sugestão, redireciona para a página de sugestões
-        messages.error(request, 'Você não pode acessar essa página')
+        messages.error(request, 'Você não pode acessar esta página')
         return redirect(r('Sugestoes'))
     edicao = Edicao.objects.filter(sugestao=id).order_by('-datahora')
     resposta = Resposta.objects.filter(sugestao=id)
     finalizacao = Finalizacao.objects.filter(sugestao=id)
+    redirecionamento = Redirecionamento.objects.filter(sugestao=id).order_by('-datahora')
 
-    return render(request, 'sugerir/detalhar_sugestao.html', {'err': '', 'editar': editar, 'responder': responder, 'finalizar': finalizar, 'itemselec': 'SUGESTÕES', 'sugestao': sugestao, 'edicoes': edicao, 'respostas': resposta, 'finalizacoes': finalizacao, 'msganonima': msganonima})
+    return render(request, 'sugerir/detalhar_sugestao.html', {'err': '', 'editar': editar, 'responder': responder, 'finalizar': finalizar, 'itemselec': 'SUGESTÕES', 'sugestao': sugestao, 'edicoes': edicao, 'respostas': resposta, 'finalizacoes': finalizacao, 'redirecionamentos': redirecionamento, 'msganonima': msganonima})
 
 
 def SugestoesPraMim(request, view):

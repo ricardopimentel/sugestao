@@ -86,6 +86,7 @@ class Redirecionamento(models.Model):
     datahora = models.DateTimeField('Data')
     sugestao = models.ForeignKey(Sugestao, on_delete=models.PROTECT)
     pessoa = models.ForeignKey(Pessoa, on_delete=models.PROTECT)
+    depara = models.CharField(max_length=1000)
 
 
 class Finalizacao(models.Model):
