@@ -24,8 +24,14 @@ def Login(request):
         # Checa se os dados são válidos:
         if form.is_valid():
             # Logou no ad, verificar se está salvo no banco de dados
+            request.session['userl']
             try:
-                pess = Pessoa.objects.get(usuario=request.session['userl'])
+                userl = ''
+                try:
+                    usel = request.session['userl']
+                except:
+                    print('não entendi foi nada')
+                pess = Pessoa.objects.get(usuario=usel)
                 if pess:  # Pessoa Cadastrada
                     # Atualizar dados de contato vindos do AD
                     pess.nome = request.session['nomesugestao']

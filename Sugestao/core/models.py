@@ -6,7 +6,7 @@ from tinymce.models import HTMLField
 # Create your models here.
 class Pessoa (models.Model):
     nome = models.CharField(max_length=100)
-    usuario = models.CharField(max_length=11, unique=True)
+    usuario = models.CharField(max_length=15, unique=True)
     email = models.CharField(max_length=70)
     status = models.BooleanField()
 

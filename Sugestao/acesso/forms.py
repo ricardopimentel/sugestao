@@ -77,6 +77,7 @@ def MontarMenu(request, ret, usuario):
         request.session['img'] = ['if.png', 'home24.png', 'balloons24w.png' '']
         # logou então, adicionar os dados do usuário na sessão
         request.session['userl'] = usuario
+        print(usuario)
         request.session['nomesugestao'] = result['displayName'].title()
         try:
             request.session['mail'] = result['mail']
