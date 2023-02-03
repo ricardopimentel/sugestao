@@ -15,8 +15,11 @@ class Migration(migrations.Migration):
 
     def insertData(apps, schema_editor):
         #Pessoaessoa = apps.get_model('pessoa')
-        pessoa = Pessoa(nome="Anônimo", usuario="000000", status=True, email="Não informado")
-        pessoa.save()
+        try:
+            pessoa = Pessoa(nome="Anônimo", usuario="000000", status=True, email="Não informado")
+            pessoa.save()
+        except:
+            pass
 
     operations = [
         migrations.RunPython(insertData),
